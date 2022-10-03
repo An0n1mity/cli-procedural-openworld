@@ -11,7 +11,13 @@ enum BlockFlag_e
     DROPABLE = 4,
     WALKABLE = 8
 };
-enum BlockType_e {WOOD, ROCK};
+enum BlockType_e
+{
+    WOOD,
+    ROCK,
+    GRASS,
+    WATER
+};
 
 struct Block_s
 {

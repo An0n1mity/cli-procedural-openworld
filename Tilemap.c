@@ -36,7 +36,9 @@ struct Block_s* CharToBlock(char c)
         case 'R':
             block = CreateBlock(ROCK, MOVABLE);
             break;
-
+        case 'G':
+            block = CreateBlock(GRASS, WALKABLE);
+            break;
         default:
             break;
     }
@@ -76,11 +78,22 @@ void PrintTilemap(struct Tilemap_s* tilemap)
     {
        for (size_t j = 0; j < tilemap->m_width; j++)
        {
-            printf("%d ", tilemap->m_array[i * tilemap->m_width + j]->m_type);
+           switch (tilemap->m_array[i * tilemap->m_width + j]->m_type)
+           {
+           case WOOD:
+               printf("🪵 ");
+               break;
+           case ROCK:
+               printf("🪨 ");
+               break;
+           case GRASS:
+               printf("🌿");
+               break;
+           }
        }
        printf("\n");
     }
-    
+    printf("\033[0;37m");
 }
 
 struct Entitieslist_s *createEntitieslist(struct Entity_s *entity)

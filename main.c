@@ -1,11 +1,25 @@
 #include <stdio.h>
-
+#include <termios.h>
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"
 
+int getche(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldattr);
+    newattr = oldattr;
+    newattr.c_lflag &= ~(ICANON);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+    return ch;
+}
+
 int main(int argc, char const *argv[])
 {
+
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
     struct Tilemap_s* tilemap = CreateTilemapFromFile("../map.txt");
