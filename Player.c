@@ -12,3 +12,8 @@ void MakeAction(enum Action_e action, struct Block_s* block)
     if((action == BREAK) && (action & block->m_flags))
         block->m_health--;
 }
+
+struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilemap)
+{
+    return getFrontBlock(player->m_base, tilemap);
+}

@@ -12,6 +12,9 @@ int main(int argc, char const *argv[])
     struct Tilemap_s* tilemap = CreateTilemapFromFile("../map.txt");
     FillTilemap(tilemap, "../map.txt");
 
+    player->m_base->m_direction = SOUTH;
+    struct Block_s *front_block = getFronBlock(player, tilemap);
+
     PrintTilemap(tilemap);
 
     if(player_action & block->m_flags)

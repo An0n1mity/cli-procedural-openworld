@@ -63,8 +63,7 @@ void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile)
         {
             tilemap->m_array[idx++] = CharToBlock(map[i]); 
         }
-    }  
-   
+    }
 
     close(fd);
 }

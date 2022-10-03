@@ -2,11 +2,20 @@
 #define ENTITY_H
 
 #include <stdlib.h>
+#include "Tilemap.h"
 
 struct Coordinate_s
 {
     int m_x;
     int m_y;
+};
+
+enum Direction_e
+{
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST
 };
 
 enum EntityType_e {PLAYER, MOB};
@@ -21,8 +30,12 @@ struct Entity_s
 
     // Entity coordinates 
     struct Coordinate_s m_position;
+
+    // Entity direction
+    enum Direction_e m_direction;
 };
 
 struct Entity_s* CreateEntity(enum EntityType_e type);
+struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
 
 #endif

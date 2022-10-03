@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "Entity.h"
 #include "Block.h"
+#include "Tilemap.h"
 
 struct Attribute_s
 {
@@ -28,6 +29,11 @@ struct Player_s
 struct Player_s* CreatePlayer();
 void MovePlayerTo(struct Player_s* player, struct Coordinate_s coordinate);
 void MakeAction(enum Action_e action, struct Block_s* block);
+struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilemap);
+
+#define getFronBlock(a, b) _Generic(a, struct Player_s *                \
+                                    : getFrontBlockP, struct Entity_s * \
+                                    : getFrontBlock)(a, b)
 
 #endif 
 
