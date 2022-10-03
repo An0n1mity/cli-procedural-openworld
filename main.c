@@ -26,8 +26,11 @@ int main(int argc, char const *argv[])
     MakeAction(player, BREAK);
     printf("Block health %d\n", (front_block)->m_health);
 
-    free(player->m_base);
-    free(player);
+    printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
+    MakeAction(player, MOVE);
+    printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
+
+    freePlayer(player);
     freeTilemap(tilemap);
 
     return 0;

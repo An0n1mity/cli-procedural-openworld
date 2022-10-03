@@ -31,7 +31,7 @@ struct Block_s* CharToBlock(char c)
     switch (c)
     {
         case 'W':
-            block = CreateBlock(WOOD, BREAKABLE);
+            block = CreateBlock(WOOD, BREAKABLE | WALKABLE);
             break;
         case 'R':
             block = CreateBlock(ROCK, MOVABLE);

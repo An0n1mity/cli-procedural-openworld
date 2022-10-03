@@ -4,7 +4,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-enum BlockFlag_e {BREAKABLE = 1, MOVABLE = 2, DROPABLE = 4};
+enum BlockFlag_e
+{
+    BREAKABLE = 1,
+    MOVABLE = 2,
+    DROPABLE = 4,
+    WALKABLE = 8
+};
 enum BlockType_e {WOOD, ROCK};
 
 struct Block_s

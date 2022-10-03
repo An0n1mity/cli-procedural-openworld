@@ -12,7 +12,13 @@ struct Attribute_s
     int m_value;
 };
 
-enum Action_e {BREAK = 1, MOVE = 2, PICK = 4};
+enum Action_e
+{
+    BREAK = 1,
+    DISPLACE = 2,
+    PICK = 4,
+    MOVE = 8
+};
 
 struct Player_s
 {
@@ -31,7 +37,8 @@ void MovePlayerTo(struct Player_s* player, struct Coordinate_s coordinate);
 void MakeAction(struct Player_s *player, enum Action_e action);
 void addPlayerToTilemap(struct Player_s *player, struct Tilemap_s *tilemap);
 struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilemap);
-
+void MovePlayer(struct Player_s *player);
+void freePlayer(struct Player_s *player);
 #define getFronBlock(a, b) _Generic(a, struct Player_s *                \
                                     : getFrontBlockP, struct Entity_s * \
                                     : getFrontBlock)(a, b)

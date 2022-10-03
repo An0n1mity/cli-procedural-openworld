@@ -26,7 +26,7 @@ static inline void SetEntityHealth(struct Entity_s* entity, short int health)
     entity->m_health = health;
 }
 
-void MoveEntityTo(struct Entity_s *entity, int x, int y)
+inline void MoveEntityTo(struct Entity_s *entity, int x, int y)
 {
     entity->m_position.m_x = x;
     entity->m_position.m_y = y;
