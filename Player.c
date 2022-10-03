@@ -25,5 +25,5 @@ struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilema
 
 inline void addPlayerToTilemap(struct Player_s *player, struct Tilemap_s *tilemap)
 {
-    addEntityToTilemap(player->m_base, tilemap);
+    addEntityToTilemap(tilemap, player->m_base);
 }

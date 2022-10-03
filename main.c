@@ -28,13 +28,7 @@ int main(int argc, char const *argv[])
 
     free(player->m_base);
     free(player);
-    for (size_t i = 0; i < tilemap->m_width * tilemap->m_height; i++)
-    {
-        free(tilemap->m_array[i]);
-    }
-
-    free(tilemap->m_array);
-    free(tilemap);
+    freeTilemap(tilemap);
 
     return 0;
 }

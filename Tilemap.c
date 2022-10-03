@@ -2,7 +2,7 @@
 
 struct Tilemap_s* CreateTilemap(const int width, const int height)
 {
-    struct Tilemap_s* tilemap = (struct Tilemap_s*)malloc(sizeof(struct Tilemap_s));
+    struct Tilemap_s *tilemap = (struct Tilemap_s *)calloc(1, sizeof(struct Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
     tilemap->m_array = (struct Block_s **)malloc(height * width * sizeof(struct Block_s *));
 
@@ -83,3 +83,50 @@ void PrintTilemap(struct Tilemap_s* tilemap)
     
 }
 
+struct Entitieslist_s *createEntitieslist(struct Entity_s *entity)
+{
+    struct Entitieslist_s *entities_list = (struct Entitieslist_s *)calloc(1, sizeof(struct Entitieslist_s));
+    entities_list->m_entity = entity;
+
+    return entities_list;
+}
+
+void addEntityToList(struct EntitiesList_s **list, struct Entity_s *entity)
+{
+    if (!*list)
+    {
+        *list = createEntitieslist(entity);
+        return;
+    }
+
+    struct Entitieslist_s *new = createEntitieslist(entity);
+    new->m_next = *list;
+    *list = new;
+}
+
+inline void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity)
+{
+    entity->m_tilemap = tilemap;
+    addEntityToList(&tilemap->m_entities, entity);
+}
+
+void freeEntitiesList(struct Entitieslist_s *list)
+{
+    if (!list)
+        return;
+
+    freeEntitiesList(list->m_next);
+
+    free(list);
+}
+
+void freeTilemap(struct Tilemap_s *tilemap)
+{
+    freeEntitiesList(tilemap->m_entities);
+    for (size_t i = 0; i < tilemap->m_width * tilemap->m_height; i++)
+    {
+        free(tilemap->m_array[i]);
+    }
+    free(tilemap->m_array);
+    free(tilemap);
+}

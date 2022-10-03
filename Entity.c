@@ -26,11 +26,6 @@ static inline void SetEntityHealth(struct Entity_s* entity, short int health)
     entity->m_health = health;
 }
 
-inline void addEntityToTilemap(struct Entity_s *entity, struct Tilemap_s *tilemap)
-{
-    entity->m_tilemap = tilemap;
-}
-
 void MoveEntityTo(struct Entity_s *entity, int x, int y)
 {
     entity->m_position.m_x = x;
