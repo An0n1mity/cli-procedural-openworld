@@ -16,12 +16,18 @@ struct Entitieslist_s
     struct Entitieslist_s *m_next;
 };
 
+struct TilemapBlock_s
+{
+    struct Block_s *m_block;
+    struct TilemapBlock_s *m_next;
+};
+
 struct Tilemap_s
 {
     int m_width;
     int m_height;
 
-    struct Block_s** m_array;
+    struct Block_s ***m_array;
     struct Entitieslist_s *m_entities;
 };
 

@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
         printf("Player can't break the block\n");
 
     printf("Block health %d\n", (front_block)->m_health);
-    MakeAction(player, BREAK);
+    MakeActionOnBlock(BREAK, front_block);
     printf("Block health %d\n", (front_block)->m_health);
 
     printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);

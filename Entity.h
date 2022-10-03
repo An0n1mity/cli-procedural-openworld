@@ -39,6 +39,8 @@ struct Entity_s
 
 struct Entity_s *CreateEntity(enum EntityType_e type);
 struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
+struct TilemapBlock_s *getFrontTilemapBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
+
 void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity);
 
 #endif

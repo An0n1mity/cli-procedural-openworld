@@ -23,6 +23,12 @@ void MovePlayer(struct Player_s *player)
         ++player_position->m_x;
 }
 
+void MakeActionOnBlock(enum Action_e action, struct Block_s *block)
+{
+    if ((action == BREAK) && (action & block->m_flags))
+        block->m_health--;
+}
+
 void MakeAction(struct Player_s *player, enum Action_e action)
 {
     struct Block_s *front_block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
@@ -38,6 +44,12 @@ void MakeAction(struct Player_s *player, enum Action_e action)
 struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilemap)
 {
     struct Block_s *front_block = getFrontBlock(player->m_base, tilemap);
+    return front_block;
+}
+
+struct TilemapBlock_s *getFrontTilemapBlockP(struct Player_s *player, struct Tilemap_s *tilemap)
+{
+    struct TilemapBlock_s *front_block = getFrontTilemapBlock(player->m_base, tilemap);
     return front_block;
 }
 
