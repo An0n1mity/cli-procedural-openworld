@@ -4,7 +4,7 @@ struct Tilemap_s* CreateTilemap(const int width, const int height)
 {
     struct Tilemap_s* tilemap = (struct Tilemap_s*)malloc(sizeof(struct Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
-    tilemap->m_array = (struct Block_s**)malloc(sizeof(struct Block_s*) * height * width);
+    tilemap->m_array = (struct Block_s **)malloc(height * width * sizeof(struct Block_s *));
 
     return tilemap;
 }
@@ -61,9 +61,11 @@ void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile)
             start = 1;
         if(map[i] != '\n' && start && (idx < tilemap->m_width * tilemap->m_height))
         {
-            tilemap->m_array[idx++] = CharToBlock(map[i]); 
+            tilemap->m_array[idx++] = CharToBlock(map[i]);
         }
     }
+
+    munmap(map, statbuf.st_size);
 
     close(fd);
 }

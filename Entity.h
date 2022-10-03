@@ -33,9 +33,12 @@ struct Entity_s
 
     // Entity direction
     enum Direction_e m_direction;
+
+    struct Tilemap_s *m_tilemap;
 };
 
-struct Entity_s* CreateEntity(enum EntityType_e type);
+struct Entity_s *CreateEntity(enum EntityType_e type);
 struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
+void addEntityToTilemap(struct Entity_s *entity, struct Tilemap_s *tilemap);
 
 #endif
