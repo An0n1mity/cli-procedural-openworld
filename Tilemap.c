@@ -210,7 +210,7 @@ struct Entitieslist_s *createEntitieslist(struct Entity_s *entity)
     return entities_list;
 }
 
-void addEntityToList(struct EntitiesList_s **list, struct Entity_s *entity)
+void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity)
 {
     if (!*list)
     {
