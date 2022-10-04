@@ -53,12 +53,6 @@ void printPlayer(struct Player_s *player)
     printf("👨");
 }
 
-struct TilemapBlock_s *getFrontTilemapBlockP(struct Player_s *player, struct Tilemap_s *tilemap)
-{
-    struct TilemapBlock_s *front_block = getFrontTilemapBlock(player->m_base, tilemap);
-    return front_block;
-}
-
 inline void addPlayerToTilemap(struct Player_s *player, struct Tilemap_s *tilemap)
 {
     addEntityToTilemap(tilemap, player->m_base);
