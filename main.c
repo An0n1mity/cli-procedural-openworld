@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"
+#include "PerlinNoise.h"
 
 int getche(void)
 {
@@ -27,27 +28,33 @@ int main(int argc, char const *argv[])
     addPlayerToTilemap(player, tilemap);
 
     player->m_base->m_direction = SOUTH;
-    struct Block_s *front_block = getFronBlock(player, tilemap);
 
     PrintTilemap(tilemap);
-
-    if (player_action & front_block->m_flags)
-        printf("Player can break the block\n");
-    else
-        printf("Player can't break the block\n");
-
-    printf("Block health %d\n", (front_block)->m_health);
-    MakeActionOnBlock(BREAK, front_block);
-    printf("Block health %d\n", (front_block)->m_health);
 
     printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     MakeAction(player, MOVE);
     printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
+    player->m_base->m_direction = EAST;
+
+    struct Block_s *front_block = getFrontBlockP(player, tilemap);
+    if (player_action & front_block->m_flags)
+        printf("Player can break the block\n");
+    else
+        printf("Player can't break the block\n");
+    printf("Block health %d\n", (front_block)->m_health);
+    MakeActionOnBlock(BREAK, front_block);
+    printf("Block health %d\n", (front_block)->m_health);
 
     PrintTilemap(tilemap);
 
     freePlayer(player);
     freeTilemap(tilemap);
+
+       int x, y;
+    for(y=0; y<4000; y++)
+        for(x=0; x<4000; x++)
+            perlin2d(x, y, 0.1, 4);
+
 
     return 0;
 }
