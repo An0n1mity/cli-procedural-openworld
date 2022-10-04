@@ -37,6 +37,8 @@ int main(int argc, char const *argv[])
     printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     player->m_base->m_direction = EAST;
 
+    //wolla je veut mourir
+
     struct Block_s *front_block = getFrontBlockP(player, tilemap);
     if (player_action & front_block->m_flags)
         printf("Player can break the block\n");
