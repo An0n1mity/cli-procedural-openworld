@@ -14,10 +14,10 @@ struct Attribute_s
 
 enum Action_e
 {
-    BREAK = 1,
-    DISPLACE = 2,
-    PICK = 4,
-    MOVE = 8
+    BREAK       = 0b0001,
+    DISPLACE    = 0b0010,
+    PICK        = 0b0100,
+    MOVE        = 0b1000
 };
 
 struct Player_s
