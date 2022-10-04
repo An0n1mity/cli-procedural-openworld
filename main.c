@@ -23,7 +23,8 @@ int main(int argc, char const *argv[])
 
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
-    struct Tilemap_s* tilemap = CreateTilemapFromFile("../map.txt");
+    struct Tilemap_s *tilemap = CreateTilemapProcedurally(50, 50, 100);
+    // CreateTilemapFromFile("../map.txt");
 
     addPlayerToTilemap(player, tilemap);
 
@@ -49,11 +50,6 @@ int main(int argc, char const *argv[])
 
     freePlayer(player);
     freeTilemap(tilemap);
-
-       int x, y;
-       for (y = 0; y < 2; y++)
-           for (x = 0; x < 12; x++)
-               printf("%d ", perlin2d(x, y, 0.1, 4));
 
        return 0;
 }

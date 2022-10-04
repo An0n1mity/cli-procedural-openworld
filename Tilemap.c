@@ -48,7 +48,38 @@ struct Tilemap_s* CreateTilemapFromFile(const char* mapfile)
 
 }
 
-struct Block_s* CharToBlock(char c)
+struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
+{
+    struct Tilemap_s *tilemap = CreateTilemap(width, height);
+    srand(seed);
+    for (size_t y = 0; y < height; y++)
+    {
+        for (size_t x = 0; x < width; x++)
+        {
+            float value = perlin2d(x, y, 0.1, 1, seed);
+            if (value >= 0.55f)
+            {
+                tilemap->m_array[y * width + x][0] = CreateBlock(GRASS, WALKABLE);
+                if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
+                    tilemap->m_array[y * width + x][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
+            }
+            else if (value <= 0.4)
+                tilemap->m_array[y * width + x][0] = CreateBlock(WATER, WALKABLE);
+            else if (value > 0.4 && value <= 0.46)
+                tilemap->m_array[y * width + x][0] = CreateBlock(SAND, WALKABLE);
+            else if (value > 0.46 && value < 0.55)
+            {
+                tilemap->m_array[y * width + x][0] = CreateBlock(STONE, WALKABLE);
+                if (!(rand() % 5))
+                    tilemap->m_array[y * width + x][1] = CreateBlock(ROCK, WALKABLE);
+            }
+        }
+    }
+
+    return tilemap;
+}
+
+struct Block_s *CharToBlock(char c)
 {
     struct Block_s* block = NULL;
     switch (c)
@@ -121,11 +152,18 @@ void PrintTilemap(struct Tilemap_s* tilemap)
             {
                 switch (tilemap->m_array[i * tilemap->m_width + j][0]->m_type)
                 {
+                case WATER:
+                    printf("\e[44m~");
+
+                    break;
                 case GRASS:
                     printf("\e[42m");
                     break;
-                case DIRT:
+                case SAND:
                     printf("\033[48;2;255;165;0m");
+                    break;
+                case STONE:
+                    printf("\e[0;37m");
                     break;
                 }
             }
@@ -156,6 +194,8 @@ void PrintTilemap(struct Tilemap_s* tilemap)
             else
                 printf("  ");
         }
+        printf("\e[0m");
+        printf("\033[0;37m");
         printf("\n");
     }
     printf("\e[0m");

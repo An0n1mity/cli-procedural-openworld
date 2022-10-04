@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "Block.h"
 #include "Entity.h"
+#include "PerlinNoise.h"
 
 struct Entitieslist_s
 {
@@ -34,6 +35,7 @@ struct Tilemap_s
 struct Tilemap_s* CreateTilemap(const int m_wdith, const int m_height);
 void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile);
 struct Tilemap_s* CreateTilemapFromFile(const char* mapfile);
+struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed);
 void PrintTilemap(struct Tilemap_s* tilemap);
 void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity);
 void freeTilemap(struct Tilemap_s *tilemap);

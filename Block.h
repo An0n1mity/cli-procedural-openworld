@@ -18,7 +18,9 @@ enum BlockType_e
     ROCK,
     GRASS,
     WATER,
-    DIRT
+    DIRT,
+    SAND,
+    STONE
 };
 
 struct Block_s
