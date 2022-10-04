@@ -196,7 +196,7 @@ void PrintTilemap(struct Tilemap_s* tilemap)
         }
         printf("\e[0m");
         printf("\033[0;37m");
-        printf("\n");
+        printf("\n\r");
     }
     printf("\e[0m");
     printf("\033[0;37m");
