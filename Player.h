@@ -41,6 +41,7 @@ struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilema
 struct TilemapBlock_s *getFrontTilemapBlockP(struct Player_s *player, struct Tilemap_s *tilemap);
 void MovePlayer(struct Player_s *player);
 void freePlayer(struct Player_s *player);
+void printPlayer(struct Player_s *player);
 #define getFronBlock(a, b) _Generic(a, struct Player_s *                \
                                     : getFrontBlockP, struct Entity_s * \
                                     : getFrontBlock)(a, b)

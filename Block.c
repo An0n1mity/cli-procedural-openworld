@@ -13,8 +13,12 @@ struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag)
         case ROCK:
             SetBlockHealth(block, 10);
             break;
-        
-        case WOOD:
+
+        case EVERGREEN_TREE:
+            SetBlockHealth(block, 10);
+            break;
+
+        case DECIDIOUS_TREE:
             SetBlockHealth(block, 10);
             break;
 

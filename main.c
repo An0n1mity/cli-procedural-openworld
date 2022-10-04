@@ -44,6 +44,8 @@ int main(int argc, char const *argv[])
     MakeAction(player, MOVE);
     printf("Player's position : %d %d\n", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
 
+    PrintTilemap(tilemap);
+
     freePlayer(player);
     freeTilemap(tilemap);
 

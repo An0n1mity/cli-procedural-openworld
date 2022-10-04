@@ -47,6 +47,12 @@ struct Block_s *getFrontBlockP(struct Player_s *player, struct Tilemap_s *tilema
     return front_block;
 }
 
+void printPlayer(struct Player_s *player)
+{
+    printf("\033[%d;%dH", player->m_base->m_position.m_y + 1, player->m_base->m_position.m_x + 1);
+    printf("👨");
+}
+
 struct TilemapBlock_s *getFrontTilemapBlockP(struct Player_s *player, struct Tilemap_s *tilemap)
 {
     struct TilemapBlock_s *front_block = getFrontTilemapBlock(player->m_base, tilemap);

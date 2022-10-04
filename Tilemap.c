@@ -54,7 +54,10 @@ struct Block_s* CharToBlock(char c)
     switch (c)
     {
         case 'W':
-            block = CreateBlock(WOOD, BREAKABLE | WALKABLE);
+            block = CreateBlock(EVERGREEN_TREE, BREAKABLE);
+            break;
+        case 'w':
+            block = CreateBlock(DECIDIOUS_TREE, BREAKABLE);
             break;
         case 'R':
             block = CreateBlock(ROCK, MOVABLE);
@@ -87,13 +90,15 @@ void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile)
     for(size_t i = 0; i < statbuf.st_size; i++)
     {
         if(map[i] == '\n' && !start)
+        {
             start = 1;
+            i++;
+        }
         if (map[i] != '\n' && map[i] != ',' && start && (idx < tilemap->m_width * tilemap->m_height))
         {
-            // addBlockToTilemapBlock(&tilemap->m_array[idx], CharToBlock(map[i]));
             (tilemap->m_array[idx])[level++] = CharToBlock(map[i]);
         }
-        if (map[i] == ',' && start)
+        if ((map[i] == ',' || map[i] == '\n') && start)
         {
             ++idx;
             level = 0;
@@ -109,40 +114,51 @@ void PrintTilemap(struct Tilemap_s* tilemap)
 {
     for (size_t i = 0; i < tilemap->m_height; i++)
     {
-       for (size_t j = 0; j < tilemap->m_width; j++)
-       {
+        for (size_t j = 0; j < tilemap->m_width; j++)
+        {
 
-           if (tilemap->m_array[i * tilemap->m_width + j][1])
-           {
-               switch (tilemap->m_array[i * tilemap->m_width + j][1]->m_type)
-               {
-               case GRASS:
-                   printf("\e[42m");
-                   break;
-               case DIRT:
-                   printf("\e[33m");
-                   break;
-               }
-           }
-           else
-               printf("\e[40m");
+            if (tilemap->m_array[i * tilemap->m_width + j][0])
+            {
+                switch (tilemap->m_array[i * tilemap->m_width + j][0]->m_type)
+                {
+                case GRASS:
+                    printf("\e[42m");
+                    break;
+                case DIRT:
+                    printf("\033[48;2;255;165;0m");
+                    break;
+                }
+            }
 
-           if (tilemap->m_array[i * tilemap->m_width + j][0])
-               switch (tilemap->m_array[i * tilemap->m_width + j][0]->m_type)
-               {
-               case WOOD:
-                   printf("🌳");
-                   break;
-               case ROCK:
-                   printf("🪨");
-                   break;
-               case GRASS:
-                   printf("🌿");
-                   break;
-               }
-       }
-       printf("\n");
+            if (tilemap->m_array[i * tilemap->m_width + j][1])
+            {
+                switch (tilemap->m_array[i * tilemap->m_width + j][1]->m_type)
+                {
+                case EVERGREEN_TREE:
+                    printf("🌲");
+                    break;
+                case DECIDIOUS_TREE:
+                    printf("🌳");
+                    break;
+                case ROCK:
+                    printf("🪨");
+                    break;
+                case GRASS:
+                    printf("🌿");
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            else if (i == tilemap->m_entities->m_entity->m_position.m_y && j == tilemap->m_entities->m_entity->m_position.m_x)
+                printf("👨");
+            else
+                printf("  ");
+        }
+        printf("\n");
     }
+    printf("\e[0m");
     printf("\033[0;37m");
 }
 

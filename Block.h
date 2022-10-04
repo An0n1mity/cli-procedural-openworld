@@ -13,7 +13,8 @@ enum BlockFlag_e
 };
 enum BlockType_e
 {
-    WOOD,
+    EVERGREEN_TREE,
+    DECIDIOUS_TREE,
     ROCK,
     GRASS,
     WATER,
