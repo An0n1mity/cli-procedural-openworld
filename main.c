@@ -51,10 +51,9 @@ int main(int argc, char const *argv[])
     freeTilemap(tilemap);
 
        int x, y;
-    for(y=0; y<4000; y++)
-        for(x=0; x<4000; x++)
-            perlin2d(x, y, 0.1, 4);
+       for (y = 0; y < 2; y++)
+           for (x = 0; x < 12; x++)
+               printf("%d ", perlin2d(x, y, 0.1, 4));
 
-
-    return 0;
+       return 0;
 }

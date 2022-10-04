@@ -67,31 +67,31 @@ struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap
 
     if (entity->m_direction == NORTH && (entity_y - 1 >= 0))
     {
-        if (tilemap->m_array[(entity_y - 1) * tilemap->m_width + entity_x][0])
-            return tilemap->m_array[(entity_y - 1) * tilemap->m_width + entity_x][0];
-        else
+        if (tilemap->m_array[(entity_y - 1) * tilemap->m_width + entity_x][1])
             return tilemap->m_array[(entity_y - 1) * tilemap->m_width + entity_x][1];
+        else
+            return tilemap->m_array[(entity_y - 1) * tilemap->m_width + entity_x][0];
     }
     else if (entity->m_direction == SOUTH && (entity_y + 1 < tilemap->m_height))
     {
-        if (tilemap->m_array[(entity_y + 1) * tilemap->m_width + entity_x][0])
-            return tilemap->m_array[(entity_y + 1) * tilemap->m_width + entity_x][0];
-        else
+        if (tilemap->m_array[(entity_y + 1) * tilemap->m_width + entity_x][1])
             return tilemap->m_array[(entity_y + 1) * tilemap->m_width + entity_x][1];
+        else
+            return tilemap->m_array[(entity_y + 1) * tilemap->m_width + entity_x][0];
     }
     else if (entity->m_direction == WEST && (entity_x - 1 >= 0))
     {
-        if (entity->m_direction == WEST && (entity_x - 1 >= 0))
-            return tilemap->m_array[entity_y * tilemap->m_width + (entity_x - 1)][0];
-        else
+        if (tilemap->m_array[entity_y * tilemap->m_width + (entity_x - 1)][1])
             return tilemap->m_array[entity_y * tilemap->m_width + (entity_x - 1)][1];
+        else
+            return tilemap->m_array[entity_y * tilemap->m_width + (entity_x - 1)][0];
     }
     else if (entity->m_direction == EAST && (entity_x + 1 < tilemap->m_width))
     {
-        if (entity->m_direction == EAST && (entity_x + 1 < tilemap->m_width))
-            return tilemap->m_array[entity_y * tilemap->m_width + (entity_x + 1)][0];
-        else
+        if (tilemap->m_array[entity_y * tilemap->m_width + (entity_x + 1)][1])
             return tilemap->m_array[entity_y * tilemap->m_width + (entity_x + 1)][1];
+        else
+            return tilemap->m_array[entity_y * tilemap->m_width + (entity_x + 1)][0];
     }
     else
         return NULL;
