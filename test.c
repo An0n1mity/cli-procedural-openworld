@@ -1,55 +1,111 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <ncurses.h>
+#include <form.h>
 
-main()
+int main()
 {
-    WINDOW *w;
-    char list[5][7] = {"One", "Two", "Three", "Four", "Five"};
-    char item[7];
-    int ch, i = 0, width = 7;
-    initscr();                // initialize Ncurses
-    w = newwin(50, 50, 1, 1); // create a new window
-    box(w, 0, 0);             // sets default borders for the window
-    // now print all the menu items and highlight the first one
-    for (i = 0; i < 5; i++)
+    WINDOW *pad;
+    FIELD *field[3];
+    FORM *my_form;
+    FIELD *field_two[3];
+    FORM *form_two;
+    int ch;
+
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+    pad = newpad(LINES, COLS);
+    box(pad, 0, 0);
+    keypad(pad, TRUE);
+
+    field[0] = new_field(1, 10, 4, 18, 0, 0);
+    field[1] = new_field(1, 10, 6, 18, 0, 0);
+    field[2] = NULL;
+
+    field_two[0] = new_field(1, 10, 8, 18, 0, 0);
+    field_two[1] = new_field(1, 10, 10, 18, 0, 0);
+    field_two[2] = NULL;
+
+    set_field_back(field[0], A_UNDERLINE);
+    set_field_back(field[1], A_UNDERLINE);
+
+    set_field_back(field_two[0], A_UNDERLINE);
+    set_field_back(field_two[1], A_UNDERLINE);
+
+    wclear(pad);
+    my_form = new_form(field);
+    set_form_sub(my_form, pad);
+    post_form(my_form);
+
+    form_two = new_form(field_two);
+    set_form_sub(form_two, pad);
+    post_form(form_two);
+
+    mvwprintw(pad, 1, 1, "Some text");
+    mvwprintw(pad, 4, 10, "Value 1:");
+    mvwprintw(pad, 6, 10, "Value 2:");
+    mvwprintw(pad, 8, 10, "Value 3:");
+    mvwprintw(pad, 10, 10, "Value 4:");
+    prefresh(pad, 0, 0, 0, 0, LINES, COLS);
+
+    bool form1 = true;
+    while ((ch = getch()) != KEY_F(1))
     {
-        if (i == 0)
-            wattron(w, A_STANDOUT); // highlights the first item.
-        else
-            wattroff(w, A_STANDOUT);
-        sprintf(item, "%-7s", list[i]);
-        mvwprintw(w, i + 1, 2, "%s", item);
-    }
-    wrefresh(w); // update the terminal screen
-    i = 0;
-    noecho();        // disable echoing of characters on the screen
-    keypad(w, TRUE); // enable keyboard input for the window.
-    curs_set(0);     // hide the default screen cursor.
-    // get the input
-    while ((ch = wgetch(w)) != 'q')
-    {
-        // right pad with spaces to make the items appear with even width.
-        sprintf(item, "%-7s", list[i]);
-        mvwprintw(w, i + 1, 2, "%s", item);
-        // use a variable to increment or decrement the value based on the input.
         switch (ch)
         {
-        case KEY_UP:
-            i--;
-            i = (i < 0) ? 4 : i;
-            break;
         case KEY_DOWN:
-            i++;
-            i = (i > 4) ? 0 : i;
+            if (form1)
+            {
+                form_driver(my_form, REQ_NEXT_FIELD);
+                form_driver(my_form, REQ_END_LINE);
+            }
+            else
+            {
+                form_driver(form_two, REQ_NEXT_FIELD);
+                form_driver(form_two, REQ_END_LINE);
+            }
+            break;
+        case KEY_UP:
+            if (form1)
+            {
+                form_driver(my_form, REQ_PREV_FIELD);
+                form_driver(my_form, REQ_END_LINE);
+            }
+            else
+            {
+                form_driver(form_two, REQ_PREV_FIELD);
+                form_driver(form_two, REQ_END_LINE);
+            }
+
+            break;
+        case KEY_RIGHT:
+            form1 = false;
+            break;
+        case KEY_LEFT:
+            form1 = true;
+            break;
+        default:
+            if (form1)
+            {
+                form_driver(my_form, ch);
+            }
+            else
+            {
+                form_driver(form_two, ch);
+            }
             break;
         }
-        // now highlight the next item in the list.
-        wattron(w, A_STANDOUT);
-        sprintf(item, "%-7s", list[i]);
-        mvwprintw(w, i + 1, 2, "%s", item);
-        wattroff(w, A_STANDOUT);
+        prefresh(pad, 0, 0, 0, 0, LINES, COLS);
     }
-    delwin(w);
+
+    unpost_form(my_form);
+    free_form(my_form);
+    free_field(field[0]);
+    free_field(field[1]);
+    unpost_form(form_two);
+    free_form(form_two);
+    free_field(field_two[0]);
+    free_field(field_two[1]);
     endwin();
+    return 0;
 }

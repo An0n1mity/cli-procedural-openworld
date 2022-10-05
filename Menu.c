@@ -14,7 +14,7 @@ WINDOW *createTitleWindow(int height, int width, int startx, int starty)
     return title_window;
 }
 
-void titleLoop(WINDOW *title_window)
+enum MenuChoice_e titleLoop(WINDOW *title_window)
 {
     // Strings selection
     const char *title_strings[3] = {"DWARF CLONE",
@@ -59,8 +59,14 @@ void titleLoop(WINDOW *title_window)
             if (idx > 1)
                 idx = 0;
             break;
-        case KEY_ENTER:
-            printf("ENTER\n");
+        case '\n':
+            wclear(title_window); // Refresh it (to leave it blank)
+            delwin(title_window); // and delete
+            if (idx == 0)
+                return NEW_GAME;
+            else
+                return LOAD_GAME;
+            break;
         }
 
         wattron(title_window, A_STANDOUT);
@@ -68,4 +74,36 @@ void titleLoop(WINDOW *title_window)
         wattroff(title_window, A_STANDOUT);
         wrefresh(title_window);
     }
+}
+
+void seedMenu(WINDOW *seed_window, int *seed)
+{
+    curs_set(0);
+
+    int seed_window_w, seed_window_h;
+    getmaxyx(seed_window, seed_window_h, seed_window_w);
+
+    box(seed_window, 0, 0);
+    // mvwprintw(seed_window, seed_window_h / 2, seed_window_w / 2 - 2, "%s", "SEED");
+
+    keypad(stdscr, TRUE);
+    FIELD *field[2];
+    field[0] = new_field(1, 4, seed_window_h / 2, seed_window_h / 2 + 2, 0, 0);
+    field[1] = NULL;
+    set_field_opts(field[0], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE | O_STATIC);
+    set_field_back(field[0], A_UNDERLINE);
+    field_opts_off(field[0], O_AUTOSKIP); /* Don't go to next field when this */
+
+    FORM *my_form = new_form(field);
+    // set_form_sub(my_form, seed_window);
+    post_form(my_form);
+
+    mvprintw(seed_window_h / 2 - 1, seed_window_h / 2 + 2, "SEED");
+    refresh();
+    // prefresh(seed_window, 0, 0, 0, 0, LINES, COLS);
+
+    // wrefresh(seed_window);
+
+    while (1)
+        ;
 }

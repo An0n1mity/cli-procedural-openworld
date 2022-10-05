@@ -44,8 +44,8 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-
-    titleLoop(createWindow(20, 50, 0, 0));
+    titleLoop(createWindow(20, 40, 0, 0));
+    seedMenu(createWindow(20, 40, 0, 0), NULL);
 
     echo();
     noraw();
