@@ -5,6 +5,7 @@
 #include "Block.h"
 #include "Tilemap.h"
 #include "PerlinNoise.h"
+#include "Rendering.h"
 
 int main(int argc, char const *argv[])
 {
@@ -43,12 +44,9 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-    initscr();
     WINDOW *window = createWindow(50, 50, 0, 0);
     wprintw(window, "TEST !");
     refresh();
-    while (1)
-        ;
     echo();
     noraw();
     endwin();
