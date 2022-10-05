@@ -7,9 +7,9 @@
 enum BlockFlag_e
 {
     BREAKABLE = 0b0001,
-    MOVABLE = 0b0010,
-    DROPABLE = 0b0100,
-    WALKABLE = 0b1000
+    MOVABLE   = 0b0010,
+    DROPABLE  = 0b0100,
+    WALKABLE  = 0b1000
 };
 enum BlockType_e
 {
