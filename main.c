@@ -44,8 +44,11 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-    initscr();
+
     titleLoop(createWindow(20, 50, 0, 0));
 
+    echo();
+    noraw();
+    endwin();
     return 0;
 }
