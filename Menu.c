@@ -38,29 +38,33 @@ void titleLoop(WINDOW *title_window)
     wrefresh(title_window);
 
     // Selection loop
-    char input;
-    size_t idx = 0;
+    int input;
+    int idx = 0;
     noecho();                   // disable echoing of characters on the screen
     keypad(title_window, TRUE); // enable keyboard input for the window.
     curs_set(0);
     while ((input = wgetch(title_window)) != 'q')
     {
-        mvwprintw(title_window, idx + 2 + (height / 2) - 2, width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
+        mvwprintw(title_window, idx + (height / 2), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
 
         switch (input)
         {
         case KEY_UP:
             idx--;
-            idx = (idx < 0) ? 1 : idx;
+            if (idx < 0)
+                idx = 1;
             break;
         case KEY_DOWN:
             idx++;
-            idx = (idx > 1) ? 0 : idx;
+            if (idx > 1)
+                idx = 0;
             break;
+        case KEY_ENTER:
+            printf("ENTER\n");
         }
 
         wattron(title_window, A_STANDOUT);
-        mvwprintw(title_window, idx + 1, width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
+        mvwprintw(title_window, idx + (height / 2), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
         wattroff(title_window, A_STANDOUT);
         wrefresh(title_window);
     }
