@@ -1,29 +1,16 @@
 #include <stdio.h>
-#include <termios.h>
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"
 #include "PerlinNoise.h"
-
-int getche(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr(STDIN_FILENO, &oldattr);
-    newattr = oldattr;
-    newattr.c_lflag &= ~(ICANON);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
-    ch = getchar();
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
-    return ch;
-}
+#include "Rendering.h"
 
 int main(int argc, char const *argv[])
 {
 
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
-    struct Tilemap_s *tilemap = CreateTilemapProcedurally(50, 50, 100);
+    struct Tilemap_s *tilemap = CreateTilemapProcedurally(50, 50, 70);
     // CreateTilemapFromFile("../map.txt");
 
     addPlayerToTilemap(player, tilemap);
@@ -51,5 +38,11 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-       return 0;
+    initscr();
+    WINDOW *window = createWindow(50, 50, 0, 0);
+    wprintw(window, "TEST !");
+    refresh();
+    while (1)
+        ;
+    return 0;
 }
