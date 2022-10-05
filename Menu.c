@@ -43,7 +43,7 @@ void titleLoop(WINDOW *title_window)
     noecho();                   // disable echoing of characters on the screen
     keypad(title_window, TRUE); // enable keyboard input for the window.
     curs_set(0);
-    while ((input == wgetch(title_window)) != "q")
+    while ((input = wgetch(title_window)) != "q")
     {
         mvwprintw(title_window, idx + 2 + (height / 2) - 2, width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
 
@@ -60,7 +60,7 @@ void titleLoop(WINDOW *title_window)
         }
 
         wattron(title_window, A_STANDOUT);
-        mvwprintw(title_window, idx + 2 + (height / 2) - 2, width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
+        mvwprintw(title_window, idx + 1, width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
         wattroff(title_window, A_STANDOUT);
         wrefresh(title_window);
     }
