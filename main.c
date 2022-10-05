@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <termios.h>
-#include <ncurses.h>
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"
 #include "PerlinNoise.h"
+#include "Menu.h"
 #include "Rendering.h"
 
 int main(int argc, char const *argv[])
@@ -44,11 +44,8 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-    WINDOW *window = createWindow(50, 50, 0, 0);
-    wprintw(window, "TEST !");
-    refresh();
-    echo();
-    noraw();
-    endwin();
+    initscr();
+    titleLoop(createWindow(20, 50, 0, 0));
+
     return 0;
 }
