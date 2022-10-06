@@ -251,3 +251,5 @@ void freeTilemap(struct Tilemap_s *tilemap)
     free(tilemap->m_array);
     free(tilemap);
 }
+
+// TODO Render only tiles near the player
