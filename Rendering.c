@@ -66,7 +66,7 @@ void displayWorld(Term_s* term)
     {
         for (int w = 0; w < term->width; ++w)
         {
-            struct Block_s** actualBlock = term->tilemap->m_array[h * term->tilemap->m_width + w];
+            struct Block_s** actualBlock = term->tilemap->m_blocks[h * term->tilemap->m_width + w];
             attr_t attr = 1 & A_STANDOUT;
             short color = 0;
             if (actualBlock[0])
