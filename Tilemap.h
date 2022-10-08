@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "Block.h"
 #include "Entity.h"
 #include "PerlinNoise.h"

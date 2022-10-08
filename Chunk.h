@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Block.h"
 #include "Tilemap.h"
+#include "Player.h"
 #include <string.h>
 
 // width and height for each chunks
@@ -18,3 +19,4 @@ struct Chunk_s *CreateChunkFromTilemap(struct Tilemap_s *tilemap, struct Coordin
 void AddEntityToChunk(struct Chunk_s *chunk, struct Entity_s *entity);
 // Convert tilemap coordinates to chunk coordinates
 struct Coordinate_s TilemapToChunkCoordinates(struct Coordinate_s tilemap_coord);
+struct Chunk_s **LoadChunkAroundPlayer(struct Player_s *player);

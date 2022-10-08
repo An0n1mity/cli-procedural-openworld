@@ -52,6 +52,7 @@ int main(int argc, char const *argv[])
     struct Coordinate_s chunk_coordinates = TilemapToChunkCoordinates((struct Coordinate_s){1, 1});
 
     printf("Chunk coordinates : %d %d\n", chunk_coordinates.m_x, chunk_coordinates.m_y);
+    struct Chunk_s **chunk_loaded = LoadChunkAroundPlayer(player);
 
     freePlayer(player);
     freeTilemap(tilemap);

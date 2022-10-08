@@ -26,3 +26,45 @@ inline struct Coordinate_s TilemapToChunkCoordinates(struct Coordinate_s tilemap
 {
     return (struct Coordinate_s){tilemap_coord.m_x / CHUNK_SIZE, tilemap_coord.m_y / CHUNK_SIZE};
 }
+
+bool isCoordinateInTilemap(struct Tilemap_s *tilemap, struct Coordinate_s coordinate)
+{
+    if ((coordinate.m_x >= 0 && coordinate.m_x < tilemap->m_width) && (coordinate.m_y >= 0 && coordinate.m_y < tilemap->m_height))
+        return true;
+    return false;
+}
+
+struct Coordinate_s getTopCoordinateFromChunk(struct Tilemap_s *tilemap, struct Coordinate_s chunk_coord)
+{
+    return (struct Coordinate_s){
+        chunk_coord.m_x * CHUNK_SIZE,
+        chunk_coord.m_y * CHUNK_SIZE};
+}
+
+struct Chunk_s **LoadChunkAroundPlayer(struct Player_s *player)
+{
+    struct Coordinate_s player_chunk_coord = TilemapToChunkCoordinates(player->m_base->m_position);
+    struct Tilemap_s *tilemap = player->m_base->m_tilemap;
+
+    struct Coordinate_s top_coordinates[9];
+    size_t nb_chunks_loadable = 0;
+
+    for (int i = player_chunk_coord.m_y - 1; i <= player_chunk_coord.m_y + 1; i++)
+    {
+        for (int j = player_chunk_coord.m_x - 1; j <= player_chunk_coord.m_x + 1; j++)
+        {
+            if ((j >= 0 && j < tilemap->m_height / CHUNK_SIZE) && (i >= 0 && i < tilemap->m_width / CHUNK_SIZE))
+            {
+                top_coordinates[nb_chunks_loadable++] = getTopCoordinateFromChunk(tilemap, (struct Coordinate_s){j, i});
+            }
+        }
+    }
+
+    struct Chunk_s **chunks = (struct Chunk_s **)malloc(sizeof(struct Chunk_s *) * nb_chunks_loadable);
+    for (size_t i = 0; i < nb_chunks_loadable; i++)
+    {
+        chunks[i] = CreateChunkFromTilemap(tilemap, top_coordinates[i]);
+    }
+
+    return chunks;
+}
