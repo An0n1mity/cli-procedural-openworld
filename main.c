@@ -6,6 +6,7 @@
 #include "PerlinNoise.h"
 #include "Menu.h"
 #include "Rendering.h"
+#include "Chunk.h"
 
 int main(int argc, char const *argv[])
 {
@@ -13,11 +14,11 @@ int main(int argc, char const *argv[])
     raw();
     noecho();
 
-    int seed = 0;
+    int seed = 20;
 
-    titleLoop(createWindow(20, 40, 0, 0));
-    seedMenu(createWindow(20, 40, 0, 0), &seed);
-    endwin();
+    // titleLoop(createWindow(20, 40, 0, 0));
+    // seedMenu(createWindow(20, 40, 0, 0), &seed);
+    // endwin();
 
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
@@ -45,6 +46,12 @@ int main(int argc, char const *argv[])
     printf("Block health %d\n\r", (front_block)->m_health);
 
     PrintTilemap(tilemap);
+
+    // Chunk testing
+    struct Chunk_s *chunk = CreateChunkFromTilemap(tilemap, (struct Coordinate_s){1, 1});
+    struct Coordinate_s chunk_coordinates = TilemapToChunkCoordinates((struct Coordinate_s){1, 1});
+
+    printf("Chunk coordinates : %d %d\n", chunk_coordinates.m_x, chunk_coordinates.m_y);
 
     freePlayer(player);
     freeTilemap(tilemap);

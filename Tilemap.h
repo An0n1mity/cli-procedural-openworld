@@ -11,12 +11,6 @@
 #include "Entity.h"
 #include "PerlinNoise.h"
 
-struct Entitieslist_s
-{
-    struct Entity_s *m_entity;
-    struct Entitieslist_s *m_next;
-};
-
 struct TilemapBlock_s
 {
     struct Block_s *m_block;
@@ -28,7 +22,7 @@ struct Tilemap_s
     int m_width;
     int m_height;
 
-    struct Block_s ***m_array;
+    struct Block_s ***m_blocks;
     struct Entitieslist_s *m_entities;
 };
 
