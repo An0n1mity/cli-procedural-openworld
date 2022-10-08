@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include <menu.h>
 
 // Create the main window for game's title
 WINDOW *createTitleWindow(int height, int width, int startx, int starty)
@@ -17,20 +18,24 @@ WINDOW *createTitleWindow(int height, int width, int startx, int starty)
 enum MenuChoice_e titleLoop(WINDOW *title_window)
 {
     // Strings selection
-    const char *title_strings[3] = {"DWARF CLONE",
+    const char *title_strings[7] = {"--- DWARF FORTRESS ---",
                                     "NEW GAME",
-                                    "LOAD GAME"};
+                                    "LOAD GAME",
+                                    "PLAYER CONFIGURATION",
+                                    "WORLD CONFIGURATION",
+                                    "STATS HELP",
+                                    "CREDITS"};
     int width, height;
     getmaxyx(title_window, height, width);
     // Print all the title menu
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 7; i++)
     {
         if (i == 1)
             wattron(title_window, A_STANDOUT);
         if (i == 0)
-            mvwprintw(title_window, i + 1, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+            mvwprintw(title_window, i + 4, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
         else
-            mvwprintw(title_window, i + 1 + (height / 2) - 2, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+            mvwprintw(title_window, i + 1 + (height / 2.5) - 2, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
         wattroff(title_window, A_STANDOUT);
     }
 
@@ -45,7 +50,7 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
     curs_set(0);
     while ((input = wgetch(title_window)) != 'q')
     {
-        mvwprintw(title_window, idx + (height / 2), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
+        mvwprintw(title_window, idx + (height / 2.5), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
 
         switch (input)
         {
@@ -56,7 +61,7 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
             break;
         case KEY_DOWN:
             idx++;
-            if (idx > 1)
+            if (idx > 6)
                 idx = 0;
             break;
         case '\n':
@@ -70,7 +75,7 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
         }
 
         wattron(title_window, A_STANDOUT);
-        mvwprintw(title_window, idx + (height / 2), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
+        mvwprintw(title_window, idx + (height / 2.5), width / 2 - strlen(title_strings[idx + 1]) / 2, "%s", title_strings[idx + 1]);
         wattroff(title_window, A_STANDOUT);
         wrefresh(title_window);
     }
