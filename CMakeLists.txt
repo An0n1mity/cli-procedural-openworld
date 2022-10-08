@@ -3,7 +3,8 @@ project(CProject VERSION 0.1.0)
 
 include(CTest)
 enable_testing()
-
+set(CURSES_NEED_NCURSES TRUE)
+set(CURSES_NEED_WIDE TRUE)
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
