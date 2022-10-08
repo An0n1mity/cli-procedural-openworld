@@ -4,10 +4,10 @@ struct Tilemap_s* CreateTilemap(const int width, const int height)
 {
     struct Tilemap_s *tilemap = (struct Tilemap_s *)calloc(1, sizeof(struct Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
-    tilemap->m_array = (struct Block_s ***)calloc(height * width, sizeof(struct Block_s **));
+    tilemap->m_blocks = (struct Block_s ***)calloc(height * width, sizeof(struct Block_s **));
     for (size_t i = 0; i < height * width; i++)
     {
-        tilemap->m_array[i] = calloc(2, sizeof(struct Block_s *));
+        tilemap->m_blocks[i] = calloc(2, sizeof(struct Block_s *));
     }
 
     return tilemap;
@@ -59,19 +59,19 @@ struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
             float value = perlin2d(x, y, 0.1, 1, seed);
             if (value >= 0.55f)
             {
-                tilemap->m_array[y * width + x][0] = CreateBlock(GRASS, WALKABLE);
+                tilemap->m_blocks[y * width + x][0] = CreateBlock(GRASS, WALKABLE);
                 if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
-                    tilemap->m_array[y * width + x][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
+                    tilemap->m_blocks[y * width + x][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
             }
             else if (value <= 0.4)
-                tilemap->m_array[y * width + x][0] = CreateBlock(WATER, WALKABLE);
+                tilemap->m_blocks[y * width + x][0] = CreateBlock(WATER, WALKABLE);
             else if (value > 0.4 && value <= 0.46)
-                tilemap->m_array[y * width + x][0] = CreateBlock(SAND, WALKABLE);
+                tilemap->m_blocks[y * width + x][0] = CreateBlock(SAND, WALKABLE);
             else if (value > 0.46 && value < 0.55)
             {
-                tilemap->m_array[y * width + x][0] = CreateBlock(STONE, WALKABLE);
+                tilemap->m_blocks[y * width + x][0] = CreateBlock(STONE, WALKABLE);
                 if (!(rand() % 5))
-                    tilemap->m_array[y * width + x][1] = CreateBlock(ROCK, WALKABLE);
+                    tilemap->m_blocks[y * width + x][1] = CreateBlock(ROCK, WALKABLE);
             }
         }
     }
@@ -127,7 +127,7 @@ void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile)
         }
         if (map[i] != '\n' && map[i] != ',' && start && (idx < tilemap->m_width * tilemap->m_height))
         {
-            (tilemap->m_array[idx])[level++] = CharToBlock(map[i]);
+            (tilemap->m_blocks[idx])[level++] = CharToBlock(map[i]);
         }
         if ((map[i] == ',' || map[i] == '\n') && start)
         {
@@ -148,9 +148,9 @@ void PrintTilemap(struct Tilemap_s* tilemap)
         for (size_t j = 0; j < tilemap->m_width; j++)
         {
 
-            if (tilemap->m_array[i * tilemap->m_width + j][0])
+            if (tilemap->m_blocks[i * tilemap->m_width + j][0])
             {
-                switch (tilemap->m_array[i * tilemap->m_width + j][0]->m_type)
+                switch (tilemap->m_blocks[i * tilemap->m_width + j][0]->m_type)
                 {
                 case WATER:
                     printf("\e[44m~");
@@ -168,9 +168,9 @@ void PrintTilemap(struct Tilemap_s* tilemap)
                 }
             }
 
-            if (tilemap->m_array[i * tilemap->m_width + j][1])
+            if (tilemap->m_blocks[i * tilemap->m_width + j][1])
             {
-                switch (tilemap->m_array[i * tilemap->m_width + j][1]->m_type)
+                switch (tilemap->m_blocks[i * tilemap->m_width + j][1]->m_type)
                 {
                 case EVERGREEN_TREE:
                     printf("🌲");
@@ -202,27 +202,6 @@ void PrintTilemap(struct Tilemap_s* tilemap)
     printf("\033[0;37m");
 }
 
-struct Entitieslist_s *createEntitieslist(struct Entity_s *entity)
-{
-    struct Entitieslist_s *entities_list = (struct Entitieslist_s *)calloc(1, sizeof(struct Entitieslist_s));
-    entities_list->m_entity = entity;
-
-    return entities_list;
-}
-
-void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity)
-{
-    if (!*list)
-    {
-        *list = createEntitieslist(entity);
-        return;
-    }
-
-    struct Entitieslist_s *new = createEntitieslist(entity);
-    new->m_next = *list;
-    *list = new;
-}
-
 inline void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity)
 {
     entity->m_tilemap = tilemap;
@@ -245,10 +224,10 @@ void freeTilemap(struct Tilemap_s *tilemap)
     for (size_t i = 0; i < tilemap->m_width * tilemap->m_height; i++)
     {
         for (size_t j = 0; j < 2; j++)
-            free(tilemap->m_array[i][j]);
-        free(tilemap->m_array[i]);
+            free(tilemap->m_blocks[i][j]);
+        free(tilemap->m_blocks[i]);
     }
-    free(tilemap->m_array);
+    free(tilemap->m_blocks);
     free(tilemap);
 }
 

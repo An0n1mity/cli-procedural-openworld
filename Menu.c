@@ -81,23 +81,6 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
     }
 }
 
-int a2i(const char *s)
-{
-    int sign = 1;
-    if (*s == '-')
-    {
-        sign = -1;
-        s++;
-    }
-    int num = 0;
-    while (*s)
-    {
-        num = ((*s) - '0') + num * 10;
-        s++;
-    }
-    return num * sign;
-}
-
 void seedMenu(WINDOW *seed_window, int *seed)
 {
 
@@ -172,7 +155,7 @@ void seedMenu(WINDOW *seed_window, int *seed)
             delwin(seed_form_window);
 
             unpost_form(my_form);
-            // free_form(my_form);
+            free_form(my_form);
             free_field(field[0]);
 
             refresh();
