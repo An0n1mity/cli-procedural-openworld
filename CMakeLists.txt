@@ -12,6 +12,6 @@ add_executable(CProject main.c Block.c Entity.c Player.c Entity.c Tilemap.c Perl
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
-target_link_libraries(CProject ${CURSES_LIBRARIES} m ncursesw)
+target_link_libraries(CProject ncursesw m form menu)
 
 include(CPack)
