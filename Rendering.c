@@ -5,6 +5,7 @@ Term_s* initDisplaying()
     initscr();
     raw();
     noecho();
+    curs_set(0);
     if (has_colors() == FALSE) {
         endwin();
         printf("Your terminal does not support color\n");
@@ -18,7 +19,7 @@ Term_s* initDisplaying()
 
     term->displayMode = WORLD;
 
-    term->world = createWindow(term->height, term->width, 0, 0);
+    term->world = createWindow(50, 50, 0, 0);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
@@ -35,11 +36,11 @@ Term_s* initDisplaying()
     return term;
 }
 
-void displayTerm(Term_s* term)
+void displayTerm(Term_s *term, View_s *view)
 {
     if(term->displayMode == WORLD)
     {
-        displayWorld(term);
+        displayWorld(term, view);
     }
 }
 
@@ -56,17 +57,23 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
     return window;
 }
 
-void displayWorld(Term_s* term)
+void displayWorld(Term_s *term, View_s *view)
 {
-    //move(1, 1);
     clear();
-    //init_pair(1, COLOR_WHITE, COLOR_RED);
-    
-    for (int h = 0; h < term->height; ++h)
+
+    if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
+        view->m_coord.m_x = term->tilemap->m_width - view->m_width - 1;
+    if (view->m_coord.m_y >= term->tilemap->m_height - view->m_height)
+        view->m_coord.m_y = term->tilemap->m_height - view->m_height - 1;
+    if (view->m_coord.m_x < 0)
+        view->m_coord.m_x = 0;
+    if (view->m_coord.m_y < 0)
+        view->m_coord.m_y = 0;
+    for (int h = view->m_coord.m_y; h < view->m_coord.m_y + view->m_height; ++h)
     {
-        for (int w = 0; w < term->width; ++w)
+        for (int w = view->m_coord.m_x; w < view->m_coord.m_x + view->m_width; ++w)
         {
-            struct Block_s** actualBlock = term->tilemap->m_blocks[h * term->tilemap->m_width + w];
+            struct Block_s **actualBlock = term->tilemap->m_blocks[h * term->tilemap->m_width + w];
             attr_t attr = 1 & A_STANDOUT;
             short color = 0;
             if (actualBlock[0])
@@ -87,54 +94,28 @@ void displayWorld(Term_s* term)
                     break;
                 }
             }
-            // init_color(COLOR_WATER, 500, 500, 1000);
-            
 
-        
-            //wchgat(term->world, -1, A_BLINK, 1, NULL);
-            // attron(COLOR_PAIR(1));
-            
-            // // attroff(COLOR_PAIR(1));
             wattron(term->world, COLOR_PAIR(color));
-            //wprintw(term->world, "🌲");
-            
-            waddwstr(term->world,  L"🌲");
-            wrefresh(term->world);
-            refresh();
-            // if (actualBlock[1])
-            // {
-            //     switch (actualBlock[1]->m_type)
-            //     {
-            //     case EVERGREEN_TREE:
-            //         printf("🌲");
-            //         break;
-            //     case DECIDIOUS_TREE:
-            //         printf("🌳");
-            //         break;
-            //     case ROCK:
-            //         printf("🪨");
-            //         break;
-            //     case GRASS:
-            //         printf("🌿");
-            //         break;
-            //     default:
-            //         break;
-            //     }
-            // }
 
-            // else if (h == term->tilemap->m_entities->m_entity->m_position.m_y && w == term->tilemap->m_entities->m_entity->m_position.m_x)
-            //     printf("👨");
-            // else
-            //     printf("  ");
-            
+            if (actualBlock[1])
+            {
+                switch (actualBlock[1]->m_type)
+                {
+                case EVERGREEN_TREE:
+                    waddwstr(term->world, L"^");
+                    break;
+                case ROCK:
+                    waddwstr(term->world, L"r");
+                    break;
+                }
+            }
+
+            else
+                wprintw(term->world, " ");
         }
-        //move(5,5);
-        // printf("👨");
-        
-        
+        wprintw(term->world, "\n");
     }
-   // wrefresh(term->world);
-    // refresh();
-
+    wrefresh(term->world);
+    wmove(term->world, 0, 0);
+    usleep(50000);
 }
-

@@ -39,7 +39,16 @@ typedef struct Term_s
 
 } Term_s;
 
-Term_s* initDisplaying();
-void displayTerm(Term_s* term);
-void displayWorld(Term_s* term);
+typedef struct View_s
+{
+    int m_height;
+    int m_width;
+
+    struct Coordinate_s m_coord;
+} View_s;
+
+Term_s *
+initDisplaying();
+void displayTerm(Term_s *term, View_s *view);
+void displayWorld(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);

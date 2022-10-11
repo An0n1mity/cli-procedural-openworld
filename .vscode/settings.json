@@ -6,5 +6,6 @@
         "chunk.h": "c",
         "tilemap.h": "c",
         "entity.h": "c"
-    }
+    },
+    "discord.enabled": true
 }

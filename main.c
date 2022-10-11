@@ -16,8 +16,8 @@ int main(int argc, char const *argv[])
 {
     setlocale(LC_ALL, "");
     Term_s* term = initDisplaying();
-    
-    int seed = 0;
+
+    int seed = 563;
 
     // titleLoop(createWindow(20, 40, 0, 0));
     // seedMenu(createWindow(20, 40, 0, 0), &seed);
@@ -53,16 +53,36 @@ int main(int argc, char const *argv[])
 
 
     // Chunk testing
-    MovePlayerTo(player, (struct Coordinate_s){20, 20});
+    MovePlayerTo(player, (struct Coordinate_s){10, 20});
     LoadChunkAroundPlayer(player);
 
+    View_s view = {20, 40, (struct Coordinate_s){0, 0}};
+    nodelay(term->world, TRUE);
 
-    // while(1)
+    while (1)
     {
-        displayTerm(term);
-        //refresh();
+        int c = wgetch(term->world);
+        switch (c)
+        {
+        case 'd':
+            view.m_coord.m_x++;
+
+            break;
+        case 'q':
+            view.m_coord.m_x--;
+            break;
+        case 'z':
+            view.m_coord.m_y--;
+            break;
+        case 's':
+            view.m_coord.m_y++;
+            break;
+
+        default:
+            break;
+        }
+        displayTerm(term, &view);
     }
-    while(1);
 
     freePlayer(player);
     freeTilemap(tilemap);
