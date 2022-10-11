@@ -6,7 +6,6 @@
 #include "PerlinNoise.h"
 #include "Menu.h"
 #include "Rendering.h"
-#include "Chunk.h"
 
 int main(int argc, char const *argv[])
 {
@@ -24,7 +23,6 @@ int main(int argc, char const *argv[])
     enum Action_e player_action = BREAK;
     struct Tilemap_s *tilemap = CreateTilemapProcedurally(50, 50, seed);
     // CreateTilemapFromFile("../map.txt");
-
     addPlayerToTilemap(player, tilemap);
 
     player->m_base->m_direction = SOUTH;
@@ -48,11 +46,8 @@ int main(int argc, char const *argv[])
     PrintTilemap(tilemap);
 
     // Chunk testing
-    struct Chunk_s *chunk = CreateChunkFromTilemap(tilemap, (struct Coordinate_s){1, 1});
-    struct Coordinate_s chunk_coordinates = TilemapToChunkCoordinates((struct Coordinate_s){1, 1});
-
-    printf("Chunk coordinates : %d %d\n", chunk_coordinates.m_x, chunk_coordinates.m_y);
-    struct Chunk_s **chunk_loaded = LoadChunkAroundPlayer(player);
+    MovePlayerTo(player, (struct Coordinate_s){20, 20});
+    LoadChunkAroundPlayer(player);
 
     freePlayer(player);
     freeTilemap(tilemap);

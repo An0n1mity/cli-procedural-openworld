@@ -7,6 +7,11 @@ struct Player_s *CreatePlayer()
     return player;
 }
 
+void MovePlayerTo(struct Player_s *player, struct Coordinate_s coordinate)
+{
+    player->m_base->m_position = coordinate;
+}
+
 void MovePlayer(struct Player_s *player)
 {
     struct Coordinate_s *player_position = &player->m_base->m_position;

@@ -11,11 +11,18 @@
 #include "Block.h"
 #include "Entity.h"
 #include "PerlinNoise.h"
+#include "Chunk.h"
 
 struct TilemapBlock_s
 {
     struct Block_s *m_block;
     struct TilemapBlock_s *m_next;
+};
+
+struct Chunk_s
+{
+    struct EntityList_s *m_entities_list;
+    struct Block_s ***m_blocks;
 };
 
 struct Tilemap_s
@@ -24,6 +31,7 @@ struct Tilemap_s
     int m_height;
 
     struct Block_s ***m_blocks;
+    struct Chunk_s *m_chunks[9];
     struct Entitieslist_s *m_entities;
 };
 

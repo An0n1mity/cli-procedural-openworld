@@ -3,6 +3,7 @@
     "C_Cpp.intelliSenseEngineFallback": "Enabled",
     "files.associations": {
         "chunk.h": "c",
-        "tilemap.h": "c"
+        "tilemap.h": "c",
+        "entity.h": "c"
     }
 }
