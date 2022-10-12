@@ -24,6 +24,7 @@ typedef enum DISPLAY_MODE_e
 //     int width;
 
 // } Panel_s;
+
 typedef struct Term_s
 {
     int height;
@@ -47,8 +48,7 @@ typedef struct View_s
     struct Coordinate_s m_coord;
 } View_s;
 
-Term_s *
-initDisplaying();
+Term_s * initDisplaying();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);

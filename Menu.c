@@ -1,20 +1,25 @@
 #include "Menu.h"
-#include <menu.h>
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
 
 // Create the main window for game's title
+/*
 WINDOW *createTitleWindow(int height, int width, int startx, int starty)
 {
     WINDOW *title_window;
 
     title_window = newwin(height, width, starty, startx);
-    box(title_window, 0, 0); /* 0, 0 gives default characters
-                              * for the vertical and horizontal
-                              * lines			*/
-    wrefresh(title_window);  /* Show that box 		*/
+    box(title_window, 0, 0); // 0, 0 gives default characters
+                             // for the vertical and horizontal
+                             // lines
+    wrefresh(title_window);  // Show that box
 
     return title_window;
 }
+*/
 
+/*
 enum MenuChoice_e titleLoop(WINDOW *title_window)
 {
     // Strings selection
@@ -80,6 +85,130 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
         wrefresh(title_window);
     }
 }
+*/
+
+// DEBUT CODE PROPRE
+
+char *gameOptions[] = {
+    "LOAD GAME",
+    "NEW GAME",
+    "PLAYER CONGIURATION",
+    "WORD CONFIGURATION",
+    "STATS HELP",
+    "CREDITS",
+    "QUIT GAME",
+    (char *)NULL,
+};
+
+void centerPrint(WINDOW *win, int startY, int startX, int width, char *string, chtype color)
+{
+    int length;
+    int x;
+    int y;
+
+    float temp;
+
+    if (win == NULL)
+        win = stdscr;
+
+    getyx(win, y, x);
+
+    if (startX != 0)
+        x = startX;
+    
+    if (startY != 0)
+        y = startY;
+    
+    if (width == 0)
+        width = 80;
+
+    length = strlen(string);
+    temp = (width - length) / 2;
+    x = startX + (int)temp;
+
+    wattron(win, color);
+    mvwprintw(win, y, x, "%s", string);
+    wattroff(win, color);
+    refresh();
+}
+
+void mainMenu()
+{
+    ITEM **menu_items;
+    MENU *main_menu;
+    WINDOW *main_menu_window;
+
+    int n_gameOptions; 
+    int i;
+    int c;
+
+    initDisplaying();
+
+    // items creation
+    n_gameOptions = ARRAY_SIZE(gameOptions);
+    menu_items = (ITEM **)calloc(n_gameOptions + 1, sizeof(ITEM *));
+
+    for (i = 0; i < n_gameOptions; ++i)
+    {
+        menu_items[i] = new_item(gameOptions[i], gameOptions[i]);
+    }
+        
+    // menu creation
+    main_menu = new_menu((ITEM **)menu_items);
+
+    // window creation associated to the menu
+    main_menu_window = newwin(10, 40, 4, 4);
+    keypad(main_menu_window, TRUE);
+
+    // set main window and sub window
+    set_menu_win(main_menu, main_menu_window);
+    set_menu_sub(main_menu, derwin(main_menu_window, 6, 38, 3, 1));
+
+    // set menu mark to the string " * "
+    set_menu_mark(main_menu, " -> ");
+
+    // print a border around the main window and print a title
+    box(main_menu_window, 0, 0);
+    centerPrint(main_menu_window, 1, 0, 40, "DWARF FORTRESS", COLOR_PAIR(1));
+    mvwaddch(main_menu_window, 2, 0, ACS_LTEE);
+    mvwhline(main_menu_window, 2, 1, ACS_HLINE, 38);
+    mvwaddch(main_menu_window, 2, 39, ACS_RTEE);
+    refresh();
+
+    // post the menu
+    post_menu(main_menu);
+    wrefresh(main_menu_window);
+
+    while ((c = wgetch(main_menu_window)) != KEY_F(1))
+    {
+        switch (c)
+        {
+        case KEY_DOWN:
+            menu_driver(main_menu, REQ_DOWN_ITEM);
+            break;
+
+        case KEY_UP:
+            menu_driver(main_menu, REQ_UP_ITEM);
+            break;
+        }
+    }
+
+    // unpost and free all the memory taken up
+    unpost_menu(main_menu);
+    free_menu(main_menu);
+    
+    for (i = 0; i < n_gameOptions; ++i)
+    {
+        free_item(menu_items[i]);
+    }
+        
+    endwin();
+
+}
+
+// FIN 
+
+
 
 void seedMenu(WINDOW *seed_window, int *seed)
 {
