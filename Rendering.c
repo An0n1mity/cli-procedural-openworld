@@ -19,7 +19,7 @@ Term_s* initDisplaying()
     term->height = getmaxy(stdscr);
     term->width = getmaxx(stdscr);
 
-    term->displayMode = WORLD;
+    term->displayMode = MAIN_MENU;
 
     term->world = createWindow(50, 50, 0, 0);
 
@@ -40,6 +40,11 @@ Term_s* initDisplaying()
 
 void displayTerm(Term_s *term, View_s *view)
 {
+    // if(term->displayMode == MAIN_MENU)
+    // {
+    //     displayWorld(term, view);
+    // }
+
     if(term->displayMode == WORLD)
     {
         displayWorld(term, view);
