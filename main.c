@@ -18,6 +18,7 @@ int main(int argc, char const *argv[])
     Term_s* term = initDisplaying();
 
     int seed = 563;
+    int quit = 0;
 
     // titleLoop(createWindow(20, 40, 0, 0));
     // seedMenu(createWindow(20, 40, 0, 0), &seed);
@@ -59,7 +60,7 @@ int main(int argc, char const *argv[])
     View_s view = {20, 40, (struct Coordinate_s){0, 0}};
     nodelay(term->world, TRUE);
 
-    while (1)
+    while (!quit)
     {
         int c = wgetch(term->world);
         switch (c)
@@ -76,6 +77,9 @@ int main(int argc, char const *argv[])
             break;
         case 's':
             view.m_coord.m_y++;
+            break;
+        case KEY_F(1):
+            quit = 1;
             break;
 
         default:

@@ -12,6 +12,8 @@ Term_s* initDisplaying()
         exit(1);
     }
     start_color();
+
+    keypad(stdscr, TRUE);
     
     Term_s* term = calloc(1, sizeof(Term_s));
     term->height = getmaxy(stdscr);

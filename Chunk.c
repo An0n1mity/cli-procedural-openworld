@@ -19,7 +19,7 @@ struct Chunk_s *CreateChunkFromTilemap(struct Tilemap_s *tilemap, struct Coordin
 
 void AddEntityToChunk(struct Chunk_s *chunk, struct Entity_s *entity)
 {
-    addEntityToList(&chunk->m_entities_list, entity);
+    addEntityToList(&(chunk->m_entities_list), entity);
 }
 
 inline struct Coordinate_s TilemapToChunkCoordinates(struct Coordinate_s tilemap_coord)
