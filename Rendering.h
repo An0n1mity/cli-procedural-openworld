@@ -51,4 +51,5 @@ Term_s *
 initDisplaying();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
+void displayChunks(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);

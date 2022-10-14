@@ -7,5 +7,6 @@
         "tilemap.h": "c",
         "entity.h": "c"
     },
-    "discord.enabled": true
+    "discord.enabled": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/."
 }

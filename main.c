@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
 
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
-    struct Tilemap_s *tilemap = CreateTilemapProcedurally(50, 50, seed);
+    struct Tilemap_s *tilemap = CreateTilemapProcedurally(100, 100, seed);
     // CreateTilemapFromFile("../map.txt");
     addPlayerToTilemap(player, tilemap);
 
@@ -65,16 +65,29 @@ int main(int argc, char const *argv[])
         switch (c)
         {
         case 'd':
+            player->m_base->m_position.m_x++;
+            LoadChunkAroundPlayer(player);
             view.m_coord.m_x++;
-
             break;
         case 'q':
+            player->m_base->m_position.m_x--;
+
+            LoadChunkAroundPlayer(player);
+
             view.m_coord.m_x--;
             break;
         case 'z':
+            player->m_base->m_position.m_y--;
+
+            LoadChunkAroundPlayer(player);
+
             view.m_coord.m_y--;
             break;
         case 's':
+            player->m_base->m_position.m_y++;
+
+            LoadChunkAroundPlayer(player);
+
             view.m_coord.m_y++;
             break;
 

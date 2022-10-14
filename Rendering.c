@@ -40,7 +40,7 @@ void displayTerm(Term_s *term, View_s *view)
 {
     if(term->displayMode == WORLD)
     {
-        displayWorld(term, view);
+        displayChunks(term, view);
     }
 }
 
@@ -57,6 +57,165 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
     return window;
 }
 
+// TODO Do not render all generated chunks only blocks visibles in viewport
+
+void displayChunks(Term_s *term, View_s *view)
+{
+
+    struct Tilemap_s *tilemap = term->tilemap;
+    for (size_t i = 0; i < 3; i++)
+    {
+        struct Chunk_s *f = tilemap->m_chunks[i][0];
+        struct Chunk_s *s = tilemap->m_chunks[i][1];
+        struct Chunk_s *t = tilemap->m_chunks[i][2];
+
+        for (size_t j = 0; j < CHUNK_SIZE; j++)
+        {
+            struct Chunk_s *actual_chunk = f;
+            for (size_t k = 0; k < CHUNK_SIZE; k++)
+            {
+
+                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                attr_t attr = 1 & A_STANDOUT;
+                short color = 0;
+                if (actual_block[0])
+                {
+                    switch (actual_block[0]->m_type)
+                    {
+                    case WATER:
+                        color = COLOR_WATER;
+                        break;
+                    case GRASS:
+                        color = COLOR_GRASS;
+                        break;
+                    case SAND:
+                        color = COLOR_SAND;
+                        break;
+                    case STONE:
+                        color = COLOR_STONE;
+                        break;
+                    }
+                }
+
+                wattron(term->world, COLOR_PAIR(color));
+
+                if (actual_block[1])
+                {
+                    switch (actual_block[1]->m_type)
+                    {
+                    case EVERGREEN_TREE:
+                        waddwstr(term->world, L"^");
+                        break;
+                    case ROCK:
+                        waddwstr(term->world, L"r");
+                        break;
+                        // prout
+                    }
+                }
+
+                else
+                    wprintw(term->world, " ");
+            }
+
+            actual_chunk = s;
+            for (size_t k = 0; k < CHUNK_SIZE; k++)
+            {
+
+                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                attr_t attr = 1 & A_STANDOUT;
+                short color = 0;
+                if (actual_block[0])
+                {
+                    switch (actual_block[0]->m_type)
+                    {
+                    case WATER:
+                        color = COLOR_WATER;
+                        break;
+                    case GRASS:
+                        color = COLOR_GRASS;
+                        break;
+                    case SAND:
+                        color = COLOR_SAND;
+                        break;
+                    case STONE:
+                        color = COLOR_STONE;
+                        break;
+                    }
+                }
+
+                wattron(term->world, COLOR_PAIR(color));
+
+                if (actual_block[1])
+                {
+                    switch (actual_block[1]->m_type)
+                    {
+                    case EVERGREEN_TREE:
+                        waddwstr(term->world, L"^");
+                        break;
+                    case ROCK:
+                        waddwstr(term->world, L"r");
+                        break;
+                        // prout
+                    }
+                }
+
+                else
+                    wprintw(term->world, " ");
+                wrefresh(term->world);
+            }
+
+            actual_chunk = t;
+            for (size_t k = 0; k < CHUNK_SIZE; k++)
+            {
+
+                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                attr_t attr = 1 & A_STANDOUT;
+                short color = 0;
+                if (actual_block[0])
+                {
+                    switch (actual_block[0]->m_type)
+                    {
+                    case WATER:
+                        color = COLOR_WATER;
+                        break;
+                    case GRASS:
+                        color = COLOR_GRASS;
+                        break;
+                    case SAND:
+                        color = COLOR_SAND;
+                        break;
+                    case STONE:
+                        color = COLOR_STONE;
+                        break;
+                    }
+                }
+
+                wattron(term->world, COLOR_PAIR(color));
+
+                if (actual_block[1])
+                {
+                    switch (actual_block[1]->m_type)
+                    {
+                    case EVERGREEN_TREE:
+                        waddwstr(term->world, L"^");
+                        break;
+                    case ROCK:
+                        waddwstr(term->world, L"r");
+                        break;
+                        // prout
+                    }
+                }
+
+                else
+                    wprintw(term->world, " ");
+            }
+            wprintw(term->world, "\n");
+        }
+    }
+    wrefresh(term->world);
+    wmove(term->world, 0, 0);
+    usleep(50000);
+}
 void displayWorld(Term_s *term, View_s *view)
 {
     clear();

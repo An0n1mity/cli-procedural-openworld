@@ -31,7 +31,7 @@ struct Tilemap_s
     int m_height;
 
     struct Block_s ***m_blocks;
-    struct Chunk_s *m_chunks[9];
+    struct Chunk_s *m_chunks[3][3];
     struct Entitieslist_s *m_entities;
 };
 

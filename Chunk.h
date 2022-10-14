@@ -8,7 +8,7 @@
 #include <string.h>
 
 // width and height for each chunks
-#define CHUNK_SIZE 3
+#define CHUNK_SIZE 10
 
 /**
  * @brief Create a Chunk From Tilemap object
