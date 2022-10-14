@@ -1,3 +1,6 @@
+#ifndef RENDERING_H
+#define RENDERING_H
+
 #define _XOPEN_SOURCE_EXTENDED 1
 #define NCURSES_WIDECHAR 1
 
@@ -52,3 +55,6 @@ Term_s * initDisplaying();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);
+
+
+#endif /* !RENDERING_H */

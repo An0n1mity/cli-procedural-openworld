@@ -19,7 +19,7 @@ Term_s* initDisplaying()
     term->height = getmaxy(stdscr);
     term->width = getmaxx(stdscr);
 
-    term->displayMode = MAIN_MENU;
+    term->displayMode = WORLD;
 
     term->world = createWindow(50, 50, 0, 0);
 
@@ -66,7 +66,7 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 
 void displayWorld(Term_s *term, View_s *view)
 {
-    clear();
+    //clear();
 
     if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
         view->m_coord.m_x = term->tilemap->m_width - view->m_width - 1;
