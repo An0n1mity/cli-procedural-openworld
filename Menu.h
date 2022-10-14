@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include <ncurses.h>
 #include <form.h>
 #include <menu.h>
@@ -25,3 +28,4 @@ void seedMenu(WINDOW *seed_window, int *seed);
 void centerPrint(WINDOW *win, int startY, int startX, int width, char *string, chtype color);
 void mainMenu();
 
+#endif /* !MENU_H */
