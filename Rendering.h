@@ -1,3 +1,6 @@
+#ifndef RENDERING_H
+#define RENDERING_H
+
 #define _XOPEN_SOURCE_EXTENDED 1
 #define NCURSES_WIDECHAR 1
 
@@ -24,6 +27,7 @@ typedef enum DISPLAY_MODE_e
 //     int width;
 
 // } Panel_s;
+
 typedef struct Term_s
 {
     int height;
@@ -47,9 +51,11 @@ typedef struct View_s
     struct Coordinate_s m_coord;
 } View_s;
 
-Term_s *
-initDisplaying();
+Term_s * initDisplaying();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
 void displayChunks(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);
+
+
+#endif /* !RENDERING_H */

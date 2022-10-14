@@ -12,6 +12,8 @@ Term_s* initDisplaying()
         exit(1);
     }
     start_color();
+
+    keypad(stdscr, TRUE);
     
     Term_s* term = calloc(1, sizeof(Term_s));
     term->height = getmaxy(stdscr);
@@ -38,6 +40,11 @@ Term_s* initDisplaying()
 
 void displayTerm(Term_s *term, View_s *view)
 {
+    // if(term->displayMode == MAIN_MENU)
+    // {
+    //     displayWorld(term, view);
+    // }
+
     if(term->displayMode == WORLD)
     {
         displayChunks(term, view);
@@ -218,7 +225,7 @@ void displayChunks(Term_s *term, View_s *view)
 }
 void displayWorld(Term_s *term, View_s *view)
 {
-    clear();
+    //clear();
 
     if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
         view->m_coord.m_x = term->tilemap->m_width - view->m_width - 1;

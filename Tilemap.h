@@ -21,7 +21,7 @@ struct TilemapBlock_s
 
 struct Chunk_s
 {
-    struct EntityList_s *m_entities_list;
+    struct Entitieslist_s *m_entities_list;
     struct Block_s ***m_blocks;
 };
 
