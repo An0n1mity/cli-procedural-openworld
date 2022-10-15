@@ -10,7 +10,7 @@ CC = gcc
 CCFLAGS = $(DEBUGFLAGS) -Wall
 LDFLAGS = 
 INCLUDES = -I. -I/usr/include -Iscplib
-LIBS = -L/usr/lib -lncursesw -lm -lmenu -lform
+LIBS = -L/usr/lib -lncursesw -lm -lform -lmenu
 
 EXEC = toRun
 SRC = $(wildcard *.c)
