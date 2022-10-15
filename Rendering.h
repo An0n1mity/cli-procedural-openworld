@@ -28,6 +28,14 @@ typedef enum DISPLAY_MODE_e
 
 // } Panel_s;
 
+typedef struct View_s
+{
+    int m_height;
+    int m_width;
+
+    struct Coordinate_s m_coord;
+} View_s;
+
 typedef struct Term_s
 {
     int height;
@@ -40,16 +48,9 @@ typedef struct Term_s
     WINDOW* stats;
 
     struct Tilemap_s* tilemap;
+    struct View_s *view;
 
 } Term_s;
-
-typedef struct View_s
-{
-    int m_height;
-    int m_width;
-
-    struct Coordinate_s m_coord;
-} View_s;
 
 Term_s * initDisplaying();
 void displayTerm(Term_s *term, View_s *view);

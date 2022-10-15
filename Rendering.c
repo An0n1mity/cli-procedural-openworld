@@ -47,6 +47,7 @@ void displayTerm(Term_s *term, View_s *view)
 
     if(term->displayMode == WORLD)
     {
+        // displayWorld(term, view);
         displayChunks(term, view);
     }
 }
@@ -227,19 +228,19 @@ void displayWorld(Term_s *term, View_s *view)
 {
     //clear();
 
-    if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
+    /*if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
         view->m_coord.m_x = term->tilemap->m_width - view->m_width - 1;
     if (view->m_coord.m_y >= term->tilemap->m_height - view->m_height)
         view->m_coord.m_y = term->tilemap->m_height - view->m_height - 1;
     if (view->m_coord.m_x < 0)
         view->m_coord.m_x = 0;
     if (view->m_coord.m_y < 0)
-        view->m_coord.m_y = 0;
-    for (int h = view->m_coord.m_y; h < view->m_coord.m_y + view->m_height; ++h)
+        view->m_coord.m_y = 0;*/
+    for (int h = 0; h < term->tilemap->m_height; ++h)
     {
-        for (int w = view->m_coord.m_x; w < view->m_coord.m_x + view->m_width; ++w)
+        for (int w = 0; w < term->tilemap->m_width; ++w)
         {
-            struct Block_s **actualBlock = term->tilemap->m_blocks[h * term->tilemap->m_width + w];
+            struct Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE + w];
             attr_t attr = 1 & A_STANDOUT;
             short color = 0;
             if (actualBlock[0])

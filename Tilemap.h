@@ -12,6 +12,7 @@
 #include "Entity.h"
 #include "PerlinNoise.h"
 #include "Chunk.h"
+#include "Coordinate.h"
 
 struct TilemapBlock_s
 {
@@ -33,6 +34,8 @@ struct Tilemap_s
     struct Block_s ***m_blocks;
     struct Chunk_s *m_chunks[3][3];
     struct Entitieslist_s *m_entities;
+
+    struct Coordinate_s m_top_coord;
 };
 
 struct Tilemap_s* CreateTilemap(const int m_wdith, const int m_height);

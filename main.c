@@ -35,18 +35,18 @@ int main(int argc, char const *argv[])
 
     //PrintTilemap(tilemap);
 
-    //printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
-    MakeAction(player, MOVE);
     // printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
+    // MakeAction(player, MOVE);
+    //  printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     player->m_base->m_direction = EAST;
 
-    struct Block_s *front_block = getFrontBlockP(player, tilemap);
-    // if (player_action & front_block->m_flags)
-    //     printf("Player can break the block\n\r");
-    // else
-    //     // printf("Player can't break the block\n\r");
-    // printf("Block health %d\n\r", (front_block)->m_health);
-    MakeActionOnBlock(BREAK, front_block);
+    // struct Block_s *front_block = getFrontBlockP(player, tilemap);
+    //  if (player_action & front_block->m_flags)
+    //      printf("Player can break the block\n\r");
+    //  else
+    //      // printf("Player can't break the block\n\r");
+    //  printf("Block health %d\n\r", (front_block)->m_health);
+    // MakeActionOnBlock(BREAK, front_block);
     // printf("Block health %d\n\r", (front_block)->m_health);
 
     //PrintTilemap(tilemap);
@@ -55,9 +55,9 @@ int main(int argc, char const *argv[])
 
     // Chunk testing
     MovePlayerTo(player, (struct Coordinate_s){10, 20});
-    LoadChunkAroundPlayer(player);
+    LoadChunkAroundPlayer(player, seed);
 
-    View_s view = {20, 40, (struct Coordinate_s){0, 0}};
+    View_s view = {10, 20, (struct Coordinate_s){0, 0}};
     nodelay(term->world, TRUE);
 
     while (!quit)
@@ -67,27 +67,27 @@ int main(int argc, char const *argv[])
         {
         case 'd':
             player->m_base->m_position.m_x++;
-            LoadChunkAroundPlayer(player);
+            LoadChunkAroundPlayer(player, seed);
             view.m_coord.m_x++;
             break;
         case 'q':
             player->m_base->m_position.m_x--;
 
-            LoadChunkAroundPlayer(player);
+            LoadChunkAroundPlayer(player, seed);
 
             view.m_coord.m_x--;
             break;
         case 'z':
             player->m_base->m_position.m_y--;
 
-            LoadChunkAroundPlayer(player);
+            LoadChunkAroundPlayer(player, seed);
 
             view.m_coord.m_y--;
             break;
         case 's':
             player->m_base->m_position.m_y++;
 
-            LoadChunkAroundPlayer(player);
+            LoadChunkAroundPlayer(player, seed);
 
             view.m_coord.m_y++;
             break;

@@ -3,12 +3,7 @@
 
 #include <stdlib.h>
 #include "Tilemap.h"
-
-struct Coordinate_s
-{
-    int m_x;
-    int m_y;
-};
+#include "Coordinate.h"
 
 enum Direction_e
 {

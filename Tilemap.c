@@ -50,9 +50,9 @@ struct Tilemap_s* CreateTilemapFromFile(const char* mapfile)
 
 struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 {
-    struct Tilemap_s *tilemap = CreateTilemap(width, height);
+    struct Tilemap_s *tilemap = CreateTilemap(CHUNK_SIZE * 3, CHUNK_SIZE * 3);
     srand(seed);
-    for (size_t y = 0; y < height; y++)
+    /*for (size_t y = 0; y < height; y++)
     {
         for (size_t x = 0; x < width; x++)
         {
@@ -75,7 +75,7 @@ struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
             }
         }
     }
-
+    */
     return tilemap;
 }
 
@@ -230,5 +230,3 @@ void freeTilemap(struct Tilemap_s *tilemap)
     free(tilemap->m_blocks);
     free(tilemap);
 }
-
-// TODO Render only tiles near the player

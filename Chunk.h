@@ -6,6 +6,7 @@
 #include "Tilemap.h"
 #include "Player.h"
 #include <string.h>
+#include "Coordinate.h"
 
 // width and height for each chunks
 #define CHUNK_SIZE 10
@@ -37,6 +38,6 @@ struct Coordinate_s TilemapToChunkCoordinates(struct Coordinate_s tilemap_coord)
  *
  * @param player
  */
-void LoadChunkAroundPlayer(struct Player_s *player);
+void LoadChunkAroundPlayer(struct Player_s *player, float seed);
 
 #endif
