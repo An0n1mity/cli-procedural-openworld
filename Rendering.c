@@ -13,7 +13,7 @@ Term_s* initDisplaying()
     }
     start_color();
 
-    keypad(stdscr, TRUE);
+    
     
     Term_s* term = calloc(1, sizeof(Term_s));
     term->height = getmaxy(stdscr);
@@ -284,5 +284,5 @@ void displayWorld(Term_s *term, View_s *view)
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-    usleep(50000);
+
 }

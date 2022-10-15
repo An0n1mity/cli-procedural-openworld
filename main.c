@@ -15,14 +15,14 @@
 int main(int argc, char const *argv[])
 {
     setlocale(LC_ALL, "");
-    Term_s* term = initDisplaying();
+    Term_s *term = initDisplaying();
 
     int seed = 563;
     int quit = 0;
 
     // titleLoop(createWindow(20, 40, 0, 0));
     // seedMenu(createWindow(20, 40, 0, 0), &seed);
-    
+
     // endwin();
 
     Player_s *player = CreatePlayer();
@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
 
     player->m_base->m_direction = SOUTH;
 
-    //PrintTilemap(tilemap);
+    // PrintTilemap(tilemap);
 
     // printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     // MakeAction(player, MOVE);
@@ -49,9 +49,8 @@ int main(int argc, char const *argv[])
     // MakeActionOnBlock(BREAK, front_block);
     // printf("Block health %d\n\r", (front_block)->m_health);
 
-    //PrintTilemap(tilemap);
+    // PrintTilemap(tilemap);
     term->tilemap = tilemap;
-
 
     // Chunk testing
     MovePlayerTo(player, (Coordinate_s){10, 20});
@@ -59,45 +58,45 @@ int main(int argc, char const *argv[])
 
     View_s view = {10, 20, (Coordinate_s){0, 0}};
     nodelay(term->world, TRUE);
-
+    int move_x = 0, move_y = 0, c = 0;
+    keypad(term->world, TRUE);
     while (!quit)
     {
-        int c = wgetch(term->world);
-        switch (c)
+        move_x = 0;
+        move_y = 0;
+        c = wgetch(term->world);
+        while (c != ERR)
         {
-        case 'd':
-            player->m_base->m_position.m_x++;
-            LoadChunkAroundPlayer(player, seed);
-            view.m_coord.m_x++;
-            break;
-        case 'q':
-            player->m_base->m_position.m_x--;
+            switch (c)
+            {
+            case 'd':
+                move_x++;
+                break;
+            case 'q':
+                move_x--;
+                break;
+            case 'z':
+                move_y--;
+                break;
+            case 's':
+                move_y++;
+                break;
+            case KEY_F(1):
+                quit = 1;
+                break;
 
-            LoadChunkAroundPlayer(player, seed);
+            default:
+                break;
+            }
 
-            view.m_coord.m_x--;
-            break;
-        case 'z':
-            player->m_base->m_position.m_y--;
-
-            LoadChunkAroundPlayer(player, seed);
-
-            view.m_coord.m_y--;
-            break;
-        case 's':
-            player->m_base->m_position.m_y++;
-
-            LoadChunkAroundPlayer(player, seed);
-
-            view.m_coord.m_y++;
-            break;
-        case KEY_F(1):
-            quit = 1;
-            break;
-
-        default:
-            break;
+            c = wgetch(term->world);
         }
+        player->m_base->m_position.m_x += move_x;
+        view.m_coord.m_x += move_x;
+        player->m_base->m_position.m_y += move_y;
+        view.m_coord.m_y += move_y;
+
+        LoadChunkAroundPlayer(player, seed);
         displayTerm(term, &view);
     }
 
