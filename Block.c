@@ -1,10 +1,10 @@
 #include "Block.h"
 
-static inline void SetBlockHealth(struct Block_s* block, int health);
+static inline void SetBlockHealth(Block_s* block, int health);
 
-struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag)
+Block_s* CreateBlock(BlockType_e type, BlockFlag_e flag)
 {
-    struct Block_s* block = (struct Block_s*)malloc(sizeof(struct Block_s));
+    Block_s* block = (Block_s*)malloc(sizeof(Block_s));
     block->m_type = type;
     block->m_flags = flag;
 
@@ -29,7 +29,7 @@ struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag)
     return block;
 }
 
-static inline void SetBlockHealth(struct Block_s* block, int health)
+static inline void SetBlockHealth(Block_s* block, int health)
 {
     block->m_health = health;
 }

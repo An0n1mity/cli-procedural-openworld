@@ -70,20 +70,20 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 void displayChunks(Term_s *term, View_s *view)
 {
 
-    struct Tilemap_s *tilemap = term->tilemap;
+    Tilemap_s *tilemap = term->tilemap;
     for (size_t i = 0; i < 3; i++)
     {
-        struct Chunk_s *f = tilemap->m_chunks[i][0];
-        struct Chunk_s *s = tilemap->m_chunks[i][1];
-        struct Chunk_s *t = tilemap->m_chunks[i][2];
+        Chunk_s *f = tilemap->m_chunks[i][0];
+        Chunk_s *s = tilemap->m_chunks[i][1];
+        Chunk_s *t = tilemap->m_chunks[i][2];
 
         for (size_t j = 0; j < CHUNK_SIZE; j++)
         {
-            struct Chunk_s *actual_chunk = f;
+            Chunk_s *actual_chunk = f;
             for (size_t k = 0; k < CHUNK_SIZE; k++)
             {
 
-                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
                 attr_t attr = 1 & A_STANDOUT;
                 short color = 0;
                 if (actual_block[0])
@@ -129,7 +129,7 @@ void displayChunks(Term_s *term, View_s *view)
             for (size_t k = 0; k < CHUNK_SIZE; k++)
             {
 
-                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
                 attr_t attr = 1 & A_STANDOUT;
                 short color = 0;
                 if (actual_block[0])
@@ -176,7 +176,7 @@ void displayChunks(Term_s *term, View_s *view)
             for (size_t k = 0; k < CHUNK_SIZE; k++)
             {
 
-                struct Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
+                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
                 attr_t attr = 1 & A_STANDOUT;
                 short color = 0;
                 if (actual_block[0])
@@ -222,7 +222,7 @@ void displayChunks(Term_s *term, View_s *view)
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-    usleep(50000);
+    //usleep(50000);
 }
 void displayWorld(Term_s *term, View_s *view)
 {
@@ -240,7 +240,7 @@ void displayWorld(Term_s *term, View_s *view)
     {
         for (int w = 0; w < term->tilemap->m_width; ++w)
         {
-            struct Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE + w];
+            Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE + w];
             attr_t attr = 1 & A_STANDOUT;
             short color = 0;
             if (actualBlock[0])

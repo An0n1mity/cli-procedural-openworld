@@ -1,26 +1,26 @@
 #include "Tilemap.h"
 
-struct Tilemap_s* CreateTilemap(const int width, const int height)
+Tilemap_s* CreateTilemap(const int width, const int height)
 {
-    struct Tilemap_s *tilemap = (struct Tilemap_s *)calloc(1, sizeof(struct Tilemap_s));
+    Tilemap_s *tilemap = (Tilemap_s *)calloc(1, sizeof(Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
-    tilemap->m_blocks = (struct Block_s ***)calloc(height * width, sizeof(struct Block_s **));
+    tilemap->m_blocks = (Block_s ***)calloc(height * width, sizeof(Block_s **));
     for (size_t i = 0; i < height * width; i++)
     {
-        tilemap->m_blocks[i] = calloc(2, sizeof(struct Block_s *));
+        tilemap->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }
 
     return tilemap;
 }
 
-struct TilemapBlock_s *createTilemapBlock(struct Block_s *block)
+TilemapBlock_s *createTilemapBlock(Block_s *block)
 {
-    struct TilemapBlock_s *tilemapblock = (struct TilemapBlock_s *)calloc(1, sizeof(struct TilemapBlock_s));
+    TilemapBlock_s *tilemapblock = (TilemapBlock_s *)calloc(1, sizeof(TilemapBlock_s));
     tilemapblock->m_block = block;
     return tilemapblock;
 }
 
-void addBlockToTilemapBlock(struct TilemapBlock_s **tilemapblock, struct Block_s *block)
+void addBlockToTilemapBlock(TilemapBlock_s **tilemapblock, Block_s *block)
 {
     if (!*tilemapblock)
     {
@@ -28,29 +28,29 @@ void addBlockToTilemapBlock(struct TilemapBlock_s **tilemapblock, struct Block_s
         return;
     }
 
-    struct TilemapBlock_s *new = createTilemapBlock(block);
+    TilemapBlock_s *new = createTilemapBlock(block);
     new->m_next = *tilemapblock;
     *tilemapblock = new;
 }
 
-struct Tilemap_s* CreateTilemapFromFile(const char* mapfile)
+// Tilemap_s* CreateTilemapFromFile(const char* mapfile)
+// {
+//     FILE* file = fopen(mapfile, "rb");
+//     int width, height;
+//     fscanf(file, "%d %d", &width, &height);
+//     fclose(file);
+
+//     Tilemap_s* tilemap = CreateTilemap(width, height);
+
+//     FillTilemap(tilemap, mapfile);
+
+//     return tilemap;
+
+// }
+
+Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 {
-    FILE* file = fopen(mapfile, "rb");
-    int width, height;
-    fscanf(file, "%d %d", &width, &height);
-    fclose(file);
-
-    struct Tilemap_s* tilemap = CreateTilemap(width, height);
-
-    FillTilemap(tilemap, mapfile);
-
-    return tilemap;
-
-}
-
-struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
-{
-    struct Tilemap_s *tilemap = CreateTilemap(CHUNK_SIZE * 3, CHUNK_SIZE * 3);
+    Tilemap_s *tilemap = CreateTilemap(CHUNK_SIZE * 3, CHUNK_SIZE * 3);
     srand(seed);
     /*for (size_t y = 0; y < height; y++)
     {
@@ -79,9 +79,9 @@ struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
     return tilemap;
 }
 
-struct Block_s *CharToBlock(char c)
+Block_s *CharToBlock(char c)
 {
-    struct Block_s* block = NULL;
+    Block_s* block = NULL;
     switch (c)
     {
         case 'W':
@@ -106,42 +106,42 @@ struct Block_s *CharToBlock(char c)
     return block;
 }
 
-void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile)
-{
-    const int fd = open(mapfile, O_RDONLY);
+// void FillTilemap(Tilemap_s* tilemap, const char* mapfile)
+// {
+//     const int fd = open(mapfile, O_RDONLY);
 
-    struct stat statbuf;
-    fstat(fd, &statbuf);
+//     stat statbuf;
+//     fstat(fd, &statbuf);
 
-    int start = 0;
-    char* map = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
+//     int start = 0;
+//     char* map = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
 
-    size_t idx = 0;
-    size_t level = 0;
-    for(size_t i = 0; i < statbuf.st_size; i++)
-    {
-        if(map[i] == '\n' && !start)
-        {
-            start = 1;
-            i++;
-        }
-        if (map[i] != '\n' && map[i] != ',' && start && (idx < tilemap->m_width * tilemap->m_height))
-        {
-            (tilemap->m_blocks[idx])[level++] = CharToBlock(map[i]);
-        }
-        if ((map[i] == ',' || map[i] == '\n') && start)
-        {
-            ++idx;
-            level = 0;
-        }
-    }
+//     size_t idx = 0;
+//     size_t level = 0;
+//     for(size_t i = 0; i < statbuf.st_size; i++)
+//     {
+//         if(map[i] == '\n' && !start)
+//         {
+//             start = 1;
+//             i++;
+//         }
+//         if (map[i] != '\n' && map[i] != ',' && start && (idx < tilemap->m_width * tilemap->m_height))
+//         {
+//             (tilemap->m_blocks[idx])[level++] = CharToBlock(map[i]);
+//         }
+//         if ((map[i] == ',' || map[i] == '\n') && start)
+//         {
+//             ++idx;
+//             level = 0;
+//         }
+//     }
 
-    munmap(map, statbuf.st_size);
+//     munmap(map, statbuf.st_size);
 
-    close(fd);
-}
+//     close(fd);
+// }
 
-void PrintTilemap(struct Tilemap_s* tilemap)
+void PrintTilemap(Tilemap_s* tilemap)
 {
     for (size_t i = 0; i < tilemap->m_height; i++)
     {
@@ -202,13 +202,13 @@ void PrintTilemap(struct Tilemap_s* tilemap)
     printf("\033[0;37m");
 }
 
-inline void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity)
+inline void addEntityToTilemap(Tilemap_s *tilemap, Entity_s *entity)
 {
     entity->m_tilemap = tilemap;
     addEntityToList(&tilemap->m_entities, entity);
 }
 
-void freeEntitiesList(struct Entitieslist_s *list)
+void freeEntitiesList(Entitieslist_s *list)
 {
     if (!list)
         return;
@@ -218,7 +218,7 @@ void freeEntitiesList(struct Entitieslist_s *list)
     free(list);
 }
 
-void freeTilemap(struct Tilemap_s *tilemap)
+void freeTilemap(Tilemap_s *tilemap)
 {
     freeEntitiesList(tilemap->m_entities);
     for (size_t i = 0; i < tilemap->m_width * tilemap->m_height; i++)

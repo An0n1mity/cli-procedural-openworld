@@ -1,18 +1,18 @@
 #include "Chunk.h"
 
-struct Chunk_s *CreateChunkFromTilemap(struct Tilemap_s *tilemap, struct Coordinate_s top_coord)
+Chunk_s *CreateChunkFromTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
 {
-    struct Chunk_s *chunk = (struct Chunk_s *)calloc(1, sizeof(struct Chunk_s));
-    chunk->m_blocks = (struct Block_s ***)malloc(sizeof(struct Block_s **) * CHUNK_SIZE * CHUNK_SIZE);
+    Chunk_s *chunk = (Chunk_s *)calloc(1, sizeof(Chunk_s));
+    chunk->m_blocks = (Block_s ***)malloc(sizeof(Block_s **) * CHUNK_SIZE * CHUNK_SIZE);
     for (size_t i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++)
     {
-        chunk->m_blocks[i] = calloc(2, sizeof(struct Block_s *));
+        chunk->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }
 
     /*for (size_t i = 0; i < CHUNK_SIZE; i++)
     {
 
-        memcpy(chunk->m_blocks + (i * CHUNK_SIZE), tilemap->m_blocks + top_coord.m_y * tilemap->m_width + top_coord.m_x, sizeof(struct Block_s *) * CHUNK_SIZE);
+        memcpy(chunk->m_blocks + (i * CHUNK_SIZE), tilemap->m_blocks + top_coord.m_y * tilemap->m_width + top_coord.m_x, sizeof(Block_s *) * CHUNK_SIZE);
     }*/
 
     for (size_t i = top_coord.m_y, idx = 0; i < top_coord.m_y + CHUNK_SIZE; i++)
@@ -26,13 +26,13 @@ struct Chunk_s *CreateChunkFromTilemap(struct Tilemap_s *tilemap, struct Coordin
     return chunk;
 }
 
-struct Chunk_s *CreateChunkProcedurally(struct Coordinate_s top_coord, float seed)
+Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
 {
-    struct Chunk_s *chunk = (struct Chunk_s *)calloc(1, sizeof(struct Chunk_s));
-    chunk->m_blocks = (struct Block_s ***)malloc(sizeof(struct Block_s **) * CHUNK_SIZE * CHUNK_SIZE);
+    Chunk_s *chunk = (Chunk_s *)calloc(1, sizeof(Chunk_s));
+    chunk->m_blocks = (Block_s ***)malloc(sizeof(Block_s **) * CHUNK_SIZE * CHUNK_SIZE);
     for (size_t i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++)
     {
-        chunk->m_blocks[i] = calloc(2, sizeof(struct Block_s *));
+        chunk->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }
 
     for (size_t y = top_coord.m_y, i = 0, idx = 0; y < top_coord.m_y + CHUNK_SIZE; y++, i++)
@@ -62,31 +62,31 @@ struct Chunk_s *CreateChunkProcedurally(struct Coordinate_s top_coord, float see
     return chunk;
 }
 
-void AddEntityToChunk(struct Chunk_s *chunk, struct Entity_s *entity)
+void AddEntityToChunk(Chunk_s *chunk, Entity_s *entity)
 {
     addEntityToList(&(chunk->m_entities_list), entity);
 }
 
-inline struct Coordinate_s TilemapToChunkCoordinates(struct Coordinate_s tilemap_coord)
+inline Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord)
 {
-    return (struct Coordinate_s){tilemap_coord.m_x / CHUNK_SIZE, tilemap_coord.m_y / CHUNK_SIZE};
+    return (Coordinate_s){tilemap_coord.m_x / CHUNK_SIZE, tilemap_coord.m_y / CHUNK_SIZE};
 }
 
-bool isCoordinateInTilemap(struct Tilemap_s *tilemap, struct Coordinate_s coordinate)
+bool isCoordinateInTilemap(Tilemap_s *tilemap, Coordinate_s coordinate)
 {
     if ((coordinate.m_x >= 0 && coordinate.m_x < tilemap->m_width) && (coordinate.m_y >= 0 && coordinate.m_y < tilemap->m_height))
         return true;
     return false;
 }
 
-struct Coordinate_s getTopCoordinateFromChunk(struct Tilemap_s *tilemap, struct Coordinate_s chunk_coord)
+Coordinate_s getTopCoordinateFromChunk(Tilemap_s *tilemap, Coordinate_s chunk_coord)
 {
-    return (struct Coordinate_s){
+    return (Coordinate_s){
         chunk_coord.m_x * CHUNK_SIZE,
         chunk_coord.m_y * CHUNK_SIZE};
 }
 
-void LoadChunksToTilemap(struct Tilemap_s *tilemap, struct Coordinate_s top_coord)
+void LoadChunksToTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
 {
     tilemap->m_top_coord = top_coord;
 
@@ -103,12 +103,12 @@ void LoadChunksToTilemap(struct Tilemap_s *tilemap, struct Coordinate_s top_coor
     }
 }
 
-void LoadChunkAroundPlayer(struct Player_s *player, float seed)
+void LoadChunkAroundPlayer(Player_s *player, float seed)
 {
-    struct Coordinate_s player_chunk_coord = TilemapToChunkCoordinates(player->m_base->m_position);
-    struct Tilemap_s *tilemap = player->m_base->m_tilemap;
+    Coordinate_s player_chunk_coord = TilemapToChunkCoordinates(player->m_base->m_position);
+    Tilemap_s *tilemap = player->m_base->m_tilemap;
 
-    struct Coordinate_s tilemap_top_coord;
+    Coordinate_s tilemap_top_coord;
     bool first_chunk = true;
     for (int i = player_chunk_coord.m_y - 1, ci = 0; i <= player_chunk_coord.m_y + 1; i++, ci++)
     {
@@ -116,10 +116,10 @@ void LoadChunkAroundPlayer(struct Player_s *player, float seed)
         {
             if (first_chunk)
             {
-                tilemap_top_coord = getTopCoordinateFromChunk(tilemap, (struct Coordinate_s){j, i});
+                tilemap_top_coord = getTopCoordinateFromChunk(tilemap, (Coordinate_s){j, i});
                 first_chunk = false;
             }
-            tilemap->m_chunks[ci][cj] = CreateChunkProcedurally(getTopCoordinateFromChunk(tilemap, (struct Coordinate_s){j, i}), seed);
+            tilemap->m_chunks[ci][cj] = CreateChunkProcedurally(getTopCoordinateFromChunk(tilemap, (Coordinate_s){j, i}), seed);
         }
     }
 

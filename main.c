@@ -25,9 +25,9 @@ int main(int argc, char const *argv[])
     
     // endwin();
 
-    struct Player_s *player = CreatePlayer();
-    enum Action_e player_action = BREAK;
-    struct Tilemap_s *tilemap = CreateTilemapProcedurally(100, 100, seed);
+    Player_s *player = CreatePlayer();
+    Action_e player_action = BREAK;
+    Tilemap_s *tilemap = CreateTilemapProcedurally(100, 100, seed);
     // CreateTilemapFromFile("../map.txt");
     addPlayerToTilemap(player, tilemap);
 
@@ -40,7 +40,7 @@ int main(int argc, char const *argv[])
     //  printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     player->m_base->m_direction = EAST;
 
-    // struct Block_s *front_block = getFrontBlockP(player, tilemap);
+    // Block_s *front_block = getFrontBlockP(player, tilemap);
     //  if (player_action & front_block->m_flags)
     //      printf("Player can break the block\n\r");
     //  else
@@ -54,10 +54,10 @@ int main(int argc, char const *argv[])
 
 
     // Chunk testing
-    MovePlayerTo(player, (struct Coordinate_s){10, 20});
+    MovePlayerTo(player, (Coordinate_s){10, 20});
     LoadChunkAroundPlayer(player, seed);
 
-    View_s view = {10, 20, (struct Coordinate_s){0, 0}};
+    View_s view = {10, 20, (Coordinate_s){0, 0}};
     nodelay(term->world, TRUE);
 
     while (!quit)

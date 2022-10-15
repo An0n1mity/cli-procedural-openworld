@@ -14,36 +14,36 @@
 #include "Chunk.h"
 #include "Coordinate.h"
 
-struct TilemapBlock_s
+typedef struct TilemapBlock_S
 {
-    struct Block_s *m_block;
-    struct TilemapBlock_s *m_next;
-};
+    Block_s *m_block;
+    struct TilemapBlock_S *m_next;
+} TilemapBlock_s;
 
-struct Chunk_s
+typedef struct Chunk_S
 {
-    struct Entitieslist_s *m_entities_list;
-    struct Block_s ***m_blocks;
-};
+    struct Entitieslist_S *m_entities_list;
+    Block_s ***m_blocks;
+} Chunk_s;
 
-struct Tilemap_s
+typedef struct Tilemap_S
 {
     int m_width;
     int m_height;
 
-    struct Block_s ***m_blocks;
-    struct Chunk_s *m_chunks[3][3];
-    struct Entitieslist_s *m_entities;
+    Block_s ***m_blocks;
+    Chunk_s *m_chunks[3][3];
+    struct Entitieslist_S *m_entities;
 
-    struct Coordinate_s m_top_coord;
-};
+    Coordinate_s m_top_coord;
+} Tilemap_s;
 
-struct Tilemap_s* CreateTilemap(const int m_wdith, const int m_height);
-void FillTilemap(struct Tilemap_s* tilemap, const char* mapfile);
-struct Tilemap_s* CreateTilemapFromFile(const char* mapfile);
-struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed);
-void PrintTilemap(struct Tilemap_s* tilemap);
-void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity);
-void freeTilemap(struct Tilemap_s *tilemap);
+Tilemap_s* CreateTilemap(const int m_wdith, const int m_height);
+//void FillTilemap(Tilemap_s* tilemap, const char* mapfile);
+// Tilemap_s* CreateTilemapFromFile(const char* mapfile);
+Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed);
+void PrintTilemap(Tilemap_s* tilemap);
+void addEntityToTilemap(Tilemap_s *tilemap, struct Entity_S *entity);
+void freeTilemap(Tilemap_s *tilemap);
 
-#endif
+#endif /* !TILEMAP_H */
