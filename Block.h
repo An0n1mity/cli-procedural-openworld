@@ -7,9 +7,9 @@
 typedef enum BlockFlag_e
 {
     BREAKABLE = 0b0001,
-    MOVABLE   = 0b0010,
-    DROPABLE  = 0b0100,
-    WALKABLE  = 0b1000
+    MOVABLE = 0b0010,
+    DROPABLE = 0b0100,
+    WALKABLE = 0b1000
 } BlockFlag_e;
 
 typedef enum BlockType_E
@@ -29,11 +29,9 @@ typedef struct Block_S
     BlockType_e m_type;
     BlockFlag_e m_flags;
 
-    struct Coordinate_s m_position;
-
     int m_health;
 } Block_s;
 
-struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag);
+Block_s *CreateBlock(BlockType_e type, BlockFlag_e flag);
 
 #endif

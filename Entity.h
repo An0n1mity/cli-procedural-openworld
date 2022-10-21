@@ -30,7 +30,9 @@ typedef struct Entity_S
     Direction_e m_direction;
 
     struct Tilemap_s *m_tilemap;
-};
+
+    Coordinate_s m_chunk_position;
+} Entity_s;
 
 typedef struct Entitieslist_S
 {
@@ -44,6 +46,6 @@ struct TilemapBlock_S *getFrontTilemapBlock(Entity_s *entity, struct Tilemap_S *
 void addEntityToList(Entitieslist_s **list, Entity_s *entity);
 
 // Return the entity chunk position
-struct Coordinate_s getEntityChunkCoordinate(struct Entity_s *entity);
+Coordinate_s getEntityChunkCoordinate(Entity_s *entity);
 
 #endif /* !ENTITY_H */

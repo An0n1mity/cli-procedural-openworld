@@ -41,20 +41,20 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
         for (int x = top_coord.m_x, j = 0; x < top_coord.m_x + CHUNK_SIZE; x++, idx++, j++)
         {
             float value = perlin2d(x, y, 0.1, 1, seed);
-            struct Coordinate_s block_coord = {x, y};
+            Coordinate_s block_coord = {x, y};
             if (value >= 0.55f)
             {
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE, block_coord);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE);
                 // if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
                 //  chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
             }
             else if (value <= 0.4)
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE, block_coord);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE);
             else if (value > 0.4 && value <= 0.46)
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE, block_coord);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE);
             else if (value > 0.46 && value < 0.55)
             {
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE, block_coord);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE);
                 // if (!(rand() % 5))
                 // chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
             }
@@ -104,8 +104,8 @@ void LoadChunksToTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
             size_t chunk_i = i / CHUNK_SIZE;
             size_t chunk_j = j / CHUNK_SIZE;
 
-            struct Chunk_s *chunk = tilemap->m_chunks[chunk_i][chunk_j];
-            struct Blocks_s **block = chunk->m_blocks[(i - chunk_i * CHUNK_SIZE) * CHUNK_SIZE + (j - chunk_j * CHUNK_SIZE)];
+            Chunk_s *chunk = tilemap->m_chunks[chunk_i][chunk_j];
+            Block_s **block = chunk->m_blocks[(i - chunk_i * CHUNK_SIZE) * CHUNK_SIZE + (j - chunk_j * CHUNK_SIZE)];
 
             tilemap->m_blocks[block_idx++] = block;
         }
