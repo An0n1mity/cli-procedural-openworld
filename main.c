@@ -63,16 +63,29 @@ int main(int argc, char const *argv[])
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
 
-
-
     while (!quit)
     {
-        
+        switch (c)
+            move_x = 0;
+        move_y = 0;
+        c = wgetch(term->world);
+        switch (c)
+        {
+        case 'd':
+            player->m_base->m_position.m_x++;
+            break;
+        case 'q':
+            player->m_base->m_position.m_x--;
+            break;
+        case 'z':
+            player->m_base->m_position.m_y--;
+            break;
+        }
+
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
             LoadChunkAroundPlayer(player, seed);
         displayTerm(term, NULL);
-        // RenderCameraView(term, NULL);
     }
 
     //freePlayer(player);
