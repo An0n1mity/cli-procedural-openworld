@@ -5,47 +5,45 @@
 #include "Tilemap.h"
 #include "Coordinate.h"
 
-enum Direction_e
+typedef enum Direction_E
 {
     NORTH,
     SOUTH,
     WEST,
     EAST
-};
+} Direction_e;
 
-enum EntityType_e {PLAYER, MOB};
+typedef enum EntityType_E{PLAYER, MOB} EntityType_e;
 
-struct Entity_s
+typedef struct Entity_S
 {
 
-    enum EntityType_e m_type;
+    EntityType_e m_type;
 
     // Entity hp
     short int m_health;
 
     // Entity coordinates 
-    struct Coordinate_s m_position;
+    Coordinate_s m_position;
 
     // Entity direction
-    enum Direction_e m_direction;
+    Direction_e m_direction;
 
     struct Tilemap_s *m_tilemap;
-
-    struct Coordinate_s m_chunk_position;
 };
 
-struct Entitieslist_s
+typedef struct Entitieslist_S
 {
-    struct Entity_s *m_entity;
-    struct Entitieslist_s *m_next;
-};
+    Entity_s *m_entity;
+    struct Entitieslist_S *m_next;
+} Entitieslist_s;
 
-struct Entity_s *CreateEntity(enum EntityType_e type);
-struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
-struct TilemapBlock_s *getFrontTilemapBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
-void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity);
+Entity_s *CreateEntity(EntityType_e type);
+Block_s *getFrontBlock(Entity_s *entity, struct Tilemap_S *tilemap);
+struct TilemapBlock_S *getFrontTilemapBlock(Entity_s *entity, struct Tilemap_S *tilemap);
+void addEntityToList(Entitieslist_s **list, Entity_s *entity);
 
 // Return the entity chunk position
 struct Coordinate_s getEntityChunkCoordinate(struct Entity_s *entity);
 
-#endif
+#endif /* !ENTITY_H */

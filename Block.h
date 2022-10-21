@@ -4,16 +4,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "Coordinate.h"
-
-enum BlockFlag_e
+typedef enum BlockFlag_e
 {
     BREAKABLE = 0b0001,
     MOVABLE   = 0b0010,
     DROPABLE  = 0b0100,
     WALKABLE  = 0b1000
-};
-enum BlockType_e
+} BlockFlag_e;
+
+typedef enum BlockType_E
 {
     EVERGREEN_TREE,
     DECIDIOUS_TREE,
@@ -23,18 +22,18 @@ enum BlockType_e
     DIRT,
     SAND,
     STONE
-};
+} BlockType_e;
 
-struct Block_s
+typedef struct Block_S
 {
-    enum BlockType_e m_type;
-    enum BlockFlag_e m_flags;
+    BlockType_e m_type;
+    BlockFlag_e m_flags;
 
     struct Coordinate_s m_position;
 
     int m_health;
-};
+} Block_s;
 
-struct Block_s *CreateBlock(enum BlockType_e type, enum BlockFlag_e flag, struct Coordinate_s coord);
+struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag);
 
 #endif

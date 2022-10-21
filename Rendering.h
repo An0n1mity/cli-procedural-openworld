@@ -14,7 +14,7 @@
 #define COLOR_SAND 18
 #define COLOR_STONE 19
 
-typedef enum DISPLAY_MODE_e
+typedef enum DISPLAY_MODE_E
 {
     MAIN_MENU,
     WORLD
@@ -29,15 +29,15 @@ typedef enum DISPLAY_MODE_e
 
 // } Panel_s;
 
-typedef struct View_s
+typedef struct View_S
 {
     int m_height;
     int m_width;
 
-    struct Coordinate_s m_coord;
+    Coordinate_s m_coord;
 } View_s;
 
-typedef struct Term_s
+typedef struct Term_S
 {
     int height;
     int width;
@@ -48,8 +48,8 @@ typedef struct Term_s
     WINDOW* world;
     WINDOW* stats;
 
-    struct Tilemap_s* tilemap;
-    struct View_s *view;
+    Tilemap_s* tilemap;
+    View_s *view;
 
 } Term_s;
 

@@ -1,10 +1,10 @@
 #include "Entity.h"
 #include <assert.h>
-static inline void SetEntityHealth(struct Entity_s* entity, short int health);
+static inline void SetEntityHealth(Entity_s* entity, short int health);
 
-struct Entity_s *CreateEntity(enum EntityType_e type)
+Entity_s *CreateEntity(enum EntityType_E type)
 {
-    struct Entity_s* entity = (struct Entity_s*) malloc(sizeof(struct Entity_s));
+    Entity_s* entity = (Entity_s*) malloc(sizeof(Entity_s));
     entity->m_type = type;
     switch (type)
     {
@@ -21,23 +21,23 @@ struct Entity_s *CreateEntity(enum EntityType_e type)
     return entity;
 }
 
-static inline void SetEntityHealth(struct Entity_s* entity, short int health)
+static inline void SetEntityHealth(Entity_s* entity, short int health)
 {
     entity->m_health = health;
 }
 
-inline void MoveEntityTo(struct Entity_s *entity, int x, int y)
+inline void MoveEntityTo(Entity_s *entity, int x, int y)
 {
     entity->m_position.m_x = x;
     entity->m_position.m_y = y;
 }
 
-inline void setDirection(struct Entity_s *entity, enum Direction_e direction)
+inline void setDirection(Entity_s *entity, Direction_e direction)
 {
     entity->m_direction = direction;
 }
 
-void moveEntityInDirection(struct Entity_s *entity)
+void moveEntityInDirection(Entity_s *entity)
 {
     switch (entity->m_direction)
     {
@@ -63,14 +63,14 @@ void moveEntityInDirection(struct Entity_s *entity)
     }
 }
 
-struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap)
+Block_s *getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 {
     assert(entity && tilemap);
 
     int entity_x = entity->m_position.m_x,
         entity_y = entity->m_position.m_y;
 
-    struct Block_s **blocks = tilemap->m_blocks[1];
+    Block_s **blocks = tilemap->m_blocks[1];
 
     if (entity->m_direction == NORTH && (entity_y - 1 >= 0))
     {
@@ -104,15 +104,15 @@ struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap
         return NULL;
 }
 
-struct Entitieslist_s *createEntitieslist(struct Entity_s *entity)
+Entitieslist_s *createEntitieslist(Entity_s *entity)
 {
-    struct Entitieslist_s *entities_list = (struct Entitieslist_s *)calloc(1, sizeof(struct Entitieslist_s));
+    Entitieslist_s *entities_list = (Entitieslist_s *)calloc(1, sizeof(Entitieslist_s));
     entities_list->m_entity = entity;
 
     return entities_list;
 }
 
-void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity)
+void addEntityToList(Entitieslist_s **list, Entity_s *entity)
 {
     if (!*list)
     {
@@ -120,13 +120,13 @@ void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity)
         return;
     }
 
-    struct Entitieslist_s *new = createEntitieslist(entity);
+    Entitieslist_s *new = createEntitieslist(entity);
     new->m_next = *list;
     *list = new;
 }
 
-struct Coordinate_s getEntityChunkCoordinate(struct Entity_s *entity)
+Coordinate_s getEntityChunkCoordinate(Entity_s *entity)
 {
-    struct Coordinate_s entity_coord = entity->m_position;
-    return (struct Coordinate_s){entity_coord.m_x / CHUNK_SIZE, entity_coord.m_y / CHUNK_SIZE};
+    Coordinate_s entity_coord = entity->m_position;
+    return (Coordinate_s){entity_coord.m_x / CHUNK_SIZE, entity_coord.m_y / CHUNK_SIZE};
 }

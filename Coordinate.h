@@ -1,10 +1,10 @@
 #ifndef COORDINATE_H
 #define COORDINATE_H
 
-struct Coordinate_s
+typedef struct Coordinate_S
 {
     int m_x;
     int m_y;
-};
+} Coordinate_s;
 
-#endif;
+#endif /* !COORDINATE_H */

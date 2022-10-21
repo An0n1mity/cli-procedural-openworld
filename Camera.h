@@ -14,4 +14,4 @@ struct Camera_s
 struct Camera_s *CreateCamera(struct Coordinate_s coord, int w, int h);
 bool isBlockInCameraField(struct Camera_s *camera, struct Coordinate_s block_coord);
 
-#endif
+#endif /* !CAMERA_H */
