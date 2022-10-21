@@ -67,7 +67,30 @@ int main(int argc, char const *argv[])
 
     while (!quit)
     {
-        
+        c = wgetch(term->world);
+         switch (c)
+            {
+            case 'd':
+                 player->m_base->m_position.m_x++;
+                break;
+            case 'q':
+                 player->m_base->m_position.m_x--;
+                break;
+            case 'z':
+                player->m_base->m_position.m_y--;
+                break;
+            case 's':
+                player->m_base->m_position.m_y++;
+                break;
+            case KEY_F(1):
+                quit = 1;
+                break;
+
+            default:
+                break;
+            }
+
+
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
             LoadChunkAroundPlayer(player, seed);
