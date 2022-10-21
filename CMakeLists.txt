@@ -7,7 +7,7 @@ set(CURSES_NEED_WIDE TRUE)
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
-add_executable(CProject main.c Block.c Entity.c Player.c Entity.c Tilemap.c PerlinNoise.c Rendering.c Menu.c Chunk.c)
+add_executable(CProject main.c Block.c Entity.c Player.c Entity.c Tilemap.c PerlinNoise.c Rendering.c Menu.c Chunk.c Camera.c)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -50,7 +50,7 @@ void addBlockToTilemapBlock(TilemapBlock_s **tilemapblock, Block_s *block)
 
 Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 {
-    Tilemap_s *tilemap = CreateTilemap(CHUNK_SIZE * 3, CHUNK_SIZE * 3);
+    Tilemap_s *tilemap = CreateTilemap(width, height);
     srand(seed);
     /*for (size_t y = 0; y < height; y++)
     {
@@ -102,7 +102,7 @@ Block_s *CharToBlock(char c)
         default:
             break;
     }
-
+    
     return block;
 }
 
@@ -205,6 +205,7 @@ void PrintTilemap(Tilemap_s* tilemap)
 inline void addEntityToTilemap(Tilemap_s *tilemap, Entity_s *entity)
 {
     entity->m_tilemap = tilemap;
+    entity->m_chunk_position = getEntityChunkCoordinate(entity);
     addEntityToList(&tilemap->m_entities, entity);
 }
 
