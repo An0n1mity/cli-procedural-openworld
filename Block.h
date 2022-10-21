@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "Coordinate.h"
+
 enum BlockFlag_e
 {
     BREAKABLE = 0b0001,
@@ -28,9 +30,11 @@ struct Block_s
     enum BlockType_e m_type;
     enum BlockFlag_e m_flags;
 
+    struct Coordinate_s m_position;
+
     int m_health;
 };
 
-struct Block_s* CreateBlock(enum BlockType_e type, enum BlockFlag_e flag);
+struct Block_s *CreateBlock(enum BlockType_e type, enum BlockFlag_e flag, struct Coordinate_s coord);
 
 #endif

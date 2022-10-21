@@ -11,6 +11,7 @@
 #include "PerlinNoise.h"
 #include "Menu.h"
 #include "Rendering.h"
+#include "Camera.h"
 
 int main(int argc, char const *argv[])
 {
@@ -27,9 +28,8 @@ int main(int argc, char const *argv[])
 
     struct Player_s *player = CreatePlayer();
     enum Action_e player_action = BREAK;
-    struct Tilemap_s *tilemap = CreateTilemapProcedurally(100, 100, seed);
+    struct Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
     // CreateTilemapFromFile("../map.txt");
-    addPlayerToTilemap(player, tilemap);
 
     player->m_base->m_direction = SOUTH;
 
@@ -52,13 +52,18 @@ int main(int argc, char const *argv[])
     //PrintTilemap(tilemap);
     term->tilemap = tilemap;
 
-
     // Chunk testing
-    MovePlayerTo(player, (struct Coordinate_s){10, 20});
+    // MovePlayerTo(player, (struct Coordinate_s){10, 20});
+    player->m_base->m_position = (struct Coordinate_s){50, 50};
+    addPlayerToTilemap(player, tilemap);
+
     LoadChunkAroundPlayer(player, seed);
 
     View_s view = {10, 20, (struct Coordinate_s){0, 0}};
+    struct Camera_s *camera = CreateCamera((struct Coordinate_s){0, 0}, 10, 20);
     nodelay(term->world, TRUE);
+
+    struct Coordinate_s previous_chunk_coord = player->m_base->m_chunk_position;
 
     while (!quit)
     {
@@ -67,29 +72,20 @@ int main(int argc, char const *argv[])
         {
         case 'd':
             player->m_base->m_position.m_x++;
-            LoadChunkAroundPlayer(player, seed);
-            view.m_coord.m_x++;
+            camera->m_position.m_x++;
             break;
         case 'q':
             player->m_base->m_position.m_x--;
-
-            LoadChunkAroundPlayer(player, seed);
-
-            view.m_coord.m_x--;
+            camera->m_position.m_x--;
             break;
         case 'z':
             player->m_base->m_position.m_y--;
-
-            LoadChunkAroundPlayer(player, seed);
-
-            view.m_coord.m_y--;
+            camera->m_position.m_y--;
             break;
         case 's':
             player->m_base->m_position.m_y++;
+            camera->m_position.m_y++;
 
-            LoadChunkAroundPlayer(player, seed);
-
-            view.m_coord.m_y++;
             break;
         case KEY_F(1):
             quit = 1;
@@ -98,7 +94,12 @@ int main(int argc, char const *argv[])
         default:
             break;
         }
+
+        player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
+        if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(struct Coordinate_s)))
+            LoadChunkAroundPlayer(player, seed);
         displayTerm(term, &view);
+        // RenderCameraView(term, NULL);
     }
 
     freePlayer(player);

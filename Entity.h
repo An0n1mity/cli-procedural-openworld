@@ -30,6 +30,8 @@ struct Entity_s
     enum Direction_e m_direction;
 
     struct Tilemap_s *m_tilemap;
+
+    struct Coordinate_s m_chunk_position;
 };
 
 struct Entitieslist_s
@@ -42,5 +44,8 @@ struct Entity_s *CreateEntity(enum EntityType_e type);
 struct Block_s *getFrontBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
 struct TilemapBlock_s *getFrontTilemapBlock(struct Entity_s *entity, struct Tilemap_s *tilemap);
 void addEntityToList(struct Entitieslist_s **list, struct Entity_s *entity);
+
+// Return the entity chunk position
+struct Coordinate_s getEntityChunkCoordinate(struct Entity_s *entity);
 
 #endif

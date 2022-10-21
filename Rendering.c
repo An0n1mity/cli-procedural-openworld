@@ -47,8 +47,8 @@ void displayTerm(Term_s *term, View_s *view)
 
     if(term->displayMode == WORLD)
     {
-        // displayWorld(term, view);
-        displayChunks(term, view);
+        displayWorld(term, view);
+        // displayChunks(term, view);
     }
 }
 
@@ -224,24 +224,67 @@ void displayChunks(Term_s *term, View_s *view)
     wmove(term->world, 0, 0);
     usleep(50000);
 }
+
 void displayWorld(Term_s *term, View_s *view)
 {
-    //clear();
+    for (int h = 0; h < term->tilemap->m_height; ++h)
+    {
+        for (int w = 0; w < term->tilemap->m_width; ++w)
+        {
+            struct Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * 3 + w];
+            short color = 0;
+            if (actualBlock[0])
+            {
+                switch (actualBlock[0]->m_type)
+                {
+                case WATER:
+                    color = COLOR_WATER;
+                    break;
+                case GRASS:
+                    color = COLOR_GRASS;
+                    break;
+                case SAND:
+                    color = COLOR_SAND;
+                    break;
+                case STONE:
+                    color = COLOR_STONE;
+                    break;
+                }
+            }
 
-    /*if (view->m_coord.m_x >= term->tilemap->m_width - view->m_width)
-        view->m_coord.m_x = term->tilemap->m_width - view->m_width - 1;
-    if (view->m_coord.m_y >= term->tilemap->m_height - view->m_height)
-        view->m_coord.m_y = term->tilemap->m_height - view->m_height - 1;
-    if (view->m_coord.m_x < 0)
-        view->m_coord.m_x = 0;
-    if (view->m_coord.m_y < 0)
-        view->m_coord.m_y = 0;*/
+            wattron(term->world, COLOR_PAIR(color));
+
+            if (actualBlock[1])
+            {
+                switch (actualBlock[1]->m_type)
+                {
+                case EVERGREEN_TREE:
+                    waddwstr(term->world, L"^");
+                    break;
+                case ROCK:
+                    waddwstr(term->world, L"r");
+                    break;
+                }
+            }
+
+            else
+                wprintw(term->world, " ");
+            wrefresh(term->world);
+        }
+        wprintw(term->world, "\n");
+    }
+    wrefresh(term->world);
+    wmove(term->world, 0, 0);
+    usleep(50000);
+}
+
+void RenderCameraView(Term_s *term, struct Camera_s *camera)
+{
     for (int h = 0; h < term->tilemap->m_height; ++h)
     {
         for (int w = 0; w < term->tilemap->m_width; ++w)
         {
             struct Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE + w];
-            attr_t attr = 1 & A_STANDOUT;
             short color = 0;
             if (actualBlock[0])
             {

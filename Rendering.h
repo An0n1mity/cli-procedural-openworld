@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include "Block.h"
 #include "Tilemap.h"
+#include "Camera.h"
 
 #define COLOR_WATER 16
 #define COLOR_GRASS 17
@@ -55,6 +56,7 @@ typedef struct Term_s
 Term_s * initDisplaying();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
+void RenderCameraView(Term_s *term, struct Camera_s *camera);
 void displayChunks(Term_s *term, View_s *view);
 WINDOW *createWindow(int height, int width, int starty, int startx);
 

@@ -35,29 +35,35 @@ struct Chunk_s *CreateChunkProcedurally(struct Coordinate_s top_coord, float see
         chunk->m_blocks[i] = calloc(2, sizeof(struct Block_s *));
     }
 
-    for (size_t y = top_coord.m_y, i = 0, idx = 0; y < top_coord.m_y + CHUNK_SIZE; y++, i++)
+    size_t nb = 0;
+    for (int y = top_coord.m_y, i = 0, idx = 0; y < top_coord.m_y + CHUNK_SIZE; y++, i++)
     {
-        for (size_t x = top_coord.m_x, j = 0; x < top_coord.m_x + CHUNK_SIZE; x++, idx++, j++)
+        for (int x = top_coord.m_x, j = 0; x < top_coord.m_x + CHUNK_SIZE; x++, idx++, j++)
         {
             float value = perlin2d(x, y, 0.1, 1, seed);
+            struct Coordinate_s block_coord = {x, y};
             if (value >= 0.55f)
             {
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE, block_coord);
                 // if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
                 //  chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
             }
             else if (value <= 0.4)
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE, block_coord);
             else if (value > 0.4 && value <= 0.46)
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE, block_coord);
             else if (value > 0.46 && value < 0.55)
             {
-                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE);
+                chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE, block_coord);
                 // if (!(rand() % 5))
                 // chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
             }
+            nb++;
         }
     }
+
+    if (nb < 9)
+        return;
 
     return chunk;
 }
@@ -91,14 +97,17 @@ void LoadChunksToTilemap(struct Tilemap_s *tilemap, struct Coordinate_s top_coor
     tilemap->m_top_coord = top_coord;
 
     size_t block_idx = 0;
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3 * CHUNK_SIZE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < 3 * CHUNK_SIZE; j++)
         {
-            for (size_t k = 0; k < CHUNK_SIZE; k++)
-            {
-                tilemap->m_blocks[block_idx++] = tilemap->m_chunks[i][j]->m_blocks[k];
-            }
+            size_t chunk_i = i / CHUNK_SIZE;
+            size_t chunk_j = j / CHUNK_SIZE;
+
+            struct Chunk_s *chunk = tilemap->m_chunks[chunk_i][chunk_j];
+            struct Blocks_s **block = chunk->m_blocks[(i - chunk_i * CHUNK_SIZE) * CHUNK_SIZE + (j - chunk_j * CHUNK_SIZE)];
+
+            tilemap->m_blocks[block_idx++] = block;
         }
     }
 }

@@ -50,7 +50,7 @@ struct Tilemap_s* CreateTilemapFromFile(const char* mapfile)
 
 struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 {
-    struct Tilemap_s *tilemap = CreateTilemap(CHUNK_SIZE * 3, CHUNK_SIZE * 3);
+    struct Tilemap_s *tilemap = CreateTilemap(width, height);
     srand(seed);
     /*for (size_t y = 0; y < height; y++)
     {
@@ -82,6 +82,7 @@ struct Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 struct Block_s *CharToBlock(char c)
 {
     struct Block_s* block = NULL;
+    /*
     switch (c)
     {
         case 'W':
@@ -102,7 +103,7 @@ struct Block_s *CharToBlock(char c)
         default:
             break;
     }
-
+    */
     return block;
 }
 
@@ -205,6 +206,7 @@ void PrintTilemap(struct Tilemap_s* tilemap)
 inline void addEntityToTilemap(struct Tilemap_s *tilemap, struct Entity_s *entity)
 {
     entity->m_tilemap = tilemap;
+    entity->m_chunk_position = getEntityChunkCoordinate(entity);
     addEntityToList(&tilemap->m_entities, entity);
 }
 
