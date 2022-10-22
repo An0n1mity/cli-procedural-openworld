@@ -20,19 +20,13 @@ typedef struct TilemapBlock_S
     struct TilemapBlock_S *m_next;
 } TilemapBlock_s;
 
-typedef struct Chunk_S
-{
-    struct Entitieslist_S *m_entities_list;
-    Block_s ***m_blocks;
-} Chunk_s;
-
 typedef struct Tilemap_S
 {
     int m_width;
     int m_height;
 
     Block_s ***m_blocks;
-    Chunk_s *m_chunks[3][3];
+    struct Chunk_S *m_chunks[3][3];
     struct Entitieslist_S *m_entities;
 
     Coordinate_s m_top_coord;
@@ -45,5 +39,5 @@ Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed);
 void PrintTilemap(Tilemap_s* tilemap);
 void addEntityToTilemap(Tilemap_s *tilemap, struct Entity_S *entity);
 void freeTilemap(Tilemap_s *tilemap);
-
+void freeEntitiesList(struct Entitieslist_S *list);
 #endif /* !TILEMAP_H */

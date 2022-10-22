@@ -33,3 +33,15 @@ static inline void SetBlockHealth(Block_s *block, int health)
 {
     block->m_health = health;
 }
+
+void freeBlock(Block_s **block)
+{
+    if (!block)
+        return;
+    if (block[0])
+        free(block[0]);
+    if (block[1])
+        free(block[1]);
+
+    free(block);
+}

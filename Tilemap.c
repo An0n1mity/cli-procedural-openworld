@@ -5,9 +5,17 @@ Tilemap_s* CreateTilemap(const int width, const int height)
     Tilemap_s *tilemap = (Tilemap_s *)calloc(1, sizeof(Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
     tilemap->m_blocks = (Block_s ***)calloc(height * width, sizeof(Block_s **));
-    for (size_t i = 0; i < height * width; i++)
+    /*for (size_t i = 0; i < height * width; i++)
     {
         tilemap->m_blocks[i] = calloc(2, sizeof(Block_s *));
+    }*/
+
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 3; j++)
+        {
+            tilemap->m_chunks[i][j] = NULL;
+        }
     }
 
     return tilemap;
@@ -52,30 +60,6 @@ Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 {
     Tilemap_s *tilemap = CreateTilemap(width, height);
     srand(seed);
-    /*for (size_t y = 0; y < height; y++)
-    {
-        for (size_t x = 0; x < width; x++)
-        {
-            float value = perlin2d(x, y, 0.1, 1, seed);
-            if (value >= 0.55f)
-            {
-                tilemap->m_blocks[y * width + x][0] = CreateBlock(GRASS, WALKABLE);
-                if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
-                    tilemap->m_blocks[y * width + x][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
-            }
-            else if (value <= 0.4)
-                tilemap->m_blocks[y * width + x][0] = CreateBlock(WATER, WALKABLE);
-            else if (value > 0.4 && value <= 0.46)
-                tilemap->m_blocks[y * width + x][0] = CreateBlock(SAND, WALKABLE);
-            else if (value > 0.46 && value < 0.55)
-            {
-                tilemap->m_blocks[y * width + x][0] = CreateBlock(STONE, WALKABLE);
-                if (!(rand() % 5))
-                    tilemap->m_blocks[y * width + x][1] = CreateBlock(ROCK, WALKABLE);
-            }
-        }
-    }
-    */
     return tilemap;
 }
 
@@ -224,10 +208,17 @@ void freeTilemap(Tilemap_s *tilemap)
     freeEntitiesList(tilemap->m_entities);
     for (size_t i = 0; i < tilemap->m_width * tilemap->m_height; i++)
     {
-        for (size_t j = 0; j < 2; j++)
-            free(tilemap->m_blocks[i][j]);
-        free(tilemap->m_blocks[i]);
+        freeBlock(tilemap->m_blocks[i]);
     }
+
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 3; j++)
+        {
+            freeChunk(tilemap->m_chunks[i][j]);
+        }
+    }
+
     free(tilemap->m_blocks);
     free(tilemap);
 }

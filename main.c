@@ -12,11 +12,10 @@
 #include "Menu.h"
 #include "Rendering.h"
 #include "Camera.h"
+#include "Chunk.h"
 
 int main(int argc, char const *argv[])
 {
-    setlocale(LC_ALL, "");
-    Term_s *term = initDisplaying();
 
     int seed = 563;
     int quit = 0;
@@ -28,7 +27,7 @@ int main(int argc, char const *argv[])
 
     Player_s *player = CreatePlayer();
     Action_e player_action = BREAK;
-    struct Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
+    Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
     // CreateTilemapFromFile("../map.txt");
 
     player->m_base->m_direction = SOUTH;
@@ -50,57 +49,82 @@ int main(int argc, char const *argv[])
     // printf("Block health %d\n\r", (front_block)->m_health);
 
     // PrintTilemap(tilemap);
-    term->tilemap = tilemap;
 
     // Chunk testing
     MovePlayerTo(player, (Coordinate_s){10, 20});
     addPlayerToTilemap(player, tilemap);
-    Coordinate_s previous_chunk_coord = {player->m_base->m_position.m_x, player->m_base->m_position.m_y};
-    LoadChunkAroundPlayer(player, seed);
+    Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
+    LoadChunkAroundPlayer(player, seed, true);
 
-
+    setlocale(LC_ALL, "");
+    Term_s *term = initDisplaying();
     nodelay(term->world, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
-
-
-
-    while (!quit)
+    term->tilemap = tilemap;
+    size_t try = 0;
+    while (!quit && try < 2)
     {
         c = wgetch(term->world);
-         switch (c)
-            {
-            case 'd':
-                 player->m_base->m_position.m_x++;
-                break;
-            case 'q':
-                 player->m_base->m_position.m_x--;
-                break;
-            case 'z':
-                player->m_base->m_position.m_y--;
-                break;
-            case 's':
-                player->m_base->m_position.m_y++;
-                break;
-            case KEY_F(1):
-                quit = 1;
-                break;
+        switch (c)
+        {
+        case 'd':
+            player->m_base->m_direction = EAST;
+            player->m_base->m_position.m_x++;
+            break;
+        case 'q':
+            player->m_base->m_direction = WEST;
+            player->m_base->m_position.m_x--;
+            break;
+        case 'z':
+            player->m_base->m_direction = NORTH;
+            player->m_base->m_position.m_y--;
+            break;
+        case 's':
+            player->m_base->m_direction = SOUTH;
+            player->m_base->m_position.m_y++;
+            break;
+        case KEY_F(1):
+            quit = 1;
+            break;
 
-            default:
-                break;
-            }
-
+        default:
+            break;
+        }
 
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
-            LoadChunkAroundPlayer(player, seed);
+        {
+            previous_chunk_coord = player->m_base->m_chunk_position;
+            LoadChunkAroundPlayer(player, seed, false);
+            // try++;
+        }
         displayTerm(term, NULL);
         // RenderCameraView(term, NULL);
     }
 
-    //freePlayer(player);
-    //freeTilemap(tilemap);
+    freeEntitiesList(tilemap->m_entities);
+    free(tilemap->m_blocks);
 
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 3; j++)
+        {
+            for (size_t k = 0; k < CHUNK_SIZE * CHUNK_SIZE; k++)
+            {
+                free(tilemap->m_chunks[i][j]->m_blocks[k][0]);
+                free(tilemap->m_chunks[i][j]->m_blocks[k][1]);
+                free(tilemap->m_chunks[i][j]->m_blocks[k]);
+            }
+
+            free(tilemap->m_chunks[i][j]->m_blocks);
+            free(tilemap->m_chunks[i][j]);
+        }
+    }
+    freePlayer(player);
+    free(tilemap);
+    endwin();
+    exit(1);
     endwin();
     noraw();
     echo();

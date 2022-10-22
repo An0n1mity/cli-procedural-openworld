@@ -8,6 +8,12 @@
 #include <string.h>
 #include "Coordinate.h"
 
+typedef struct Chunk_S
+{
+    struct Entitieslist_S *m_entities_list;
+    Block_s ***m_blocks;
+} Chunk_s;
+
 // width and height for each chunks
 #define CHUNK_SIZE 10
 
@@ -18,14 +24,14 @@
  * @param top_coord The (x,y) coordinates of the top left corner of the chunk
  * @return struct Chunk_s* The loaded chunk from the tilemap
  */
-struct Chunk_S *CreateChunkFromTilemap(struct Tilemap_S *tilemap, struct Coordinate_S top_coord);
+Chunk_s *CreateChunkFromTilemap(struct Tilemap_S *tilemap, struct Coordinate_S top_coord);
 /**
  * @brief Adding an entity to a chunk
  *
  * @param chunk
  * @param entity
  */
-void AddEntityToChunk(struct Chunk_S *chunk, struct Entity_S *entity);
+void AddEntityToChunk(Chunk_s *chunk, struct Entity_S *entity);
 /**
  * @brief Return a (x, y) coordinate in world referential to a (x, y) coordinate with chunk referential
  *
@@ -38,6 +44,8 @@ Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord);
  *
  * @param player
  */
-void LoadChunkAroundPlayer(struct Player_S *player, float seed);
+void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first);
+
+void freeChunk(Chunk_s *chunk);
 
 #endif
