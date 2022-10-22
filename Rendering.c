@@ -39,9 +39,12 @@ Term_s *initDisplaying()
 
 void displayTerm(Term_s *term, View_s *view)
 {
+    term->height = getmaxy(stdscr);
+    term->width = getmaxx(stdscr) - ((getmaxx(stdscr)+1)%2);
 
     if (term->displayMode == WORLD)
     {
+        wresize(term->world, term->height, term->width);
         displayWorld(term, view);
     }
 }

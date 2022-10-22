@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include "Player.h"
 #include "Block.h"
+
 #include "Tilemap.h"
 #include "PerlinNoise.h"
 #include "Menu.h"
@@ -24,7 +25,7 @@ int main(int argc, char const *argv[])
     setlocale(LC_ALL, "");
     Term_s *term = initDisplaying();
 
-    int seed = 563;
+    int seed = 69;
     int quit = 0;
 
     // titleLoop(createWindow(20, 40, 0, 0));
@@ -117,9 +118,9 @@ int main(int argc, char const *argv[])
     freeEntitiesList(tilemap->m_entities);
     free(tilemap->m_blocks);
 
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE; j++)
         {
             for (size_t k = 0; k < CHUNK_SIZE * CHUNK_SIZE; k++)
             {
@@ -134,9 +135,6 @@ int main(int argc, char const *argv[])
     }
     freePlayer(player);
     free(tilemap);
-    endwin();
-    exit(1);
-    endwin();
     noraw();
     echo();
     endwin();
