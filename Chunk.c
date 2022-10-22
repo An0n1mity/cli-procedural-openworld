@@ -43,8 +43,8 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
             if (value >= 0.55f)
             {
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE);
-                // if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
-                //  chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
+                if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
+                 chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
             }
             else if (value <= 0.4)
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE);
@@ -53,8 +53,8 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
             else if (value > 0.46 && value < 0.55)
             {
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE);
-                // if (!(rand() % 5))
-                // chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
+                if (!(rand() % 5))
+                chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
             }
         }
     }

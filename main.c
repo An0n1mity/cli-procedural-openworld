@@ -14,6 +14,9 @@
 
 int main(int argc, char const *argv[])
 {
+    if (atexit(cookedOnExit))
+        return EXIT_FAILURE;
+
     setlocale(LC_ALL, "");
     Term_s *term = initDisplaying();
 
@@ -103,9 +106,9 @@ int main(int argc, char const *argv[])
     freePlayer(player);
     freeTilemap(tilemap);
 
-    endwin();
     noraw();
     echo();
+    endwin();
 
     return 0;
 }
