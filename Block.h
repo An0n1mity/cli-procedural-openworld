@@ -4,13 +4,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef enum BlockFlag_E
+typedef enum BlockFlag_e
 {
     BREAKABLE = 0b0001,
-    MOVABLE   = 0b0010,
-    DROPABLE  = 0b0100,
-    WALKABLE  = 0b1000
+    MOVABLE = 0b0010,
+    DROPABLE = 0b0100,
+    WALKABLE = 0b1000
 } BlockFlag_e;
+
 typedef enum BlockType_E
 {
     EVERGREEN_TREE,
@@ -31,6 +32,6 @@ typedef struct Block_S
     int m_health;
 } Block_s;
 
-Block_s* CreateBlock(BlockType_e type, BlockFlag_e flag);
+Block_s *CreateBlock(BlockType_e type, BlockFlag_e flag);
 
 #endif

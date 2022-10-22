@@ -37,6 +37,32 @@ inline void setDirection(Entity_s *entity, Direction_e direction)
     entity->m_direction = direction;
 }
 
+void moveEntityInDirection(Entity_s *entity)
+{
+    switch (entity->m_direction)
+    {
+    case NORTH:
+        entity->m_position.m_y--;
+        entity->m_chunk_position = getEntityChunkCoordinate(entity);
+        break;
+    case SOUTH:
+        entity->m_position.m_y++;
+        entity->m_chunk_position = getEntityChunkCoordinate(entity);
+        break;
+    case WEST:
+        entity->m_position.m_x--;
+        entity->m_chunk_position = getEntityChunkCoordinate(entity);
+        break;
+    case EAST:
+        entity->m_position.m_x++;
+        entity->m_chunk_position = getEntityChunkCoordinate(entity);
+        break;
+
+    default:
+        break;
+    }
+}
+
 Block_s *getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 {
     assert(entity && tilemap);
@@ -97,4 +123,10 @@ void addEntityToList(Entitieslist_s **list, Entity_s *entity)
     Entitieslist_s *new = createEntitieslist(entity);
     new->m_next = *list;
     *list = new;
+}
+
+Coordinate_s getEntityChunkCoordinate(Entity_s *entity)
+{
+    Coordinate_s entity_coord = entity->m_position;
+    return (Coordinate_s){entity_coord.m_x / CHUNK_SIZE, entity_coord.m_y / CHUNK_SIZE};
 }

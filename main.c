@@ -11,6 +11,7 @@
 #include "PerlinNoise.h"
 #include "Menu.h"
 #include "Rendering.h"
+#include "Camera.h"
 
 int main(int argc, char const *argv[])
 {
@@ -30,9 +31,8 @@ int main(int argc, char const *argv[])
 
     Player_s *player = CreatePlayer();
     Action_e player_action = BREAK;
-    Tilemap_s *tilemap = CreateTilemapProcedurally(100, 100, seed);
+    struct Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
     // CreateTilemapFromFile("../map.txt");
-    addPlayerToTilemap(player, tilemap);
 
     player->m_base->m_direction = SOUTH;
 
@@ -57,32 +57,33 @@ int main(int argc, char const *argv[])
 
     // Chunk testing
     MovePlayerTo(player, (Coordinate_s){10, 20});
+    addPlayerToTilemap(player, tilemap);
+    Coordinate_s previous_chunk_coord = {player->m_base->m_position.m_x, player->m_base->m_position.m_y};
     LoadChunkAroundPlayer(player, seed);
 
-    View_s view = {10, 20, (Coordinate_s){0, 0}};
+
     nodelay(term->world, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
+
+
+
     while (!quit)
     {
-        move_x = 0;
-        move_y = 0;
         c = wgetch(term->world);
-        while (c != ERR)
-        {
-            switch (c)
+         switch (c)
             {
             case 'd':
-                move_x++;
+                 player->m_base->m_position.m_x++;
                 break;
             case 'q':
-                move_x--;
+                 player->m_base->m_position.m_x--;
                 break;
             case 'z':
-                move_y--;
+                player->m_base->m_position.m_y--;
                 break;
             case 's':
-                move_y++;
+                player->m_base->m_position.m_y++;
                 break;
             case KEY_F(1):
                 quit = 1;
@@ -92,19 +93,16 @@ int main(int argc, char const *argv[])
                 break;
             }
 
-            c = wgetch(term->world);
-        }
-        player->m_base->m_position.m_x += move_x;
-        view.m_coord.m_x += move_x;
-        player->m_base->m_position.m_y += move_y;
-        view.m_coord.m_y += move_y;
 
-        LoadChunkAroundPlayer(player, seed);
-        displayTerm(term, &view);
+        player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
+        if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
+            LoadChunkAroundPlayer(player, seed);
+        displayTerm(term, NULL);
+        // RenderCameraView(term, NULL);
     }
 
-    freePlayer(player);
-    freeTilemap(tilemap);
+    //freePlayer(player);
+    //freeTilemap(tilemap);
 
     noraw();
     echo();

@@ -5,7 +5,9 @@
     "files.associations": {
         "chunk.h": "c",
         "tilemap.h": "c",
-        "entity.h": "c"
+        "entity.h": "c",
+        "camera.h": "c",
+        "assert.h": "c"
     },
     "discord.enabled": true,
     "cmake.sourceDirectory": "${workspaceFolder}/."
