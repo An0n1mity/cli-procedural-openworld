@@ -14,7 +14,7 @@
 #include "Camera.h"
 #include "Chunk.h"
 
-#define ctrl(x)           ((x) & 0x1f)
+#define ctrl(x) ((x)&0x1f)
 
 int main(int argc, char const *argv[])
 {
@@ -34,34 +34,25 @@ int main(int argc, char const *argv[])
 
     Player_s *player = CreatePlayer();
     Action_e player_action = BREAK;
-    Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
+    Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * MAX_CHUNK_DISTANCE, CHUNK_SIZE * MAX_CHUNK_DISTANCE, seed);
     // CreateTilemapFromFile("../map.txt");
 
     player->m_base->m_direction = SOUTH;
 
     // PrintTilemap(tilemap);
 
-    // printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     // MakeAction(player, MOVE);
-    //  printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     player->m_base->m_direction = EAST;
 
     // Block_s *front_block = getFrontBlockP(player, tilemap);
-    //  if (player_action & front_block->m_flags)
-    //      printf("Player can break the block\n\r");
-    //  else
-    //      // printf("Player can't break the block\n\r");
-    //  printf("Block health %d\n\r", (front_block)->m_health);
     // MakeActionOnBlock(BREAK, front_block);
-    // printf("Block health %d\n\r", (front_block)->m_health);
-
     // PrintTilemap(tilemap);
 
     // Chunk testing
     MovePlayerTo(player, (Coordinate_s){10, 20});
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
-    LoadChunkAroundPlayer(player, seed, true);
+    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
 
     setlocale(LC_ALL, "");
     // Term_s *term = initDisplaying();
@@ -116,7 +107,7 @@ int main(int argc, char const *argv[])
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
         {
             previous_chunk_coord = player->m_base->m_chunk_position;
-            LoadChunkAroundPlayer(player, seed, false);
+            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
             // try++;
         }
         displayTerm(term, NULL);

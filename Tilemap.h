@@ -14,6 +14,8 @@
 #include "Chunk.h"
 #include "Coordinate.h"
 
+#define MAX_CHUNK_DISTANCE 65
+
 typedef struct TilemapBlock_S
 {
     Block_s *m_block;
@@ -26,7 +28,7 @@ typedef struct Tilemap_S
     int m_height;
 
     Block_s ***m_blocks;
-    struct Chunk_S *m_chunks[3][3];
+    struct Chunk_S *m_chunks[MAX_CHUNK_DISTANCE][MAX_CHUNK_DISTANCE];
     struct Entitieslist_S *m_entities;
 
     Coordinate_s m_top_coord;

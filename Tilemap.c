@@ -5,14 +5,16 @@ Tilemap_s* CreateTilemap(const int width, const int height)
     Tilemap_s *tilemap = (Tilemap_s *)calloc(1, sizeof(Tilemap_s));
     tilemap->m_width = width; tilemap->m_height = height;
     tilemap->m_blocks = (Block_s ***)calloc(height * width, sizeof(Block_s **));
+    if(!(tilemap->m_blocks))
+        exit(1);
     /*for (size_t i = 0; i < height * width; i++)
     {
         tilemap->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }*/
 
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE; j++)
         {
             tilemap->m_chunks[i][j] = NULL;
         }

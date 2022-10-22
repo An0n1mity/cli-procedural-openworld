@@ -46,7 +46,7 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
             {
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE);
                 if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
-                 chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
+                    chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, WALKABLE);
             }
             else if (value <= 0.4)
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, WALKABLE);
@@ -56,7 +56,7 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
             {
                 chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE);
                 if (!(rand() % 5))
-                chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
+                    chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, WALKABLE);
             }
             nb++;
         }
@@ -97,9 +97,9 @@ void LoadChunksToTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
     tilemap->m_top_coord = top_coord;
 
     size_t block_idx = 0;
-    for (size_t i = 0; i < 3 * CHUNK_SIZE; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE * CHUNK_SIZE; i++)
     {
-        for (size_t j = 0; j < 3 * CHUNK_SIZE; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE * CHUNK_SIZE; j++)
         {
             size_t chunk_i = i / CHUNK_SIZE;
             size_t chunk_j = j / CHUNK_SIZE;
@@ -112,113 +112,76 @@ void LoadChunksToTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
     }
 }
 
-void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
+void LoadChunkAroundPlayer(Player_s *player, float seed, bool first, int chunkCount_x, int chunkCount_y)
 {
     Coordinate_s player_chunk_coord = TilemapToChunkCoordinates(player->m_base->m_position);
     Tilemap_s *tilemap = player->m_base->m_tilemap;
-
+    if (!(chunkCount_x % 2))
+        chunkCount_x++;
+    if (!(chunkCount_y % 2))
+        chunkCount_y++;
     // Unload previous chunk from memory
     if (!first)
     {
         switch (player->m_base->m_direction)
         {
         case NORTH:
-            freeChunk(tilemap->m_chunks[2][0]);
-            freeChunk(tilemap->m_chunks[2][1]);
-            freeChunk(tilemap->m_chunks[2][2]);
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; ++i)
+                freeChunk(tilemap->m_chunks[MAX_CHUNK_DISTANCE - 1][i]);
 
-            tilemap->m_chunks[2][0]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
-            tilemap->m_chunks[2][0]->world_position = tilemap->m_chunks[1][0]->world_position;
-            tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[0][0]->m_blocks;
-            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[0][0]->world_position;
-            tilemap->m_chunks[0][0] = NULL;
-
-            tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
-            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[1][1]->world_position;
-            tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
-            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[0][1]->world_position;
-            tilemap->m_chunks[0][1] = NULL;
-
-            tilemap->m_chunks[2][2]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
-            tilemap->m_chunks[2][2]->world_position = tilemap->m_chunks[1][2]->world_position;
-            tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[0][2]->m_blocks;
-            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[0][2]->world_position;
-            tilemap->m_chunks[0][2] = NULL;
+            for (int x = 0; x < MAX_CHUNK_DISTANCE; ++x)
+                for (int y = MAX_CHUNK_DISTANCE - 1; y > 0; --y)
+                {
+                    tilemap->m_chunks[y][x]->m_blocks = tilemap->m_chunks[y - 1][x]->m_blocks;
+                    tilemap->m_chunks[y][x]->world_position = tilemap->m_chunks[y - 1][x]->world_position;
+                }
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; i++)
+                tilemap->m_chunks[0][i] = NULL;
 
             break;
 
         case SOUTH:
-            freeChunk(tilemap->m_chunks[0][0]);
-            freeChunk(tilemap->m_chunks[0][1]);
-            freeChunk(tilemap->m_chunks[0][2]);
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; ++i)
+                freeChunk(tilemap->m_chunks[0][i]);
 
-            tilemap->m_chunks[0][0]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
-            tilemap->m_chunks[0][0]->world_position = tilemap->m_chunks[1][0]->world_position;
-            tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[2][0]->m_blocks;
-            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[2][0]->world_position;
-            tilemap->m_chunks[2][0] = NULL;
-
-            tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
-            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[1][1]->world_position;
-            tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
-            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[2][1]->world_position;
-            tilemap->m_chunks[2][1] = NULL;
-
-            tilemap->m_chunks[0][2]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
-            tilemap->m_chunks[0][2]->world_position = tilemap->m_chunks[1][2]->world_position;
-            tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[2][2]->m_blocks;
-            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[2][2]->world_position;
-            tilemap->m_chunks[2][2] = NULL;
+            for (int x = 0; x < MAX_CHUNK_DISTANCE; ++x)
+                for (int y = 0; y < MAX_CHUNK_DISTANCE - 1; ++y)
+                {
+                    tilemap->m_chunks[y][x]->m_blocks = tilemap->m_chunks[y + 1][x]->m_blocks;
+                    tilemap->m_chunks[y][x]->world_position = tilemap->m_chunks[y + 1][x]->world_position;
+                }
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; i++)
+                tilemap->m_chunks[MAX_CHUNK_DISTANCE - 1][i] = NULL;
 
             break;
 
         case WEST:
-            freeChunk(tilemap->m_chunks[0][2]);
-            freeChunk(tilemap->m_chunks[1][2]);
-            freeChunk(tilemap->m_chunks[2][2]);
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; ++i)
+                freeChunk(tilemap->m_chunks[i][MAX_CHUNK_DISTANCE - 1]);
 
-            tilemap->m_chunks[0][2]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
-            tilemap->m_chunks[0][2]->world_position = tilemap->m_chunks[0][1]->world_position;
-            tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[0][0]->m_blocks;
-            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[0][0]->world_position;
-            tilemap->m_chunks[0][0] = NULL;
-
-            tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
-            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[1][1]->world_position;
-            tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
-            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[1][0]->world_position;
-            tilemap->m_chunks[1][0] = NULL;
-
-            tilemap->m_chunks[2][2]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
-            tilemap->m_chunks[2][2]->world_position = tilemap->m_chunks[2][1]->world_position;
-            tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[2][0]->m_blocks;
-            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[2][0]->world_position;
-            tilemap->m_chunks[2][0] = NULL;
+            for (int x = 0; x < MAX_CHUNK_DISTANCE; ++x)
+                for (int y = MAX_CHUNK_DISTANCE - 1; y > 0; --y)
+                {
+                    tilemap->m_chunks[x][y]->m_blocks = tilemap->m_chunks[x][y - 1]->m_blocks;
+                    tilemap->m_chunks[x][y]->world_position = tilemap->m_chunks[x][y - 1]->world_position;
+                }
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; i++)
+                tilemap->m_chunks[i][0] = NULL;
 
             break;
 
         case EAST:
-            freeChunk(tilemap->m_chunks[0][0]);
-            freeChunk(tilemap->m_chunks[1][0]);
-            freeChunk(tilemap->m_chunks[2][0]);
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; ++i)
+                freeChunk(tilemap->m_chunks[i][0]);
 
-            tilemap->m_chunks[0][0]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
-            tilemap->m_chunks[0][0]->world_position = tilemap->m_chunks[0][1]->world_position;
-            tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[0][2]->m_blocks;
-            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[0][2]->world_position;
-            tilemap->m_chunks[0][2]->m_blocks = NULL;
-
-            tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
-            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[1][1]->world_position;
-            tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
-            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[1][2]->world_position;
-            tilemap->m_chunks[1][2]->m_blocks = NULL;
-
-            tilemap->m_chunks[2][0]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
-            tilemap->m_chunks[2][0]->world_position = tilemap->m_chunks[2][1]->world_position;
-            tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[2][2]->m_blocks;
-            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[2][2]->world_position;
-            tilemap->m_chunks[2][2]->m_blocks = NULL;
+            for (int x = 0; x < MAX_CHUNK_DISTANCE; ++x)
+                for (int y = 0; y < MAX_CHUNK_DISTANCE - 1; ++y)
+                {
+                    tilemap->m_chunks[x][y]->m_blocks = tilemap->m_chunks[x][y + 1]->m_blocks;
+                    tilemap->m_chunks[x][y]->world_position = tilemap->m_chunks[x][y + 1]->world_position;
+                }
+            for (int i = 0; i < MAX_CHUNK_DISTANCE; i++)
+                tilemap->m_chunks[i][MAX_CHUNK_DISTANCE - 1] = NULL;
 
             break;
 
@@ -229,9 +192,9 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
 
     Coordinate_s tilemap_top_coord;
     bool first_chunk = true;
-    for (int i = player_chunk_coord.m_y - 1, ci = 0; i <= player_chunk_coord.m_y + 1; i++, ci++)
+    for (int i = player_chunk_coord.m_y - chunkCount_y, ci = 0; i <= player_chunk_coord.m_y + chunkCount_y && ci < MAX_CHUNK_DISTANCE; i++, ci++)
     {
-        for (int j = player_chunk_coord.m_x - 1, cj = 0; j <= player_chunk_coord.m_x + 1; j++, cj++)
+        for (int j = player_chunk_coord.m_x - chunkCount_x, cj = 0; j <= player_chunk_coord.m_x + chunkCount_x && cj < MAX_CHUNK_DISTANCE; j++, cj++)
         {
             if (!tilemap->m_chunks[ci][cj] || !tilemap->m_chunks[ci][cj]->m_blocks)
             {

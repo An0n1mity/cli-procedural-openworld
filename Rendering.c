@@ -1,21 +1,20 @@
 #include "Rendering.h"
 
-Term_s* initDisplaying()
+Term_s *initDisplaying()
 {
     initscr();
     raw();
     noecho();
     curs_set(0);
-    if (has_colors() == FALSE) {
+    if (has_colors() == FALSE)
+    {
         endwin();
         printf("Your terminal does not support color\n");
         exit(1);
     }
     start_color();
 
-    
-    
-    Term_s* term = calloc(1, sizeof(Term_s));
+    Term_s *term = calloc(1, sizeof(Term_s));
     term->height = getmaxy(stdscr);
     term->width = getmaxx(stdscr);
 
@@ -28,7 +27,7 @@ Term_s* initDisplaying()
     init_color(COLOR_SAND, 1000, 800, 0);
     init_color(COLOR_STONE, 500, 500, 500);
 
-    for(int i = 1; i < 16; i++)
+    for (int i = 1; i < 16; i++)
         init_pair(i, COLOR_RED, COLOR_RED);
     init_pair(COLOR_WATER, COLOR_WHITE, COLOR_WATER);
     init_pair(COLOR_GRASS, COLOR_WHITE, COLOR_GRASS);
@@ -41,7 +40,7 @@ Term_s* initDisplaying()
 void displayTerm(Term_s *term, View_s *view)
 {
 
-    if(term->displayMode == WORLD)
+    if (term->displayMode == WORLD)
     {
         displayWorld(term, view);
     }
@@ -223,13 +222,13 @@ void displayWorld(Term_s *term, View_s *view)
 {
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
     int initial_x = screen_world_coord.m_x;
-    
-    for (int h = 0; h < term->tilemap->m_height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
+
+    for (int h = 0; h < term->tilemap->m_height && h < term->height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = 0; w < term->tilemap->m_width; ++w, screen_world_coord.m_x++)
+        for (int w = 0; w < term->tilemap->m_width && w < term->width/2; ++w, screen_world_coord.m_x++)
         {
 
-            Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * 3 + w];
+            Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
             short color = 0;
             if (actualBlock[0])
             {
@@ -273,13 +272,13 @@ void displayWorld(Term_s *term, View_s *view)
 
             else
                 wprintw(term->world, "  ");
-            wrefresh(term->world);
+            //wrefresh(term->world);
         }
         wprintw(term->world, "\n");
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-    usleep(50000);
+   // usleep(50000);
 }
 
 void RenderCameraView(Term_s *term, struct Camera_s *camera)
@@ -332,11 +331,10 @@ void RenderCameraView(Term_s *term, struct Camera_s *camera)
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-
 }
 void cookedOnExit()
 {
-    
+
     noraw();
     echo();
     endwin();

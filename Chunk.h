@@ -17,7 +17,7 @@ typedef struct Chunk_S
 } Chunk_s;
 
 // width and height for each chunks
-#define CHUNK_SIZE 10
+#define CHUNK_SIZE 4
 
 /**
  * @brief Create a Chunk From Tilemap object
@@ -46,7 +46,7 @@ Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord);
  *
  * @param player
  */
-void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first);
+void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first, int chunkCount_x, int chunkCount_y);
 
 void freeChunk(Chunk_s *chunk);
 
