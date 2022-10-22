@@ -21,7 +21,7 @@ Term_s* initDisplaying()
 
     term->displayMode = WORLD;
 
-    term->world = createWindow(30, 61, 0, 0);
+    term->world = createWindow(term->height, term->width, 0, 0);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
