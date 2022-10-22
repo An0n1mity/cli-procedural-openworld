@@ -14,6 +14,8 @@
 #include "Camera.h"
 #include "Chunk.h"
 
+#define ctrl(x)           ((x) & 0x1f)
+
 int main(int argc, char const *argv[])
 {
     if (atexit(cookedOnExit))
@@ -80,23 +82,24 @@ int main(int argc, char const *argv[])
             case KEY_RIGHT:
             case 'd':
                 player->m_base->m_direction = EAST;
-                player->m_base->m_position.m_x++;
+                move_x++;
                 break;
             case KEY_LEFT:
             case 'q':
                 player->m_base->m_direction = WEST;
-                player->m_base->m_position.m_x--;
+                move_x--;
                 break;
             case KEY_UP:
             case 'z':
                 player->m_base->m_direction = NORTH;
-                player->m_base->m_position.m_y--;
+                move_y--;
                 break;
             case KEY_DOWN:
             case 's':
                 player->m_base->m_direction = SOUTH;
-                player->m_base->m_position.m_y++;
+                move_y++;
                 break;
+            case ctrl('c'):
             case KEY_F(1):
                 quit = 1;
                 break;
@@ -106,6 +109,8 @@ int main(int argc, char const *argv[])
             }
             c = wgetch(term->world);
         }
+        player->m_base->m_position.m_x += (move_x % 2);
+        player->m_base->m_position.m_y += (move_y % 2);
 
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
