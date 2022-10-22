@@ -34,7 +34,7 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
     {
         chunk->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }
-
+    chunk->world_position = top_coord;
     size_t nb = 0;
     for (int y = top_coord.m_y, i = 0, idx = 0; y < top_coord.m_y + CHUNK_SIZE; y++, i++)
     {
@@ -128,15 +128,21 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
             freeChunk(tilemap->m_chunks[2][2]);
 
             tilemap->m_chunks[2][0]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
+            tilemap->m_chunks[2][0]->world_position = tilemap->m_chunks[1][0]->world_position;
             tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[0][0]->m_blocks;
+            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[0][0]->world_position;
             tilemap->m_chunks[0][0] = NULL;
 
             tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
+            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[1][1]->world_position;
             tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
+            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[0][1]->world_position;
             tilemap->m_chunks[0][1] = NULL;
 
             tilemap->m_chunks[2][2]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
+            tilemap->m_chunks[2][2]->world_position = tilemap->m_chunks[1][2]->world_position;
             tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[0][2]->m_blocks;
+            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[0][2]->world_position;
             tilemap->m_chunks[0][2] = NULL;
 
             break;
@@ -147,15 +153,21 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
             freeChunk(tilemap->m_chunks[0][2]);
 
             tilemap->m_chunks[0][0]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
+            tilemap->m_chunks[0][0]->world_position = tilemap->m_chunks[1][0]->world_position;
             tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[2][0]->m_blocks;
+            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[2][0]->world_position;
             tilemap->m_chunks[2][0] = NULL;
 
             tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
+            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[1][1]->world_position;
             tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
+            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[2][1]->world_position;
             tilemap->m_chunks[2][1] = NULL;
 
             tilemap->m_chunks[0][2]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
+            tilemap->m_chunks[0][2]->world_position = tilemap->m_chunks[1][2]->world_position;
             tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[2][2]->m_blocks;
+            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[2][2]->world_position;
             tilemap->m_chunks[2][2] = NULL;
 
             break;
@@ -166,15 +178,21 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
             freeChunk(tilemap->m_chunks[2][2]);
 
             tilemap->m_chunks[0][2]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
+            tilemap->m_chunks[0][2]->world_position = tilemap->m_chunks[0][1]->world_position;
             tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[0][0]->m_blocks;
+            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[0][0]->world_position;
             tilemap->m_chunks[0][0] = NULL;
 
             tilemap->m_chunks[1][2]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
+            tilemap->m_chunks[1][2]->world_position = tilemap->m_chunks[1][1]->world_position;
             tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[1][0]->m_blocks;
+            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[1][0]->world_position;
             tilemap->m_chunks[1][0] = NULL;
 
             tilemap->m_chunks[2][2]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
+            tilemap->m_chunks[2][2]->world_position = tilemap->m_chunks[2][1]->world_position;
             tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[2][0]->m_blocks;
+            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[2][0]->world_position;
             tilemap->m_chunks[2][0] = NULL;
 
             break;
@@ -185,15 +203,21 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first)
             freeChunk(tilemap->m_chunks[2][0]);
 
             tilemap->m_chunks[0][0]->m_blocks = tilemap->m_chunks[0][1]->m_blocks;
+            tilemap->m_chunks[0][0]->world_position = tilemap->m_chunks[0][1]->world_position;
             tilemap->m_chunks[0][1]->m_blocks = tilemap->m_chunks[0][2]->m_blocks;
+            tilemap->m_chunks[0][1]->world_position = tilemap->m_chunks[0][2]->world_position;
             tilemap->m_chunks[0][2]->m_blocks = NULL;
 
             tilemap->m_chunks[1][0]->m_blocks = tilemap->m_chunks[1][1]->m_blocks;
+            tilemap->m_chunks[1][0]->world_position = tilemap->m_chunks[1][1]->world_position;
             tilemap->m_chunks[1][1]->m_blocks = tilemap->m_chunks[1][2]->m_blocks;
+            tilemap->m_chunks[1][1]->world_position = tilemap->m_chunks[1][2]->world_position;
             tilemap->m_chunks[1][2]->m_blocks = NULL;
 
             tilemap->m_chunks[2][0]->m_blocks = tilemap->m_chunks[2][1]->m_blocks;
+            tilemap->m_chunks[2][0]->world_position = tilemap->m_chunks[2][1]->world_position;
             tilemap->m_chunks[2][1]->m_blocks = tilemap->m_chunks[2][2]->m_blocks;
+            tilemap->m_chunks[2][1]->world_position = tilemap->m_chunks[2][2]->world_position;
             tilemap->m_chunks[2][2]->m_blocks = NULL;
 
             break;

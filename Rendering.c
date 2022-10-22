@@ -40,15 +40,10 @@ Term_s* initDisplaying()
 
 void displayTerm(Term_s *term, View_s *view)
 {
-    // if(term->displayMode == MAIN_MENU)
-    // {
-    //     displayWorld(term, view);
-    // }
 
     if(term->displayMode == WORLD)
     {
         displayWorld(term, view);
-        // displayChunks(term, view);
     }
 }
 
@@ -222,15 +217,17 @@ void displayChunks(Term_s *term, View_s *view)
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-    //usleep(50000);
 }
 
 void displayWorld(Term_s *term, View_s *view)
 {
-    for (int h = 0; h < term->tilemap->m_height; ++h)
+    Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
+    int initial_x = screen_world_coord.m_x;
+    for (int h = 0; h < term->tilemap->m_height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = 0; w < term->tilemap->m_width; ++w)
+        for (int w = 0; w < term->tilemap->m_width; ++w, screen_world_coord.m_x++)
         {
+
             Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * 3 + w];
             short color = 0;
             if (actualBlock[0])
@@ -265,6 +262,12 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"r");
                     break;
                 }
+            }
+
+            else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
+                     term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
+            {
+                waddwstr(term->world, L"p");
             }
 
             else

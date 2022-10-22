@@ -12,6 +12,8 @@ typedef struct Chunk_S
 {
     struct Entitieslist_S *m_entities_list;
     Block_s ***m_blocks;
+
+    Coordinate_s world_position;
 } Chunk_s;
 
 // width and height for each chunks

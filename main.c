@@ -16,14 +16,11 @@
 
 int main(int argc, char const *argv[])
 {
-<<<<<<< HEAD
-=======
     if (atexit(cookedOnExit))
         return EXIT_FAILURE;
 
     setlocale(LC_ALL, "");
     Term_s *term = initDisplaying();
->>>>>>> 4b7edda783f7d688c11ce33ebb317c4cd959a539
 
     int seed = 563;
     int quit = 0;
@@ -65,7 +62,7 @@ int main(int argc, char const *argv[])
     LoadChunkAroundPlayer(player, seed, true);
 
     setlocale(LC_ALL, "");
-    Term_s *term = initDisplaying();
+    // Term_s *term = initDisplaying();
     nodelay(term->world, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
