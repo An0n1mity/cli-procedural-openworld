@@ -21,7 +21,7 @@ Term_s* initDisplaying()
 
     term->displayMode = WORLD;
 
-    term->world = createWindow(50, 50, 0, 0);
+    term->world = createWindow(30, 61, 0, 0);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
@@ -112,17 +112,17 @@ void displayChunks(Term_s *term, View_s *view)
                     switch (actual_block[1]->m_type)
                     {
                     case EVERGREEN_TREE:
-                        waddwstr(term->world, L"^");
+                        waddwstr(term->world, L"🌲");
                         break;
                     case ROCK:
-                        waddwstr(term->world, L"r");
+                        waddwstr(term->world, L"🪨");
                         break;
                         // prout
                     }
                 }
 
                 else
-                    wprintw(term->world, " ");
+                    wprintw(term->world, "  ");
             }
 
             actual_chunk = s;
@@ -158,17 +158,17 @@ void displayChunks(Term_s *term, View_s *view)
                     switch (actual_block[1]->m_type)
                     {
                     case EVERGREEN_TREE:
-                        waddwstr(term->world, L"^");
+                        waddwstr(term->world, L"🌲");
                         break;
                     case ROCK:
-                        waddwstr(term->world, L"r");
+                        waddwstr(term->world, L"🪨");
                         break;
                         // prout
                     }
                 }
 
                 else
-                    wprintw(term->world, " ");
+                    wprintw(term->world, "  ");
                 wrefresh(term->world);
             }
 
@@ -205,17 +205,17 @@ void displayChunks(Term_s *term, View_s *view)
                     switch (actual_block[1]->m_type)
                     {
                     case EVERGREEN_TREE:
-                        waddwstr(term->world, L"^");
+                        waddwstr(term->world, L"🌲");
                         break;
                     case ROCK:
-                        waddwstr(term->world, L"r");
+                        waddwstr(term->world, L"🪨");
                         break;
                         // prout
                     }
                 }
 
                 else
-                    wprintw(term->world, " ");
+                    wprintw(term->world, "  ");
             }
             wprintw(term->world, "\n");
         }
@@ -329,4 +329,13 @@ void RenderCameraView(Term_s *term, struct Camera_s *camera)
     wrefresh(term->world);
     wmove(term->world, 0, 0);
 
+}
+void cookedOnExit()
+{
+    
+    noraw();
+    echo();
+    endwin();
+
+    return;
 }

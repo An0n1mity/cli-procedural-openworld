@@ -54,6 +54,7 @@ typedef struct Term_S
 } Term_s;
 
 Term_s * initDisplaying();
+void cookedOnExit();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);
 void RenderCameraView(Term_s *term, struct Camera_s *camera);
