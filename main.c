@@ -70,31 +70,41 @@ int main(int argc, char const *argv[])
     size_t try = 0;
     while (!quit && try < 2)
     {
+        move_x = 0;
+        move_y = 0;
         c = wgetch(term->world);
-        switch (c)
+        while (c != ERR)
         {
-        case 'd':
-            player->m_base->m_direction = EAST;
-            player->m_base->m_position.m_x++;
-            break;
-        case 'q':
-            player->m_base->m_direction = WEST;
-            player->m_base->m_position.m_x--;
-            break;
-        case 'z':
-            player->m_base->m_direction = NORTH;
-            player->m_base->m_position.m_y--;
-            break;
-        case 's':
-            player->m_base->m_direction = SOUTH;
-            player->m_base->m_position.m_y++;
-            break;
-        case KEY_F(1):
-            quit = 1;
-            break;
+            switch (c)
+            {
+            case KEY_RIGHT:
+            case 'd':
+                player->m_base->m_direction = EAST;
+                player->m_base->m_position.m_x++;
+                break;
+            case KEY_LEFT:
+            case 'q':
+                player->m_base->m_direction = WEST;
+                player->m_base->m_position.m_x--;
+                break;
+            case KEY_UP:
+            case 'z':
+                player->m_base->m_direction = NORTH;
+                player->m_base->m_position.m_y--;
+                break;
+            case KEY_DOWN:
+            case 's':
+                player->m_base->m_direction = SOUTH;
+                player->m_base->m_position.m_y++;
+                break;
+            case KEY_F(1):
+                quit = 1;
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
+            c = wgetch(term->world);
         }
 
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
