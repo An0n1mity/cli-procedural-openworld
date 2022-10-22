@@ -223,6 +223,7 @@ void displayWorld(Term_s *term, View_s *view)
 {
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
     int initial_x = screen_world_coord.m_x;
+    
     for (int h = 0; h < term->tilemap->m_height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
         for (int w = 0; w < term->tilemap->m_width; ++w, screen_world_coord.m_x++)
