@@ -90,41 +90,6 @@ Block_s *CharToBlock(char c)
     return block;
 }
 
-// void FillTilemap(Tilemap_s* tilemap, const char* mapfile)
-// {
-//     const int fd = open(mapfile, O_RDONLY);
-
-//     stat statbuf;
-//     fstat(fd, &statbuf);
-
-//     int start = 0;
-//     char* map = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
-
-//     size_t idx = 0;
-//     size_t level = 0;
-//     for(size_t i = 0; i < statbuf.st_size; i++)
-//     {
-//         if(map[i] == '\n' && !start)
-//         {
-//             start = 1;
-//             i++;
-//         }
-//         if (map[i] != '\n' && map[i] != ',' && start && (idx < tilemap->m_width * tilemap->m_height))
-//         {
-//             (tilemap->m_blocks[idx])[level++] = CharToBlock(map[i]);
-//         }
-//         if ((map[i] == ',' || map[i] == '\n') && start)
-//         {
-//             ++idx;
-//             level = 0;
-//         }
-//     }
-
-//     munmap(map, statbuf.st_size);
-
-//     close(fd);
-// }
-
 void PrintTilemap(Tilemap_s* tilemap)
 {
     for (size_t i = 0; i < tilemap->m_height; i++)
@@ -221,4 +186,34 @@ void freeTilemap(Tilemap_s *tilemap)
 
     free(tilemap->m_blocks);
     free(tilemap);
+}
+
+/************************************ COORDINATE CALCULATION***************************************/
+
+Coordinate_s getEntityTilemapCoordinate(Entity_s *entity)
+{
+    // Get tilemap top left corner world coordinate
+    Coordinate_s tilemap_top_coord = getTopCoordinateFromChunk(entity->m_tilemap, (Coordinate_s){entity->m_chunk_position.m_x - 1, entity->m_chunk_position.m_y - 1});
+
+    return (Coordinate_s){entity->m_position.m_x - tilemap_top_coord.m_x, entity->m_position.m_y - tilemap_top_coord.m_y};
+}
+
+Coordinate_s getTopCoordinateFromChunk(Tilemap_s *tilemap, Coordinate_s chunk_coord)
+{
+    return (Coordinate_s){
+        chunk_coord.m_x * CHUNK_SIZE,
+        chunk_coord.m_y * CHUNK_SIZE};
+}
+
+Coordinate_s getEntityCoordinateInChunk(Entity_s *entity)
+{
+    Coordinate_s entity_chunk_coord = entity->m_chunk_position;
+    Coordinate_s chunk_top_coord = getTopCoordinateFromChunk(entity->m_tilemap, entity_chunk_coord);
+
+    return (Coordinate_s){entity->m_position.m_x - chunk_top_coord.m_x, entity->m_position.m_y - chunk_top_coord.m_y};
+}
+
+Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord)
+{
+    return (Coordinate_s){tilemap_coord.m_x / CHUNK_SIZE, tilemap_coord.m_y / CHUNK_SIZE};
 }

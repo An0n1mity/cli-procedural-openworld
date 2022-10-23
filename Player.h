@@ -20,16 +20,29 @@ typedef enum Action_E
     MOVE        = 0b1000
 } Action_e;
 
+typedef enum VitalType_E
+{
+    FOOD_LVL,
+    WATER_LVL
+} VitalType_E;
+
 typedef struct Player_S
 {
     // Based struct
-    struct Entity_S* m_base;
+    struct Entity_S *m_base;
 
     // Player name
-    const char* m_name;
+    const char *m_name;
 
     // Palyer attributes
     Attribute_s m_attributes[4];
+
+    // Player vitals stats
+    size_t m_vitals[2];
+
+    // If the player stats have changed
+    bool update_stats;
+
 } Player_s;
 
 Player_s* CreatePlayer();
@@ -42,10 +55,8 @@ struct TilemapBlock_S *getFrontTilemapBlockP(Player_s *player, struct Tilemap_S 
 void MovePlayer(Player_s *player);
 void freePlayer(Player_s *player);
 void printPlayer(Player_s *player);
-#define getFronBlock(a, b) _Generic(a, Player_s *                \
-                                    : getFrontBlockP, Entity_s * \
-                                    : getFrontBlock)(a, b)
-
+void reducePlayerFoodLevel(Player_s *player);
+void reducePlayerWaterLevel(Player_s *player);
 #endif 
 
  

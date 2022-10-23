@@ -29,6 +29,8 @@ typedef struct Tilemap_S
     struct Chunk_S *m_chunks[3][3];
     struct Entitieslist_S *m_entities;
 
+    struct Player_S *m_player;
+
     Coordinate_s m_top_coord;
 } Tilemap_s;
 
@@ -40,4 +42,10 @@ void PrintTilemap(Tilemap_s* tilemap);
 void addEntityToTilemap(Tilemap_s *tilemap, struct Entity_S *entity);
 void freeTilemap(Tilemap_s *tilemap);
 void freeEntitiesList(struct Entitieslist_S *list);
+
+/************************** COORDINATE CALCULATION ***********************************/
+Coordinate_s getEntityTilemapCoordinate(struct Entity_S *entity);
+Coordinate_s getTopCoordinateFromChunk(Tilemap_s *tilemap, Coordinate_s chunk_coord);
+Coordinate_s getEntityCoordinateInChunk(struct Entity_S *entity);
+Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord);
 #endif /* !TILEMAP_H */

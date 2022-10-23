@@ -5,6 +5,7 @@
 #include <termios.h>
 #include <locale.h>
 #include <ncurses.h>
+#include <time.h>
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"
@@ -22,6 +23,9 @@ int main(int argc, char const *argv[])
     setlocale(LC_ALL, "");
     Term_s *term = initDisplaying();
 
+    remove("../saved_chunks");
+    FILE *f = fopen("../saved_chunks", "wb");
+    fclose(f);
     int seed = 563;
     int quit = 0;
 
@@ -56,19 +60,19 @@ int main(int argc, char const *argv[])
     // PrintTilemap(tilemap);
 
     // Chunk testing
-    MovePlayerTo(player, (Coordinate_s){10, 20});
+    MovePlayerTo(player, (Coordinate_s){10, 25});
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
     LoadChunkAroundPlayer(player, seed, true);
-
-    setlocale(LC_ALL, "");
-    // Term_s *term = initDisplaying();
     nodelay(term->world, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
     term->tilemap = tilemap;
     size_t try = 0;
-    while (!quit && try < 2)
+
+    clock_t ticks = clock();
+    size_t nb_ticks = 0;
+    while (!quit)
     {
         move_x = 0;
         move_y = 0;
@@ -80,22 +84,24 @@ int main(int argc, char const *argv[])
             case KEY_RIGHT:
             case 'd':
                 player->m_base->m_direction = EAST;
-                player->m_base->m_position.m_x++;
+                MovePlayer(player);
                 break;
             case KEY_LEFT:
             case 'q':
                 player->m_base->m_direction = WEST;
-                player->m_base->m_position.m_x--;
+                MovePlayer(player);
                 break;
             case KEY_UP:
             case 'z':
                 player->m_base->m_direction = NORTH;
-                player->m_base->m_position.m_y--;
+                MovePlayer(player);
+
                 break;
             case KEY_DOWN:
             case 's':
                 player->m_base->m_direction = SOUTH;
-                player->m_base->m_position.m_y++;
+                MovePlayer(player);
+
                 break;
             case KEY_F(1):
                 quit = 1;
@@ -115,7 +121,26 @@ int main(int argc, char const *argv[])
             // try++;
         }
         displayTerm(term, NULL);
-        // RenderCameraView(term, NULL);
+
+        if ((double)(clock() - ticks) / CLOCKS_PER_SEC >= 1.0)
+        {
+            ticks = clock();
+            if (nb_ticks >= 65535)
+                nb_ticks = 0;
+            nb_ticks++;
+
+            if (nb_ticks > 0 && !(nb_ticks % 120))
+            {
+                reducePlayerFoodLevel(player);
+                player->update_stats = true;
+            }
+
+            if (nb_ticks > 0 && !(nb_ticks % 60))
+            {
+                reducePlayerFoodLevel(player);
+                player->update_stats = true;
+            }
+        }
     }
 
     freeEntitiesList(tilemap->m_entities);

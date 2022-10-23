@@ -4,6 +4,11 @@ Player_s *CreatePlayer()
 {
     Player_s* player = (Player_s*)malloc(sizeof(Player_s));
     player->m_base = CreateEntity(PLAYER);
+
+    player->m_vitals[FOOD_LVL] = 100;
+    player->m_vitals[WATER_LVL] = 100;
+
+    player->update_stats = true;
     return player;
 }
 
@@ -18,14 +23,13 @@ void MovePlayer(Player_s *player)
     Direction_e player_direction = player->m_base->m_direction;
     Tilemap_s *tilemap = player->m_base->m_tilemap;
 
-    if (player_direction == NORTH && (player_position->m_y >= 0))
-        --player_position->m_y;
-    else if (player_direction == SOUTH && (player_position->m_y < tilemap->m_height))
-        ++player_position->m_y;
-    else if (player_direction == WEST && (player_position->m_x >= 0))
-        --player_position->m_x;
-    else if (player_direction == EAST && (player_position->m_x < tilemap->m_width))
-        ++player_position->m_x;
+    Block_s **front_block = getFrontBlock(player->m_base, tilemap);
+    if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (front_block[0]->m_flags & WALKABLE))
+    {
+        moveEntityInDirection(player->m_base);
+        reducePlayerFoodLevel(player);
+        reducePlayerWaterLevel(player);
+    }
 }
 
 void MakeActionOnBlock(Action_e action, Block_s *block)
@@ -61,6 +65,19 @@ void printPlayer(Player_s *player)
 inline void addPlayerToTilemap(Player_s *player, Tilemap_s *tilemap)
 {
     addEntityToTilemap(tilemap, player->m_base);
+    tilemap->m_player = player;
+}
+
+inline void reducePlayerFoodLevel(Player_s *player)
+{
+    player->m_vitals[FOOD_LVL]--;
+    player->update_stats = true;
+}
+
+inline void reducePlayerWaterLevel(Player_s *player)
+{
+    player->m_vitals[WATER_LVL]--;
+    player->update_stats = true;
 }
 
 inline void freePlayer(Player_s *player)
