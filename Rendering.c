@@ -1,33 +1,36 @@
 #include "Rendering.h"
 
-Term_s *initDisplaying()
+Term_s* initDisplaying()
 {
     initscr();
     raw();
     noecho();
     curs_set(0);
-    if (has_colors() == FALSE)
-    {
+    if (has_colors() == FALSE) {
         endwin();
         printf("Your terminal does not support color\n");
         exit(1);
     }
     start_color();
 
-    Term_s *term = calloc(1, sizeof(Term_s));
+    
+    
+    Term_s* term = calloc(1, sizeof(Term_s));
+
     term->height = getmaxy(stdscr);
     term->width = getmaxx(stdscr);
 
     term->displayMode = WORLD;
 
-    term->world = createWindow(term->height, term->width, 0, 0);
+    term->world = createWindow(CHUNK_SIZE * 3, CHUNK_SIZE * 3 * 2 + 1, 0, 0);
+    term->stats = createWindow(CHUNK_SIZE * 3, CHUNK_SIZE * 3 * 2 + 1, 0, CHUNK_SIZE * 3 * 2 + 1);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
     init_color(COLOR_SAND, 1000, 800, 0);
     init_color(COLOR_STONE, 500, 500, 500);
 
-    for (int i = 1; i < 16; i++)
+    for(int i = 1; i < 16; i++)
         init_pair(i, COLOR_RED, COLOR_RED);
     init_pair(COLOR_WATER, COLOR_WHITE, COLOR_WATER);
     init_pair(COLOR_GRASS, COLOR_WHITE, COLOR_GRASS);
@@ -37,15 +40,15 @@ Term_s *initDisplaying()
     return term;
 }
 
+void displayPlayerStats(Term_s *term);
+
 void displayTerm(Term_s *term, View_s *view)
 {
-    term->height = getmaxy(stdscr);
-    term->width = getmaxx(stdscr) - ((getmaxx(stdscr)+1)%2);
 
-    if (term->displayMode == WORLD)
+    if(term->displayMode == WORLD)
     {
-        wresize(term->world, term->height, term->width);
         displayWorld(term, view);
+        displayPlayerStats(term);
     }
 }
 
@@ -58,180 +61,20 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
                         * for the vertical and horizontal
                         * lines			*/
     wrefresh(window);  /* Show that box 		*/
-
+    nodelay(window, TRUE);
     return window;
-}
-
-// TODO Do not render all generated chunks only blocks visibles in viewport
-
-void displayChunks(Term_s *term, View_s *view)
-{
-
-    Tilemap_s *tilemap = term->tilemap;
-    for (size_t i = 0; i < 3; i++)
-    {
-        Chunk_s *f = tilemap->m_chunks[i][0];
-        Chunk_s *s = tilemap->m_chunks[i][1];
-        Chunk_s *t = tilemap->m_chunks[i][2];
-
-        for (size_t j = 0; j < CHUNK_SIZE; j++)
-        {
-            Chunk_s *actual_chunk = f;
-            for (size_t k = 0; k < CHUNK_SIZE; k++)
-            {
-
-                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
-                attr_t attr = 1 & A_STANDOUT;
-                short color = 0;
-                if (actual_block[0])
-                {
-                    switch (actual_block[0]->m_type)
-                    {
-                    case WATER:
-                        color = COLOR_WATER;
-                        break;
-                    case GRASS:
-                        color = COLOR_GRASS;
-                        break;
-                    case SAND:
-                        color = COLOR_SAND;
-                        break;
-                    case STONE:
-                        color = COLOR_STONE;
-                        break;
-                    }
-                }
-
-                wattron(term->world, COLOR_PAIR(color));
-
-                if (actual_block[1])
-                {
-                    switch (actual_block[1]->m_type)
-                    {
-                    case EVERGREEN_TREE:
-                        waddwstr(term->world, L"🌲");
-                        break;
-                    case ROCK:
-                        waddwstr(term->world, L"🪨");
-                        break;
-                        // prout
-                    }
-                }
-
-                else
-                    wprintw(term->world, "  ");
-            }
-
-            actual_chunk = s;
-            for (size_t k = 0; k < CHUNK_SIZE; k++)
-            {
-
-                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
-                attr_t attr = 1 & A_STANDOUT;
-                short color = 0;
-                if (actual_block[0])
-                {
-                    switch (actual_block[0]->m_type)
-                    {
-                    case WATER:
-                        color = COLOR_WATER;
-                        break;
-                    case GRASS:
-                        color = COLOR_GRASS;
-                        break;
-                    case SAND:
-                        color = COLOR_SAND;
-                        break;
-                    case STONE:
-                        color = COLOR_STONE;
-                        break;
-                    }
-                }
-
-                wattron(term->world, COLOR_PAIR(color));
-
-                if (actual_block[1])
-                {
-                    switch (actual_block[1]->m_type)
-                    {
-                    case EVERGREEN_TREE:
-                        waddwstr(term->world, L"🌲");
-                        break;
-                    case ROCK:
-                        waddwstr(term->world, L"🪨");
-                        break;
-                        // prout
-                    }
-                }
-
-                else
-                    wprintw(term->world, "  ");
-                wrefresh(term->world);
-            }
-
-            actual_chunk = t;
-            for (size_t k = 0; k < CHUNK_SIZE; k++)
-            {
-
-                Block_s **actual_block = actual_chunk->m_blocks[j * CHUNK_SIZE + k];
-                attr_t attr = 1 & A_STANDOUT;
-                short color = 0;
-                if (actual_block[0])
-                {
-                    switch (actual_block[0]->m_type)
-                    {
-                    case WATER:
-                        color = COLOR_WATER;
-                        break;
-                    case GRASS:
-                        color = COLOR_GRASS;
-                        break;
-                    case SAND:
-                        color = COLOR_SAND;
-                        break;
-                    case STONE:
-                        color = COLOR_STONE;
-                        break;
-                    }
-                }
-
-                wattron(term->world, COLOR_PAIR(color));
-
-                if (actual_block[1])
-                {
-                    switch (actual_block[1]->m_type)
-                    {
-                    case EVERGREEN_TREE:
-                        waddwstr(term->world, L"🌲");
-                        break;
-                    case ROCK:
-                        waddwstr(term->world, L"🪨");
-                        break;
-                        // prout
-                    }
-                }
-
-                else
-                    wprintw(term->world, "  ");
-            }
-            wprintw(term->world, "\n");
-        }
-    }
-    wrefresh(term->world);
-    wmove(term->world, 0, 0);
 }
 
 void displayWorld(Term_s *term, View_s *view)
 {
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
     int initial_x = screen_world_coord.m_x;
-
-    for (int h = 0; h < term->tilemap->m_height && h < term->height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
+    for (int h = 0; h < term->tilemap->m_height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = 0; w < term->tilemap->m_width && w < term->width/2; ++w, screen_world_coord.m_x++)
+        for (int w = 0; w < term->tilemap->m_width; ++w, screen_world_coord.m_x++)
         {
 
-            Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
+            Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * 3 + w];
             short color = 0;
             if (actualBlock[0])
             {
@@ -262,7 +105,7 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🌲");
                     break;
                 case ROCK:
-                    waddwstr(term->world, L"🪨");
+                    waddwstr(term->world, L"🗿");
                     break;
                 }
             }
@@ -275,13 +118,73 @@ void displayWorld(Term_s *term, View_s *view)
 
             else
                 wprintw(term->world, "  ");
-            //wrefresh(term->world);
+            wrefresh(term->world);
         }
         wprintw(term->world, "\n");
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
-   // usleep(50000);
+}
+
+void displayPlayerStats(Term_s *term)
+{
+    Player_s *player = term->tilemap->m_player;
+    if (player->update_stats)
+    {
+        static size_t previous_heart_lvl = 0;
+        static size_t previous_food_lvl = 0;
+        static size_t previous_water_lvl = 0;
+
+        size_t hp_lvl = player->m_base->m_health;
+        size_t food_lvl = player->m_vitals[FOOD_LVL] / 10;
+        size_t water_lvl = player->m_vitals[WATER_LVL] / 10;
+
+        if ((previous_food_lvl == food_lvl) && (previous_water_lvl == water_lvl) && (hp_lvl == previous_heart_lvl))
+            return;
+
+        previous_heart_lvl = hp_lvl;
+        previous_food_lvl = food_lvl;
+        previous_water_lvl = water_lvl;
+
+        mvwprintw(term->stats, 1, 1, "HEALTH : ");
+
+        // Print player HP
+        for (size_t i = 0; i < player->m_base->m_health; i++)
+        {
+            wprintw(term->stats, "♥");
+        }
+
+        // Print player food level
+        mvwprintw(term->stats, 2, 1, "FOOD   : ");
+
+        for (size_t i = 0; i < food_lvl; i++)
+        {
+            wprintw(term->stats, "🍗");
+        }
+
+        for (size_t i = 0; i < 10 - food_lvl; i++)
+        {
+            wprintw(term->stats, " ");
+        }
+
+        // Print player water level
+        mvwprintw(term->stats, 3, 1, "WATER  : ");
+
+        for (size_t i = 0; i < water_lvl; i++)
+        {
+            wprintw(term->stats, "💧");
+                }
+
+        for (size_t i = 0; i < 10 - water_lvl; i++)
+        {
+            wprintw(term->stats, " ");
+        }
+
+        wrefresh(term->stats);
+        wmove(term->stats, 0, 0);
+
+        player->update_stats = false;
+    }
 }
 
 void RenderCameraView(Term_s *term, struct Camera_s *camera)
@@ -334,10 +237,11 @@ void RenderCameraView(Term_s *term, struct Camera_s *camera)
     }
     wrefresh(term->world);
     wmove(term->world, 0, 0);
+
 }
 void cookedOnExit()
 {
-
+    
     noraw();
     echo();
     endwin();

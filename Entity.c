@@ -39,9 +39,11 @@ inline void setDirection(Entity_s *entity, Direction_e direction)
 
 void moveEntityInDirection(Entity_s *entity)
 {
+
     switch (entity->m_direction)
     {
     case NORTH:
+
         entity->m_position.m_y--;
         entity->m_chunk_position = getEntityChunkCoordinate(entity);
         break;
@@ -63,7 +65,7 @@ void moveEntityInDirection(Entity_s *entity)
     }
 }
 
-Block_s *getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
+Block_s **getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 {
     assert(entity && tilemap);
 
@@ -72,36 +74,30 @@ Block_s *getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 
     Block_s **blocks = tilemap->m_blocks[1];
 
-    if (entity->m_direction == NORTH && (entity_y - 1 >= 0))
+    // Get entity coordinate in tilemap space
+    Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(entity);
+
+    Block_s **block_in_front;
+
+    switch (entity->m_direction)
     {
-        if (tilemap->m_blocks[(entity_y - 1) * tilemap->m_width + entity_x][1])
-            return tilemap->m_blocks[(entity_y - 1) * tilemap->m_width + entity_x][1];
-        else
-            return tilemap->m_blocks[(entity_y - 1) * tilemap->m_width + entity_x][0];
+    case NORTH:
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y - 1) * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x];
+        break;
+    case SOUTH:
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y + 1) * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x];
+        break;
+    case WEST:
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x - 1];
+        break;
+    case EAST:
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x + 1];
+        break;
+    default:
+        break;
     }
-    else if (entity->m_direction == SOUTH && (entity_y + 1 < tilemap->m_height))
-    {
-        if (tilemap->m_blocks[(entity_y + 1) * tilemap->m_width + entity_x][1])
-            return tilemap->m_blocks[(entity_y + 1) * tilemap->m_width + entity_x][1];
-        else
-            return tilemap->m_blocks[(entity_y + 1) * tilemap->m_width + entity_x][0];
-    }
-    else if (entity->m_direction == WEST && (entity_x - 1 >= 0))
-    {
-        if (tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x - 1)][1])
-            return tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x - 1)][1];
-        else
-            return tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x - 1)][0];
-    }
-    else if (entity->m_direction == EAST && (entity_x + 1 < tilemap->m_width))
-    {
-        if (tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x + 1)][1])
-            return tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x + 1)][1];
-        else
-            return tilemap->m_blocks[entity_y * tilemap->m_width + (entity_x + 1)][0];
-    }
-    else
-        return NULL;
+
+    return block_in_front;
 }
 
 Entitieslist_s *createEntitieslist(Entity_s *entity)

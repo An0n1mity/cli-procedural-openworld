@@ -48,8 +48,7 @@ typedef struct Term_S
     WINDOW* world;
     WINDOW* stats;
 
-    Tilemap_s* tilemap;
-    View_s *view;
+    Tilemap_s *tilemap;
 
 } Term_s;
 
