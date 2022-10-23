@@ -46,7 +46,7 @@ Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord);
  *
  * @param player
  */
-void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first, int chunkCount_x, int chunkCount_y);
+void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first);
 
 void freeChunk(Chunk_s *chunk);
 
