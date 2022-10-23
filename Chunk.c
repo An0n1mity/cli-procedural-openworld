@@ -73,23 +73,11 @@ void AddEntityToChunk(Chunk_s *chunk, Entity_s *entity)
     addEntityToList(&(chunk->m_entities_list), entity);
 }
 
-inline Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord)
-{
-    return (Coordinate_s){tilemap_coord.m_x / CHUNK_SIZE, tilemap_coord.m_y / CHUNK_SIZE};
-}
-
 bool isCoordinateInTilemap(Tilemap_s *tilemap, Coordinate_s coordinate)
 {
     if ((coordinate.m_x >= 0 && coordinate.m_x < tilemap->m_width) && (coordinate.m_y >= 0 && coordinate.m_y < tilemap->m_height))
         return true;
     return false;
-}
-
-Coordinate_s getTopCoordinateFromChunk(Tilemap_s *tilemap, Coordinate_s chunk_coord)
-{
-    return (Coordinate_s){
-        chunk_coord.m_x * CHUNK_SIZE,
-        chunk_coord.m_y * CHUNK_SIZE};
 }
 
 void LoadChunksToTilemap(Tilemap_s *tilemap, Coordinate_s top_coord)
