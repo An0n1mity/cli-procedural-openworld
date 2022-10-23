@@ -1,7 +1,7 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define MAX_CHUNK_DISTANCE 64
+#define MAX_CHUNK_DISTANCE 33
 
 #include <stdio.h>
 #include <sys/mman.h>
@@ -28,7 +28,7 @@ typedef struct Tilemap_S
     int m_height;
 
     Block_s ***m_blocks;
-    struct Chunk_S *m_chunks[3][3];
+    struct Chunk_S *m_chunks[MAX_CHUNK_DISTANCE][MAX_CHUNK_DISTANCE];
     struct Entitieslist_S *m_entities;
 
     struct Player_S *m_player;

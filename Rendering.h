@@ -48,11 +48,14 @@ typedef struct Term_S
     WINDOW* world;
     WINDOW* stats;
 
+    double framerate;
+
     Tilemap_s *tilemap;
 
 } Term_s;
 
 Term_s * initDisplaying();
+void calculateFPS(Term_s *term, double timeDif);
 void cookedOnExit();
 void displayTerm(Term_s *term, View_s *view);
 void displayWorld(Term_s *term, View_s *view);

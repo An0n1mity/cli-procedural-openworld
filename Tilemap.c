@@ -1,18 +1,22 @@
 #include "Tilemap.h"
 
-Tilemap_s* CreateTilemap(const int width, const int height)
+Tilemap_s *CreateTilemap(const int width, const int height)
 {
     Tilemap_s *tilemap = (Tilemap_s *)calloc(1, sizeof(Tilemap_s));
-    tilemap->m_width = width; tilemap->m_height = height;
+    tilemap->m_width = width;
+    tilemap->m_height = height;
     tilemap->m_blocks = (Block_s ***)calloc(height * width, sizeof(Block_s **));
+    if (!(tilemap->m_blocks))
+        exit(1);
+
     /*for (size_t i = 0; i < height * width; i++)
     {
         tilemap->m_blocks[i] = calloc(2, sizeof(Block_s *));
     }*/
 
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE; j++)
         {
             tilemap->m_chunks[i][j] = NULL;
         }
@@ -65,32 +69,32 @@ Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed)
 
 Block_s *CharToBlock(char c)
 {
-    Block_s* block = NULL;
+    Block_s *block = NULL;
     switch (c)
     {
-        case 'W':
-            block = CreateBlock(EVERGREEN_TREE, BREAKABLE);
-            break;
-        case 'w':
-            block = CreateBlock(DECIDIOUS_TREE, BREAKABLE);
-            break;
-        case 'R':
-            block = CreateBlock(ROCK, MOVABLE);
-            break;
-        case 'G':
-            block = CreateBlock(GRASS, WALKABLE);
-            break;
-        case 'D':
-            block = CreateBlock(DIRT, WALKABLE);
-            break;
-        default:
-            break;
+    case 'W':
+        block = CreateBlock(EVERGREEN_TREE, BREAKABLE);
+        break;
+    case 'w':
+        block = CreateBlock(DECIDIOUS_TREE, BREAKABLE);
+        break;
+    case 'R':
+        block = CreateBlock(ROCK, MOVABLE);
+        break;
+    case 'G':
+        block = CreateBlock(GRASS, WALKABLE);
+        break;
+    case 'D':
+        block = CreateBlock(DIRT, WALKABLE);
+        break;
+    default:
+        break;
     }
-    
+
     return block;
 }
 
-void PrintTilemap(Tilemap_s* tilemap)
+void PrintTilemap(Tilemap_s *tilemap)
 {
     for (size_t i = 0; i < tilemap->m_height; i++)
     {
