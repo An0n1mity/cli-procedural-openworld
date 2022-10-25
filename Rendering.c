@@ -283,7 +283,6 @@ void displayPlayerStats(Term_s *term)
         break;
     }
 
-    wrefresh(term->stats);
     wmove(term->stats, 0, 0);
 
     player->update_stats = false;
