@@ -53,10 +53,12 @@ void addPlayerToTilemap(Player_s *player, struct Tilemap_S *tilemap);
 Block_s *getFrontBlockP(Player_s *player, struct Tilemap_S *tilemap);
 struct TilemapBlock_S *getFrontTilemapBlockP(Player_s *player, struct Tilemap_S *tilemap);
 void MovePlayer(Player_s *player);
+void breakBlockInFront(Player_s *player);
 void freePlayer(Player_s *player);
 void printPlayer(Player_s *player);
 void reducePlayerFoodLevel(Player_s *player);
 void reducePlayerWaterLevel(Player_s *player);
+void reducePlayerHealth(Player_s *player);
 #endif 
 
  

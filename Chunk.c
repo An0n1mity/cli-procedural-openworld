@@ -113,10 +113,7 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first, int chunkCo
 {
     Coordinate_s player_chunk_coord = TilemapToChunkCoordinates(player->m_base->m_position);
     Tilemap_s *tilemap = player->m_base->m_tilemap;
-    if (!(chunkCount_x % 2))
-        chunkCount_x++;
-    if (!(chunkCount_y % 2))
-        chunkCount_y++;
+
     // Unload previous chunk from memory
     if (!first)
     {

@@ -70,14 +70,36 @@ inline void addPlayerToTilemap(Player_s *player, Tilemap_s *tilemap)
 
 inline void reducePlayerFoodLevel(Player_s *player)
 {
+    if (player->m_vitals[FOOD_LVL] <= 0)
+        return;
     player->m_vitals[FOOD_LVL]--;
     player->update_stats = true;
 }
 
 inline void reducePlayerWaterLevel(Player_s *player)
 {
+    if (player->m_vitals[WATER_LVL] <= 0)
+        return;
     player->m_vitals[WATER_LVL]--;
     player->update_stats = true;
+}
+
+inline void reducePlayerHealth(Player_s *player)
+{
+    if (player->m_base->m_health <= 0)
+        return;
+    player->m_base->m_health--;
+    player->update_stats = true;
+}
+
+inline void breakBlockInFront(Player_s *player)
+{
+    Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
+    // If the block can be breaked
+    if (block[1] && block[1]->m_flags & BREAKABLE)
+    {
+        reduceBlockHealth(block[1]);
+    }
 }
 
 inline void freePlayer(Player_s *player)

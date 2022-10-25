@@ -21,7 +21,8 @@ typedef enum BlockType_E
     WATER,
     DIRT,
     SAND,
-    STONE
+    STONE,
+    PLANK
 } BlockType_e;
 
 typedef struct Block_S
@@ -33,6 +34,7 @@ typedef struct Block_S
 } Block_s;
 
 Block_s *CreateBlock(BlockType_e type, BlockFlag_e flag);
+void reduceBlockHealth(Block_s *block);
 void freeBlock(Block_s **block);
 
 #endif
