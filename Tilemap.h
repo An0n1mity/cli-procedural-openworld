@@ -1,7 +1,7 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define MAX_CHUNK_DISTANCE 2
+#define MAX_CHUNK_DISTANCE 7
 
 #define MIN(a, b) ((a) < (b)) ? (a) : (b)
 

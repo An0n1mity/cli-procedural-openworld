@@ -73,7 +73,7 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 
 void displayWorld(Term_s *term, View_s *view)
 {
-    int minDisplay_x = MIN(term->world->_maxx, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
+    int minDisplay_x = MIN(term->world->_maxx/2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
     int maxDisplay_x = minDisplay_x;
     minDisplay_x = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_x / 2);
     maxDisplay_x = maxDisplay_x + minDisplay_x;
@@ -82,12 +82,15 @@ void displayWorld(Term_s *term, View_s *view)
     int maxDisplay_y = minDisplay_y;
     minDisplay_y = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_y / 2);
     maxDisplay_y = maxDisplay_y + minDisplay_y;
+    Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(term->tilemap->m_entities->m_entity);
     
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
+    screen_world_coord.m_x += minDisplay_x;
+    screen_world_coord.m_y += minDisplay_y;
     int initial_x = screen_world_coord.m_x;
-    for (int h = 0; h < term->tilemap->m_height && h < term->height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
+    for (int h = minDisplay_y; h < maxDisplay_y; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = 0; w < term->tilemap->m_width && w < term->width / 2; ++w, screen_world_coord.m_x++)
+        for (int w = minDisplay_x; w < maxDisplay_x ; ++w, screen_world_coord.m_x++)
         {
 
             Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
@@ -128,18 +131,18 @@ void displayWorld(Term_s *term, View_s *view)
                     break;
                 }
             }
-            else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x)
-            {
-                waddwstr(term->world, L"❤️");
-            }
-            else if (term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
-            {
-                waddwstr(term->world, L"❤️");
-            }
+            // else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x)
+            // {
+            //     waddwstr(term->world, L"❤️");
+            // }
+            // else if (term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
+            // {
+            //     waddwstr(term->world, L"❤️");
+            // }
             else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
                      term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
             {
-                waddwstr(term->world, L"()"); //🧍 🏊 🏄🪵
+                waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
             }
 
             else

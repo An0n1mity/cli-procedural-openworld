@@ -64,7 +64,7 @@ int main(int argc, char const *argv[])
     MovePlayerTo(player, (Coordinate_s){10, 25});
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
-    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
+    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE/2, MAX_CHUNK_DISTANCE/2);
     nodelay(stdscr, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
@@ -162,7 +162,7 @@ int main(int argc, char const *argv[])
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
         {
             previous_chunk_coord = player->m_base->m_chunk_position;
-            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
+            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE/2, MAX_CHUNK_DISTANCE/2);
         }
         displayTerm(term, NULL);
         calculateFPS(term, actualTime_ms - previouTime_ms);
