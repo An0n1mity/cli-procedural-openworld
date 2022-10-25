@@ -110,6 +110,9 @@ void displayWorld(Term_s *term, View_s *view)
                 case EVERGREEN_TREE:
                     waddwstr(term->world, L"🌲");
                     break;
+                case PLANK:
+                    waddwstr(term->world, L"🪵");
+                    break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
                     break;
