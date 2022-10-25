@@ -111,7 +111,7 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🌲");
                     break;
                 case PLANK:
-                    waddwstr(term->world, L"🟫");
+                    waddwstr(term->world, L"🪵");//🟫
                     break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
@@ -122,7 +122,7 @@ void displayWorld(Term_s *term, View_s *view)
             else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
                      term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
             {
-                waddwstr(term->world, L"🧍");
+                waddwstr(term->world, L"🧍"); // 🏊 🏄🪵
             }
 
             else
