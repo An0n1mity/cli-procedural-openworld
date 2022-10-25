@@ -94,6 +94,7 @@ struct TilemapBlock_S *getFrontTilemapBlockP(Player_s *player, struct Tilemap_S 
 void MovePlayer(Player_s *player);
 void breakBlockInFront(Player_s *player);
 void pickBlockInFront(Player_s *player);
+void placeBlockInFront(Player_s *player);
 void freePlayer(Player_s *player);
 void printPlayer(Player_s *player);
 void reducePlayerFoodLevel(Player_s *player);

@@ -64,10 +64,11 @@ int main(int argc, char const *argv[])
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
     LoadChunkAroundPlayer(player, seed, true, 1, 1);
-    nodelay(term->world, TRUE);
+    nodelay(stdscr, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
     mousemask(ALL_MOUSE_EVENTS, NULL);
+    mouseinterval(0);
     term->tilemap = tilemap;
     size_t try = 0;
 
@@ -83,12 +84,12 @@ int main(int argc, char const *argv[])
         {
             switch (c)
             {
-            case KEY_RIGHT:
+            // case KEY_RIGHT:
             case 'd':
                 player->m_base->m_direction = EAST;
                 MovePlayer(player);
                 break;
-            case KEY_LEFT:
+            // case KEY_LEFT:
             case 'q':
                 player->m_base->m_direction = WEST;
                 MovePlayer(player);
@@ -109,17 +110,33 @@ int main(int argc, char const *argv[])
 
             case KEY_MOUSE:
                 if (getmouse(&event) == OK)
-                { /* When the user clicks left mouse button */
-                    if (event.bstate & BUTTON1_CLICKED)
+                {
+                    // Get block in front of the player
+                    Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
+                    if (event.bstate & BUTTON1_PRESSED)
                     {
-                        breakBlockInFront(player);
+                        // If block in front
+                        if (block[1])
+                            breakBlockInFront(player);
                     }
                     else if (event.bstate & BUTTON3_PRESSED)
                     {
-                        pickBlockInFront(player);
+                        if (block[1])
+                            pickBlockInFront(player);
+                        else
+                            placeBlockInFront(player);
                     }
                 }
                 break;
+
+            case KEY_LEFT:
+                moveInventoryCursorLeft(player);
+                break;
+
+            case KEY_RIGHT:
+                moveInventoryCursorRight(player);
+                break;
+
             default:
                 break;
             }

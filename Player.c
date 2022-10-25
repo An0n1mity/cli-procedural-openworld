@@ -92,7 +92,7 @@ inline void reducePlayerHealth(Player_s *player)
     player->update_stats = true;
 }
 
-inline void breakBlockInFront(Player_s *player)
+void breakBlockInFront(Player_s *player)
 {
     Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
     // If the block can be breaked
@@ -110,7 +110,7 @@ inline void breakBlockInFront(Player_s *player)
     }
 }
 
-inline void pickBlockInFront(Player_s *player)
+void pickBlockInFront(Player_s *player)
 {
     Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
     // If the block can be picked
@@ -123,6 +123,19 @@ inline void pickBlockInFront(Player_s *player)
         block[1] = NULL;
         // Add the block to the inventory
         addBlockToInventory(player, picked_block);
+    }
+}
+
+void placeBlockInFront(Player_s *player)
+{
+    Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
+    Object_s *holded_object = getCurrentInventoryObject(player);
+    if (!block[1] && holded_object->m_type == BLOCK)
+    {
+        block[1] = malloc(sizeof(Block_s));
+        memcpy(block[1], holded_object->m_data, sizeof(Block_s));
+        free(holded_object->m_data);
+        holded_object->m_type = NONE;
     }
 }
 

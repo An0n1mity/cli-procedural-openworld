@@ -111,7 +111,7 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🌲");
                     break;
                 case PLANK:
-                    waddwstr(term->world, L"P");
+                    waddwstr(term->world, L"🟫");
                     break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
@@ -254,6 +254,15 @@ void displayPlayerStats(Term_s *term)
     {
     case BLOCK:
         block = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
+        switch (block->m_type)
+        {
+        case PLANK:
+            wprintw(term->stats, "🟫");
+            break;
+
+        default:
+            break;
+        }
         break;
     case TOOL:
         tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
