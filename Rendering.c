@@ -190,7 +190,6 @@ void displayPlayerStats(Term_s *term)
         wprintw(term->stats, " ");
     }
 
-    wrefresh(term->stats);
     wmove(term->stats, 0, 0);
 
     player->update_stats = false;
