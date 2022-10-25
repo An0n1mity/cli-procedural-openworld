@@ -1,7 +1,9 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define MAX_CHUNK_DISTANCE 3
+#define MAX_CHUNK_DISTANCE 2
+
+#define MIN(a, b) ((a) < (b)) ? (a) : (b)
 
 #include <stdio.h>
 #include <sys/mman.h>

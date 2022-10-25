@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Chunk.h"
 
+#define ctrl(x) ((x)&0x1f)
 int main(int argc, char const *argv[])
 {
     if (atexit(cookedOnExit))
@@ -36,7 +37,7 @@ int main(int argc, char const *argv[])
 
     Player_s *player = CreatePlayer();
     Action_e player_action = BREAK;
-    Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * 3, CHUNK_SIZE * 3, seed);
+    Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * MAX_CHUNK_DISTANCE, CHUNK_SIZE * MAX_CHUNK_DISTANCE, seed);
     // CreateTilemapFromFile("../map.txt");
 
     player->m_base->m_direction = SOUTH;
@@ -63,7 +64,7 @@ int main(int argc, char const *argv[])
     MovePlayerTo(player, (Coordinate_s){10, 25});
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
-    LoadChunkAroundPlayer(player, seed, true, 1, 1);
+    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
     nodelay(stdscr, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
@@ -74,36 +75,50 @@ int main(int argc, char const *argv[])
 
     clock_t ticks = clock();
     size_t nb_ticks = 0;
+
+    double actualTime_ms = 0;
+    double previouTime_ms = 0;
+
     MEVENT event;
+
     while (!quit)
     {
         move_x = 0;
         move_y = 0;
+
+        previouTime_ms = actualTime_ms;
+        actualTime_ms = (double)(clock() - ticks) * 1000.0 / (double)CLOCKS_PER_SEC;
+
         c = wgetch(term->world);
         while (c != ERR)
         {
             switch (c)
             {
             // case KEY_RIGHT:
+            case 'D':
             case 'd':
                 player->m_base->m_direction = EAST;
                 MovePlayer(player);
                 break;
             // case KEY_LEFT:
+            case 'Q':
             case 'q':
                 player->m_base->m_direction = WEST;
                 MovePlayer(player);
                 break;
             case KEY_UP:
+            case 'Z':
             case 'z':
                 player->m_base->m_direction = NORTH;
                 MovePlayer(player);
                 break;
             case KEY_DOWN:
+            case 'S':
             case 's':
                 player->m_base->m_direction = SOUTH;
                 MovePlayer(player);
                 break;
+            case ctrl('c'):
             case KEY_F(1):
                 quit = 1;
                 break;
@@ -147,34 +162,35 @@ int main(int argc, char const *argv[])
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
         {
             previous_chunk_coord = player->m_base->m_chunk_position;
-            LoadChunkAroundPlayer(player, seed, false, 1, 1);
+            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE, MAX_CHUNK_DISTANCE);
         }
         displayTerm(term, NULL);
+        calculateFPS(term, actualTime_ms - previouTime_ms);
 
-        if ((double)(clock() - ticks) / CLOCKS_PER_SEC >= 1.0)
-        {
-            ticks = clock();
-            if (nb_ticks >= 65535)
-                nb_ticks = 0;
-            nb_ticks++;
+        // if ((double)(clock() - ticks) / CLOCKS_PER_SEC >= 1.0)
+        // {
+        //     ticks = clock();
+        //     if (nb_ticks >= 65535)
+        //         nb_ticks = 0;
+        //     nb_ticks++;
 
-            if (nb_ticks > 0 && !(nb_ticks % 120))
-                reducePlayerFoodLevel(player);
+        //     if (nb_ticks > 0 && !(nb_ticks % 120))
+        //         reducePlayerFoodLevel(player);
 
-            if (nb_ticks > 0 && !(nb_ticks % 60))
-                reducePlayerFoodLevel(player);
+        //     if (nb_ticks > 0 && !(nb_ticks % 60))
+        //         reducePlayerFoodLevel(player);
 
-            if (nb_ticks > 0 && !(nb_ticks % 60) && player->m_vitals[FOOD_LVL] <= 0 && player->m_vitals[WATER_LVL] <= 0)
-                reducePlayerHealth(player);
-        }
+        //     if (nb_ticks > 0 && !(nb_ticks % 60) && player->m_vitals[FOOD_LVL] <= 0 && player->m_vitals[WATER_LVL] <= 0)
+        //         reducePlayerHealth(player);
+        // }
     }
 
     freeEntitiesList(tilemap->m_entities);
     free(tilemap->m_blocks);
 
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE; j++)
         {
             for (size_t k = 0; k < CHUNK_SIZE * CHUNK_SIZE; k++)
             {
@@ -189,9 +205,6 @@ int main(int argc, char const *argv[])
     }
     freePlayer(player);
     free(tilemap);
-    endwin();
-    exit(1);
-    endwin();
     noraw();
     echo();
     endwin();
