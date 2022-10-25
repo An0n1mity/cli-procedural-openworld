@@ -34,12 +34,12 @@ static inline void SetBlockHealth(Block_s *block, int health)
     block->m_health = health;
 }
 
-inline void reduceBlockHealth(Block_s *block)
+inline void reduceBlockHealth(Block_s *block, float damage)
 {
     if (block->m_health <= 0)
         return;
 
-    block->m_health--;
+    block->m_health -= damage;
 
     // Update the block type
     if (block->m_health <= 0)
@@ -48,6 +48,8 @@ inline void reduceBlockHealth(Block_s *block)
         {
         case EVERGREEN_TREE:
             block->m_type = PLANK;
+            block->m_flags &= ~BREAKABLE;
+            block->m_flags |= PICKABLE;
             break;
 
         default:

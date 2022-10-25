@@ -5,6 +5,9 @@ Player_s *CreatePlayer()
     Player_s* player = (Player_s*)malloc(sizeof(Player_s));
     player->m_base = CreateEntity(PLAYER);
 
+    memset(player->m_inventory.m_objects, 0, sizeof(Object_s) * 9);
+    player->m_inventory.m_idx = 0;
+
     player->m_vitals[FOOD_LVL] = 100;
     player->m_vitals[WATER_LVL] = 100;
 
@@ -26,6 +29,9 @@ void MovePlayer(Player_s *player)
     Block_s **front_block = getFrontBlock(player->m_base, tilemap);
     if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (front_block[0]->m_flags & WALKABLE))
     {
+        // Update current player action
+        player->m_action = MOVE;
+
         moveEntityInDirection(player->m_base);
         reducePlayerFoodLevel(player);
         reducePlayerWaterLevel(player);
@@ -48,12 +54,6 @@ void MakeAction(Player_s *player, Action_e action)
         front_block->m_health--;
     if ((action == MOVE) && (action & front_block->m_flags))
         MovePlayer(player);
-}
-
-Block_s *getFrontBlockP(Player_s *player, Tilemap_s *tilemap)
-{
-    Block_s *front_block = getFrontBlock(player->m_base, tilemap);
-    return front_block;
 }
 
 void printPlayer(Player_s *player)
@@ -98,7 +98,31 @@ inline void breakBlockInFront(Player_s *player)
     // If the block can be breaked
     if (block[1] && block[1]->m_flags & BREAKABLE)
     {
-        reduceBlockHealth(block[1]);
+        player->m_action = BREAK;
+        // If the player is holding a tool
+        if (player->m_inventory.m_objects[player->m_inventory.m_idx].m_type == TOOL)
+        {
+            Tool_s *current_tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
+            reduceBlockHealth(block[1], current_tool->m_block_damage);
+        }
+        else
+            reduceBlockHealth(block[1], 1.f);
+    }
+}
+
+inline void pickBlockInFront(Player_s *player)
+{
+    Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
+    // If the block can be picked
+    if (block[1] && block[1]->m_flags & PICKABLE)
+    {
+        player->m_action = PICK;
+        Block_s *picked_block = malloc(sizeof(Block_s));
+        memcpy(picked_block, block[1], sizeof(Block_s));
+        free(block[1]);
+        block[1] = NULL;
+        // Add the block to the inventory
+        addBlockToInventory(player, picked_block);
     }
 }
 

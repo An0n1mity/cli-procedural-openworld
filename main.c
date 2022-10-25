@@ -67,11 +67,13 @@ int main(int argc, char const *argv[])
     nodelay(term->world, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
     term->tilemap = tilemap;
     size_t try = 0;
 
     clock_t ticks = clock();
     size_t nb_ticks = 0;
+    MEVENT event;
     while (!quit)
     {
         move_x = 0;
@@ -85,7 +87,6 @@ int main(int argc, char const *argv[])
             case 'd':
                 player->m_base->m_direction = EAST;
                 MovePlayer(player);
-                breakBlockInFront(player);
                 break;
             case KEY_LEFT:
             case 'q':
@@ -96,18 +97,29 @@ int main(int argc, char const *argv[])
             case 'z':
                 player->m_base->m_direction = NORTH;
                 MovePlayer(player);
-
                 break;
             case KEY_DOWN:
             case 's':
                 player->m_base->m_direction = SOUTH;
                 MovePlayer(player);
-
                 break;
             case KEY_F(1):
                 quit = 1;
                 break;
 
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK)
+                { /* When the user clicks left mouse button */
+                    if (event.bstate & BUTTON1_CLICKED)
+                    {
+                        breakBlockInFront(player);
+                    }
+                    else if (event.bstate & BUTTON3_PRESSED)
+                    {
+                        pickBlockInFront(player);
+                    }
+                }
+                break;
             default:
                 break;
             }
@@ -119,7 +131,6 @@ int main(int argc, char const *argv[])
         {
             previous_chunk_coord = player->m_base->m_chunk_position;
             LoadChunkAroundPlayer(player, seed, false, 1, 1);
-            // try++;
         }
         displayTerm(term, NULL);
 

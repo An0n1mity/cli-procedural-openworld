@@ -8,6 +8,7 @@
 #include "Block.h"
 #include "Tilemap.h"
 #include "Camera.h"
+#include "Player.h"
 
 #define COLOR_WATER 16
 #define COLOR_GRASS 17
