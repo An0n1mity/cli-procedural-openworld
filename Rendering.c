@@ -110,6 +110,9 @@ void displayWorld(Term_s *term, View_s *view)
                 case EVERGREEN_TREE:
                     waddwstr(term->world, L"🌲");
                     break;
+                case PLANK:
+                    waddwstr(term->world, L"P");
+                    break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
                     break;
@@ -188,6 +191,87 @@ void displayPlayerStats(Term_s *term)
     for (size_t i = 0; i < 10 - water_lvl; i++)
     {
         wprintw(term->stats, " ");
+    }
+
+    // Print player current action
+    Block_s **block_in_front;
+    mvwprintw(term->stats, 1, 35, "ACTION : ");
+    switch (term->tilemap->m_player->m_action)
+    {
+    case MOVE:
+        wprintw(term->stats, "MOVING               ");
+        break;
+    case BREAK:
+        block_in_front = getFrontBlock(player->m_base, term->tilemap);
+        if (block_in_front[1]->m_health <= 0)
+        {
+            player->m_action = IDLE;
+            break;
+        }
+        wprintw(term->stats, "BREAKING");
+        switch (block_in_front[1]->m_type)
+        {
+        case EVERGREEN_TREE:
+            wprintw(term->stats, "(TREE, %d♥)", block_in_front[1]->m_health);
+            break;
+
+        default:
+            break;
+        }
+        break;
+
+    default:
+        wprintw(term->stats, "IDLE                   ");
+        break;
+    }
+
+    // Print player current orientation
+    mvwprintw(term->stats, 2, 35, "🧭 : ");
+    switch (player->m_base->m_direction)
+    {
+    case NORTH:
+        wprintw(term->stats, "↑");
+        break;
+    case SOUTH:
+        wprintw(term->stats, "↓");
+        break;
+    case WEST:
+        wprintw(term->stats, "←");
+        break;
+    case EAST:
+        wprintw(term->stats, "→");
+        break;
+
+    default:
+        break;
+    }
+
+    // Print player holding tool
+    mvwprintw(term->stats, 3, 35, "TOOL : ");
+    Block_s *block;
+    Tool_s *tool;
+    switch (player->m_inventory.m_objects[player->m_inventory.m_idx].m_type)
+    {
+    case BLOCK:
+        block = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
+        break;
+    case TOOL:
+        tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
+        switch (tool->m_type)
+        {
+        case PICKAXE:
+            break;
+
+        case SWORD:
+            break;
+
+        default:
+            break;
+        }
+        break;
+    default:
+        wprintw(term->stats, "🤜");
+        break;
     }
 
     wmove(term->stats, 0, 0);

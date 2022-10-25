@@ -1,7 +1,7 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define MAX_CHUNK_DISTANCE 33
+#define MAX_CHUNK_DISTANCE 3
 
 #include <stdio.h>
 #include <sys/mman.h>

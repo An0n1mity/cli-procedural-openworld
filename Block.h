@@ -6,10 +6,11 @@
 
 typedef enum BlockFlag_e
 {
-    BREAKABLE = 0b0001,
-    MOVABLE = 0b0010,
-    DROPABLE = 0b0100,
-    WALKABLE = 0b1000
+    BREAKABLE = 0b00000001,
+    MOVABLE = 0b00000010,
+    DROPABLE = 0b00000100,
+    WALKABLE = 0b00001000,
+    PICKABLE = 0b00010000
 } BlockFlag_e;
 
 typedef enum BlockType_E
@@ -21,7 +22,8 @@ typedef enum BlockType_E
     WATER,
     DIRT,
     SAND,
-    STONE
+    STONE,
+    PLANK
 } BlockType_e;
 
 typedef struct Block_S
@@ -33,6 +35,7 @@ typedef struct Block_S
 } Block_s;
 
 Block_s *CreateBlock(BlockType_e type, BlockFlag_e flag);
+void reduceBlockHealth(Block_s *block, float damage);
 void freeBlock(Block_s **block);
 
 #endif
