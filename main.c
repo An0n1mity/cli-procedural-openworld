@@ -143,11 +143,11 @@ int main(int argc, char const *argv[])
                     }
                     else if (event.bstate & BUTTON4_PRESSED) //scroll up
                     {
-
+                        moveInventoryCursorLeft(player);
                     }
                     else if (event.bstate & BUTTON5_PRESSED)//scroll down
                     {
-
+                        moveInventoryCursorRight(player);
                     }
                 }
                 break;
