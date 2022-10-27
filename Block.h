@@ -23,7 +23,8 @@ typedef enum BlockType_E
     DIRT,
     SAND,
     STONE,
-    PLANK
+    PLANK,
+    VOID
 } BlockType_e;
 
 typedef struct Block_S

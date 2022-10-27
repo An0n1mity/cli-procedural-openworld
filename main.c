@@ -161,8 +161,23 @@ int main(int argc, char const *argv[])
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
         {
+            if (tilemap->m_save_previous_chunk)
+            {
+                // Check if the changed chunk was already in the save file
+                long cursor = whereisChunkInFile(previous_chunk_coord, "../saved_chunks");
+                if (cursor >= 0)
+                {
+                    writeChunkToFileAt(tilemap->m_previous_chunk, "../saved_chunks", cursor);
+                }
+                else
+                    writeChunkToFile(tilemap->m_previous_chunk, "../saved_chunks");
+
+                tilemap->m_save_previous_chunk = false;
+            }
+
             previous_chunk_coord = player->m_base->m_chunk_position;
-            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE/2, MAX_CHUNK_DISTANCE/2);
+
+            LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
         }
         displayTerm(term, NULL);
         calculateFPS(term, actualTime_ms - previouTime_ms);
