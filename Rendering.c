@@ -16,8 +16,8 @@ Term_s *initDisplaying()
 
     Term_s *term = calloc(1, sizeof(Term_s));
 
-    term->height = getmaxy(stdscr);
-    term->width = getmaxx(stdscr);
+    term->height = getmaxy(stdscr) - 1;
+    term->width = getmaxx(stdscr) - 1;
 
     term->displayMode = WORLD;
 
@@ -45,11 +45,19 @@ void displayCrafts(Term_s *term);
 
 void displayTerm(Term_s *term, View_s *view)
 {
-    term->height = getmaxy(stdscr);
-    term->width = getmaxx(stdscr) - ((getmaxx(stdscr) + 1) % 2);
+    int h = getmaxy(stdscr);
+    int w = getmaxx(stdscr) - ((getmaxx(stdscr) + 1) % 2);
 
     if (term->displayMode == WORLD)
     {
+        if (term->height != h || term->width != w)
+        {
+            term->height = h;
+            term->width = w;
+            wclear(term->world); // clear all screen for deleting remanent caracters on resizing
+            wclear(term->stats); // clear all screen for deleting remanent caracters on resizing
+            wrefresh(stdscr);
+        }
         wresize(term->world, term->height - 5, term->width);
         wresize(term->stats, 5, term->width);
 
@@ -76,7 +84,7 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 
 void displayWorld(Term_s *term, View_s *view)
 {
-    int minDisplay_x = MIN(term->world->_maxx/2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
+    int minDisplay_x = MIN(term->world->_maxx / 2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
     int maxDisplay_x = minDisplay_x;
     minDisplay_x = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_x / 2);
     maxDisplay_x = maxDisplay_x + minDisplay_x;
@@ -86,14 +94,14 @@ void displayWorld(Term_s *term, View_s *view)
     minDisplay_y = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_y / 2);
     maxDisplay_y = maxDisplay_y + minDisplay_y;
     Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(term->tilemap->m_entities->m_entity);
-    
+
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
     screen_world_coord.m_x += minDisplay_x;
     screen_world_coord.m_y += minDisplay_y;
     int initial_x = screen_world_coord.m_x;
     for (int h = minDisplay_y; h < maxDisplay_y; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = minDisplay_x; w < maxDisplay_x ; ++w, screen_world_coord.m_x++)
+        for (int w = minDisplay_x; w < maxDisplay_x; ++w, screen_world_coord.m_x++)
         {
 
             Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
@@ -306,7 +314,7 @@ void displayPlayerStats(Term_s *term)
             }
             break;
         default:
-            wprintw(term->stats, "☐");
+            waddwstr(term->stats, L"▫️ "); //🔲▱▢▯▭□⨆⌊⌋[]🔳◽
             break;
         }
     }
