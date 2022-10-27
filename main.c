@@ -64,7 +64,7 @@ int main(int argc, char const *argv[])
     MovePlayerTo(player, (Coordinate_s){10, 25});
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
-    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE/2, MAX_CHUNK_DISTANCE/2);
+    LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
     nodelay(stdscr, TRUE);
     int move_x = 0, move_y = 0, c = 0;
     keypad(term->world, TRUE);
@@ -80,6 +80,7 @@ int main(int argc, char const *argv[])
     double previouTime_ms = 0;
 
     MEVENT event;
+    CraftType_e possible_crafts;
 
     while (!quit)
     {
@@ -90,6 +91,7 @@ int main(int argc, char const *argv[])
         actualTime_ms = (double)(clock() - ticks) * 1000.0 / (double)CLOCKS_PER_SEC;
 
         c = wgetch(term->world);
+
         while (c != ERR)
         {
             switch (c)
@@ -118,6 +120,9 @@ int main(int argc, char const *argv[])
                 player->m_base->m_direction = SOUTH;
                 MovePlayer(player);
                 break;
+            case 'e':
+              possible_crafts = getPossibleCrafts(player);
+              break;
             case ctrl('c'):
             case KEY_F(1):
                 quit = 1;
@@ -140,6 +145,14 @@ int main(int argc, char const *argv[])
                             pickBlockInFront(player);
                         else
                             placeBlockInFront(player);
+                    }
+                    else if (event.bstate & BUTTON4_PRESSED) //scroll up
+                    {
+
+                    }
+                    else if (event.bstate & BUTTON5_PRESSED)//scroll down
+                    {
+
                     }
                 }
                 break;
@@ -176,7 +189,6 @@ int main(int argc, char const *argv[])
             }
 
             previous_chunk_coord = player->m_base->m_chunk_position;
-
             LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
         }
         displayTerm(term, NULL);

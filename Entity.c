@@ -65,6 +65,7 @@ void moveEntityInDirection(Entity_s *entity)
     }
 }
 
+// Return pointer to array containing block
 Block_s **getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 {
     assert(entity && tilemap);

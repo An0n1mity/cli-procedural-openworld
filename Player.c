@@ -145,7 +145,6 @@ void placeBlockInFront(Player_s *player)
         free(holded_object->m_data);
         holded_object->m_type = NONE;
     }
-
     Tilemap_s *tilemap = player->m_base->m_tilemap;
     tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
     tilemap->m_save_previous_chunk = true;

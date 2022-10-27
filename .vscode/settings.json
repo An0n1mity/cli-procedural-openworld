@@ -9,7 +9,8 @@
         "camera.h": "c",
         "assert.h": "c",
         "player.h": "c",
-        "perlinnoise.h": "c"
+        "perlinnoise.h": "c",
+        "rendering.h": "c"
     },
     "discord.enabled": true,
     "cmake.sourceDirectory": "${workspaceFolder}/."

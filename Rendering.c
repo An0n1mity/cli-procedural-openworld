@@ -22,7 +22,8 @@ Term_s *initDisplaying()
     term->displayMode = WORLD;
 
     term->world = createWindow(term->height - 5, term->width, 0, 0);
-    term->stats = createWindow(5, term->width, term->height - 5, 0);
+    term->stats = createWindow(5, term->width - 30, term->height - 5, 0);
+    term->crafts = createWindow(5, 20, term->height - 5, 0);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
@@ -35,11 +36,12 @@ Term_s *initDisplaying()
     init_pair(COLOR_GRASS, COLOR_WHITE, COLOR_GRASS);
     init_pair(COLOR_SAND, COLOR_WHITE, COLOR_SAND);
     init_pair(COLOR_STONE, COLOR_WHITE, COLOR_STONE);
-
+    init_pair(WHITE, COLOR_WHITE, COLOR_WHITE);
     return term;
 }
 
 void displayPlayerStats(Term_s *term);
+void displayCrafts(Term_s *term);
 
 void displayTerm(Term_s *term, View_s *view)
 {
@@ -55,6 +57,7 @@ void displayTerm(Term_s *term, View_s *view)
 
         displayPlayerStats(term);
         displayWorld(term, view);
+        displayCrafts(term);
     }
 }
 
@@ -263,40 +266,53 @@ void displayPlayerStats(Term_s *term)
     mvwprintw(term->stats, 3, 35, "TOOL : ");
     Block_s *block;
     Tool_s *tool;
-    switch (player->m_inventory.m_objects[player->m_inventory.m_idx].m_type)
+
+    // Print all inventory
+    for (size_t i = 0; i < 9; i++)
     {
-    case BLOCK:
-        block = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
-        switch (block->m_type)
+        if (i == player->m_inventory.m_idx)
+            wattron(term->stats, COLOR_PAIR(COLOR_WHITE));
+
+        else
+            wattroff(term->stats, COLOR_PAIR(COLOR_WHITE));
+
+        switch (player->m_inventory.m_objects[i].m_type)
         {
-        case PLANK:
-            wprintw(term->stats, "🟫");
+        case BLOCK:
+            block = player->m_inventory.m_objects[i].m_data;
+            switch (block->m_type)
+            {
+            case PLANK:
+                wprintw(term->stats, "🟫");
+                break;
+
+            default:
+                break;
+            }
             break;
 
+        case TOOL:
+            tool = player->m_inventory.m_objects[i].m_data;
+            switch (tool->m_type)
+            {
+            case PICKAXE:
+                break;
+
+            case SWORD:
+                break;
+
+            default:
+                break;
+            }
+            break;
         default:
+            wprintw(term->stats, "☐");
             break;
         }
-        break;
-    case TOOL:
-        tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
-        switch (tool->m_type)
-        {
-        case PICKAXE:
-            break;
-
-        case SWORD:
-            break;
-
-        default:
-            break;
-        }
-        break;
-    default:
-        wprintw(term->stats, "🤜");
-        break;
     }
 
     wmove(term->stats, 0, 0);
+    wattroff(term->stats, COLOR_PAIR(COLOR_WHITE));
 
     player->update_stats = false;
     // }
@@ -354,6 +370,16 @@ void RenderCameraView(Term_s *term, struct Camera_s *camera)
     wrefresh(term->world);
     wmove(term->world, 0, 0);
 }
+
+void displayCrafts(Term_s *term)
+{
+    Player_s *player = term->tilemap->m_player;
+    // Get list of possible crafts
+    CraftType_e possible_crafts = getPossibleCrafts(player);
+
+    wrefresh(term->crafts);
+}
+
 void cookedOnExit()
 {
 

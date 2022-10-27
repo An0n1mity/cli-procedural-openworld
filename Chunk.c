@@ -240,7 +240,9 @@ void writeChunkToFile(Chunk_s *chunk, const char *filename)
     {
         block_to_write[0] = *(chunk->m_blocks[i][0]);
         if (chunk->m_blocks[i][1])
+        {
             block_to_write[1] = *(chunk->m_blocks[i][1]);
+        }
         else
             block_to_write[1].m_type = VOID;
 
@@ -295,9 +297,13 @@ void writeFileToChunk(Chunk_s *chunk, const char *filename, long cursor)
     {
         fread(readed_block, sizeof(Block_s), 2, chunks_savefile);
         chunk->m_blocks[i][0] = CreateBlock(readed_block[0].m_type, readed_block[0].m_flags);
+
         if (readed_block[1].m_type != VOID)
             chunk->m_blocks[i][1] = CreateBlock(readed_block[1].m_type, readed_block[1].m_flags);
 
+        // if (readed_block[1].m_type == PLANK)
+        // asm("nop");
+        // exit(1);
         // fread(chunk->m_blocks[i][1], sizeof(Block_s), 1, chunks_savefile);
     }
 
