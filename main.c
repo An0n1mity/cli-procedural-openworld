@@ -80,6 +80,7 @@ int main(int argc, char const *argv[])
     double previouTime_ms = 0;
 
     MEVENT event;
+    CraftType_e possible_crafts;
 
     while (!quit)
     {
@@ -90,6 +91,7 @@ int main(int argc, char const *argv[])
         actualTime_ms = (double)(clock() - ticks) * 1000.0 / (double)CLOCKS_PER_SEC;
 
         c = wgetch(term->world);
+
         while (c != ERR)
         {
             switch (c)
@@ -118,6 +120,9 @@ int main(int argc, char const *argv[])
                 player->m_base->m_direction = SOUTH;
                 MovePlayer(player);
                 break;
+            case 'e':
+              possible_crafts = getPossibleCrafts(player);
+              break;
             case ctrl('c'):
             case KEY_F(1):
                 quit = 1;
@@ -169,6 +174,20 @@ int main(int argc, char const *argv[])
         player->m_base->m_chunk_position = getEntityChunkCoordinate(player->m_base);
         if (memcmp(&player->m_base->m_chunk_position, &previous_chunk_coord, sizeof(Coordinate_s)))
         {
+            if (tilemap->m_save_previous_chunk)
+            {
+                // Check if the changed chunk was already in the save file
+                long cursor = whereisChunkInFile(previous_chunk_coord, "../saved_chunks");
+                if (cursor >= 0)
+                {
+                    writeChunkToFileAt(tilemap->m_previous_chunk, "../saved_chunks", cursor);
+                }
+                else
+                    writeChunkToFile(tilemap->m_previous_chunk, "../saved_chunks");
+
+                tilemap->m_save_previous_chunk = false;
+            }
+
             previous_chunk_coord = player->m_base->m_chunk_position;
             LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
         }

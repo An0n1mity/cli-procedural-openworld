@@ -48,6 +48,11 @@ Coordinate_s TilemapToChunkCoordinates(Coordinate_s tilemap_coord);
  */
 void LoadChunkAroundPlayer(struct Player_S *player, float seed, bool first, int chunkCount_x, int chunkCount_y);
 
+void writeFileToChunk(Chunk_s *chunk, const char *filename, long cursor);
+void writeChunkToFile(Chunk_s *chunk, const char *filename);
+void writeChunkToFileAt(Chunk_s *chunk, const char *filename, long cursor);
+long whereisChunkInFile(Coordinate_s chunk_coord, const char *filename);
+
 void freeChunk(Chunk_s *chunk);
 
 #endif

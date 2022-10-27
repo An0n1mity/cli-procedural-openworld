@@ -31,7 +31,8 @@ typedef enum VitalType_E
 typedef enum ToolType_E
 {
     PICKAXE,
-    SWORD
+    SWORD,
+    SURFBOARD
 } ToolType_e;
 
 typedef struct Tool_S
@@ -79,6 +80,9 @@ typedef struct Player_S
 
     // Player inventory of objects
     Inventory_s m_inventory;
+
+    // Player selected craft
+    size_t m_craft_selected;
 
     // If the player stats have changed
     bool update_stats;

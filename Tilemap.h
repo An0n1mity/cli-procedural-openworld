@@ -35,6 +35,12 @@ typedef struct Tilemap_S
 
     struct Player_S *m_player;
 
+    // Previous player chunk
+    struct Chunk_S *m_previous_chunk;
+
+    // Does the chunk need to be saved
+    bool m_save_previous_chunk;
+
     Coordinate_s m_top_coord;
 } Tilemap_s;
 

@@ -108,6 +108,10 @@ void breakBlockInFront(Player_s *player)
         else
             reduceBlockHealth(block[1], 1.f);
     }
+
+    Tilemap_s *tilemap = player->m_base->m_tilemap;
+    tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
+    tilemap->m_save_previous_chunk = true;
 }
 
 void pickBlockInFront(Player_s *player)
@@ -124,6 +128,10 @@ void pickBlockInFront(Player_s *player)
         // Add the block to the inventory
         addBlockToInventory(player, picked_block);
     }
+
+    Tilemap_s *tilemap = player->m_base->m_tilemap;
+    tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
+    tilemap->m_save_previous_chunk = true;
 }
 
 void placeBlockInFront(Player_s *player)
@@ -137,6 +145,9 @@ void placeBlockInFront(Player_s *player)
         free(holded_object->m_data);
         holded_object->m_type = NONE;
     }
+    Tilemap_s *tilemap = player->m_base->m_tilemap;
+    tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
+    tilemap->m_save_previous_chunk = true;
 }
 
 inline void freePlayer(Player_s *player)
