@@ -1,7 +1,9 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define MAX_CHUNK_DISTANCE 3
+#define MAX_CHUNK_DISTANCE 9
+
+#define MIN(a, b) ((a) < (b)) ? (a) : (b)
 
 #include <stdio.h>
 #include <sys/mman.h>
@@ -32,6 +34,12 @@ typedef struct Tilemap_S
     struct Entitieslist_S *m_entities;
 
     struct Player_S *m_player;
+
+    // Previous player chunk
+    struct Chunk_S *m_previous_chunk;
+
+    // Does the chunk need to be saved
+    bool m_save_previous_chunk;
 
     Coordinate_s m_top_coord;
 } Tilemap_s;

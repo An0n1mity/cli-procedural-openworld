@@ -41,13 +41,14 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
     chunk->world_position = top_coord;
 
     // Check if the chunk was already stored on save file
-    long cursor = whereisChunkInFile(top_coord, "../saved_chunks");
+    long cursor = whereisChunkInFile(top_coord, "saved_chunks");
 
     // if it's the case load it
     if (cursor >= 0)
-        writeFileToChunk(chunk, "../saved_chunks", cursor);
+        writeFileToChunk(chunk, "saved_chunks", cursor);
     else
     {
+        srand(seed);
         for (int y = top_coord.m_y, i = 0, idx = 0; y < top_coord.m_y + CHUNK_SIZE; y++, i++)
         {
             for (int x = top_coord.m_x, j = 0; x < top_coord.m_x + CHUNK_SIZE; x++, idx++, j++)
@@ -56,17 +57,17 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
                 Coordinate_s block_coord = {x, y};
                 if (value >= 0.55f)
                 {
-                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE);
+                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(GRASS, WALKABLE | PLACABLE);
                     if (value >= 0.55 && value <= 0.7 && !(rand() % 2))
                         chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(EVERGREEN_TREE, BREAKABLE);
                 }
                 else if (value <= 0.4)
                     chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(WATER, 0);
                 else if (value > 0.4 && value <= 0.46)
-                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE);
+                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(SAND, WALKABLE | PLACABLE);
                 else if (value > 0.46 && value < 0.55)
                 {
-                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE);
+                    chunk->m_blocks[i * CHUNK_SIZE + j][0] = CreateBlock(STONE, WALKABLE | PLACABLE);
                     if (!(rand() % 5))
                         chunk->m_blocks[i * CHUNK_SIZE + j][1] = CreateBlock(ROCK, BREAKABLE);
                 }
@@ -194,6 +195,7 @@ void LoadChunkAroundPlayer(Player_s *player, float seed, bool first, int chunkCo
             {
                 if (tilemap->m_chunks[ci][cj])
                     free(tilemap->m_chunks[ci][cj]);
+
                 tilemap->m_chunks[ci][cj] = CreateChunkProcedurally(getTopCoordinateFromChunk(tilemap, (Coordinate_s){j, i}), seed);
             }
         }
@@ -233,9 +235,44 @@ void writeChunkToFile(Chunk_s *chunk, const char *filename)
     fwrite(&chunk->world_position, sizeof(Coordinate_s), 1, chunks_savefile);
 
     // Write chunk blocks
+    Block_s block_to_write[2];
     for (size_t i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++)
     {
-        fwrite(chunk->m_blocks[i][0], sizeof(Block_s), 2, chunks_savefile);
+        block_to_write[0] = *(chunk->m_blocks[i][0]);
+        if (chunk->m_blocks[i][1])
+        {
+            block_to_write[1] = *(chunk->m_blocks[i][1]);
+        }
+        else
+            block_to_write[1].m_type = VOID;
+
+        fwrite(block_to_write, sizeof(Block_s), 2, chunks_savefile);
+    }
+
+    fclose(chunks_savefile);
+}
+
+void writeChunkToFileAt(Chunk_s *chunk, const char *filename, long cursor)
+{
+    FILE *chunks_savefile = fopen(filename, "ab");
+
+    // Set the cursor
+    fseek(chunks_savefile, cursor, SEEK_SET);
+
+    // Write chunk coordinate
+    fwrite(&chunk->world_position, sizeof(Coordinate_s), 1, chunks_savefile);
+
+    // Write chunk blocks
+    Block_s block_to_write[2];
+    for (size_t i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++)
+    {
+        block_to_write[0] = *(chunk->m_blocks[i][0]);
+        if (chunk->m_blocks[i][1])
+            block_to_write[1] = *(chunk->m_blocks[i][1]);
+        else
+            block_to_write[1].m_type = VOID;
+
+        fwrite(block_to_write, sizeof(Block_s), 2, chunks_savefile);
     }
 
     fclose(chunks_savefile);
@@ -245,13 +282,28 @@ void writeFileToChunk(Chunk_s *chunk, const char *filename, long cursor)
 {
     FILE *chunks_savefile = fopen(filename, "rb");
     fseek(chunks_savefile, cursor, SEEK_SET);
+
+    if (!chunk)
+    {
+        chunk = malloc(sizeof(Chunk_s));
+    }
+
     // Read chunk coordinate
     fread(&chunk->world_position, sizeof(Coordinate_s), 1, chunks_savefile);
 
     // Read chunk blocks
+    Block_s readed_block[2];
     for (size_t i = 0; i < CHUNK_SIZE * CHUNK_SIZE; i++)
     {
-        fread(chunk->m_blocks[i][0], sizeof(Block_s), 2, chunks_savefile);
+        fread(readed_block, sizeof(Block_s), 2, chunks_savefile);
+        chunk->m_blocks[i][0] = CreateBlock(readed_block[0].m_type, readed_block[0].m_flags);
+
+        if (readed_block[1].m_type != VOID)
+            chunk->m_blocks[i][1] = CreateBlock(readed_block[1].m_type, readed_block[1].m_flags);
+
+        // if (readed_block[1].m_type == PLANK)
+        // asm("nop");
+        // exit(1);
         // fread(chunk->m_blocks[i][1], sizeof(Block_s), 1, chunks_savefile);
     }
 

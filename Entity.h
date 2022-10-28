@@ -20,6 +20,7 @@ typedef struct Entity_S
 
     EntityType_e m_type;
 
+    double m_last_move;
     // Entity hp
     short int m_health;
 

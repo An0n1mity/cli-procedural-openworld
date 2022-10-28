@@ -2,9 +2,7 @@
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-
 // Create the main window for game's title
-/*
 WINDOW *createTitleWindow(int height, int width, int startx, int starty)
 {
     WINDOW *title_window;
@@ -17,30 +15,30 @@ WINDOW *createTitleWindow(int height, int width, int startx, int starty)
 
     return title_window;
 }
-*/
 
-/*
 enum MenuChoice_e titleLoop(WINDOW *title_window)
 {
     // Strings selection
-    const char *title_strings[7] = {"--- DWARF FORTRESS ---",
-                                    "NEW GAME",
+    const char *title_strings[5] = {"--- DWARF FORTRESS ---",
+                                    "START",
                                     "LOAD GAME",
-                                    "PLAYER CONFIGURATION",
-                                    "WORLD CONFIGURATION",
-                                    "STATS HELP",
-                                    "CREDITS"};
+                                    "CREDITS",
+                                    "QUIT GAME"};
     int width, height;
     getmaxyx(title_window, height, width);
+
     // Print all the title menu
-    for (size_t i = 0; i < 7; i++)
+    for (size_t i = 0; i < 5; i++)
     {
         if (i == 1)
             wattron(title_window, A_STANDOUT);
+
         if (i == 0)
-            mvwprintw(title_window, i + 4, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+            mvwprintw(title_window, i + 1, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+
         else
-            mvwprintw(title_window, i + 1 + (height / 2.5) - 2, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+            mvwprintw(title_window, i + (height / 2) - 2, width / 2 - strlen(title_strings[i]) / 2, "%s", title_strings[i]);
+
         wattroff(title_window, A_STANDOUT);
     }
 
@@ -62,11 +60,11 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
         case KEY_UP:
             idx--;
             if (idx < 0)
-                idx = 1;
+                idx = 3;
             break;
         case KEY_DOWN:
             idx++;
-            if (idx > 6)
+            if (idx > 3)
                 idx = 0;
             break;
         case '\n':
@@ -74,8 +72,16 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
             delwin(title_window); // and delete
             if (idx == 0)
                 return NEW_GAME;
-            else
+
+            if (idx == 1)
                 return LOAD_GAME;
+
+            if (idx == 2)
+                return CREDITS;
+
+            else
+                return QUIT;
+
             break;
         }
 
@@ -85,135 +91,109 @@ enum MenuChoice_e titleLoop(WINDOW *title_window)
         wrefresh(title_window);
     }
 }
-*/
 
-// DEBUT CODE PROPRE
-
-char *gameOptions[] = {
-    "LOAD GAME",
-    "NEW GAME",
-    "PLAYER CONGIURATION",
-    "WORD CONFIGURATION",
-    "STATS HELP",
-    "CREDITS",
-    "QUIT GAME",
-    (char *)NULL,
-};
-
-void centerPrint(WINDOW *win, int startY, int startX, int width, char *string, chtype color)
+void quitGame()
 {
-    int length;
-    int x;
-    int y;
-
-    float temp;
-
-    if (win == NULL)
-        win = stdscr;
-
-    getyx(win, y, x);
-
-    if (startX != 0)
-        x = startX;
-    
-    if (startY != 0)
-        y = startY;
-    
-    if (width == 0)
-        width = 80;
-
-    length = strlen(string);
-    temp = (width - length) / 2;
-    x = startX + (int)temp;
-
-    wattron(win, color);
-    mvwprintw(win, y, x, "%s", string);
-    wattroff(win, color);
-    refresh();
-}
-
-void mainMenu()
-{
-    ITEM **menu_items;
-    MENU *main_menu;
-    WINDOW *main_menu_window;
-
-    int n_gameOptions; 
-    int i;
-    int c;
-
-    initDisplaying();
-
-    // items creation
-    n_gameOptions = ARRAY_SIZE(gameOptions);
-    menu_items = (ITEM **)calloc(n_gameOptions + 1, sizeof(ITEM *));
-
-    for (i = 0; i < n_gameOptions; ++i)
-    {
-        menu_items[i] = new_item(gameOptions[i], gameOptions[i]);
-    }
-        
-    // menu creation
-    main_menu = new_menu((ITEM **)menu_items);
-
-    // window creation associated to the menu
-    main_menu_window = newwin(10, 40, 4, 4);
-    keypad(main_menu_window, TRUE);
-
-    // set main window and sub window
-    set_menu_win(main_menu, main_menu_window);
-    set_menu_sub(main_menu, derwin(main_menu_window, 6, 38, 3, 1));
-
-    // set menu mark to the string " * "
-    set_menu_mark(main_menu, " -> ");
-
-    // print a border around the main window and print a title
-    box(main_menu_window, 0, 0);
-    centerPrint(main_menu_window, 1, 0, 40, "DWARF FORTRESS", COLOR_PAIR(1));
-    mvwaddch(main_menu_window, 2, 0, ACS_LTEE);
-    mvwhline(main_menu_window, 2, 1, ACS_HLINE, 38);
-    mvwaddch(main_menu_window, 2, 39, ACS_RTEE);
-    refresh();
-
-    // post the menu
-    post_menu(main_menu);
-    wrefresh(main_menu_window);
-
-    while ((c = wgetch(main_menu_window)) != KEY_F(1))
-    {
-        switch (c)
-        {
-        case KEY_DOWN:
-            menu_driver(main_menu, REQ_DOWN_ITEM);
-            break;
-
-        case KEY_UP:
-            menu_driver(main_menu, REQ_UP_ITEM);
-            break;
-        }
-    }
-
-    // unpost and free all the memory taken up
-    unpost_menu(main_menu);
-    free_menu(main_menu);
-    
-    for (i = 0; i < n_gameOptions; ++i)
-    {
-        free_item(menu_items[i]);
-    }
-        
     endwin();
-
+    exit(0);
 }
 
-// FIN 
+static FORM *form;
+static FIELD *fields[5];
+static WINDOW *win_body, *win_form;
 
+/*
+ * This is useful because ncurses fill fields blanks with spaces.
+ */
+static char *trim_whitespaces(char *str)
+{
+    char *end;
 
+    // trim leading space
+    while (isspace(*str))
+        str++;
+
+    if (*str == 0) // all spaces?
+        return str;
+
+    // trim trailing space
+    end = str + strnlen(str, 128) - 1;
+
+    while (end > str && isspace(*end))
+        end--;
+
+    // write new null terminator
+    *(end + 1) = '\0';
+
+    return str;
+}
+
+static void driver(int ch)
+{
+    int i;
+
+    switch (ch)
+    {
+    case KEY_F(2):
+        // Or the current field buffer won't be sync with what is displayed
+        form_driver(form, REQ_NEXT_FIELD);
+        form_driver(form, REQ_PREV_FIELD);
+        move(LINES - 3, 2);
+
+        for (i = 0; fields[i]; i++)
+        {
+            printw("%s", trim_whitespaces(field_buffer(fields[i], 0)));
+
+            if (field_opts(fields[i]) & O_ACTIVE)
+                printw("\"\t");
+            else
+                printw(": \"");
+        }
+
+        refresh();
+        pos_form_cursor(form);
+        break;
+
+    case KEY_DOWN:
+        form_driver(form, REQ_NEXT_FIELD);
+        form_driver(form, REQ_END_LINE);
+        break;
+
+    case KEY_UP:
+        form_driver(form, REQ_PREV_FIELD);
+        form_driver(form, REQ_END_LINE);
+        break;
+
+    case KEY_LEFT:
+        form_driver(form, REQ_PREV_CHAR);
+        break;
+
+    case KEY_RIGHT:
+        form_driver(form, REQ_NEXT_CHAR);
+        break;
+
+    // Delete the char before cursor
+    case KEY_BACKSPACE:
+    case 127:
+        form_driver(form, REQ_DEL_PREV);
+        break;
+
+    // Delete the char under the cursor
+    case KEY_DC:
+        form_driver(form, REQ_DEL_CHAR);
+        break;
+
+    default:
+        form_driver(form, ch);
+        break;
+    }
+
+    wrefresh(win_form);
+}
 
 void seedMenu(WINDOW *seed_window, int *seed)
 {
-
-    int seed_window_w, seed_window_h;
+    /*int seed_window_w, seed_window_h;
     getmaxyx(seed_window, seed_window_h, seed_window_w);
 
     WINDOW *seed_form_window = derwin(seed_window, seed_window_h - 2, seed_window_w - 2, 1, 1);
@@ -221,11 +201,12 @@ void seedMenu(WINDOW *seed_window, int *seed)
     box(seed_window, 0, 0);
 
     keypad(stdscr, TRUE);
+    cbreak();
     FIELD *field[2];
-    field[0] = new_field(1, 4, seed_window_h / 2, seed_window_w / 2 - 2, 0, 0);
+    field[0] = new_field(1, 4, seed_window_h / 2, seed_window_w / 2 - 2, 0, 5);
     field[1] = NULL;
     set_field_back(field[0], A_UNDERLINE);
-    field_opts_off(field[0], O_AUTOSKIP); /* Don't go to next field when this */
+    set_field_opts(field[0], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE); /* Don't go to next field when this
 
     FORM *my_form = new_form(field);
     set_form_win(my_form, seed_window);
@@ -243,15 +224,12 @@ void seedMenu(WINDOW *seed_window, int *seed)
         switch (ch)
         {
         case KEY_DOWN:
-            /* Go to next field */
             form_driver(my_form, REQ_NEXT_FIELD);
-            /* Go to the end of the present buffer */
-            /* Leaves nicely at the last character */
+
             form_driver(my_form, REQ_END_LINE);
             break;
         case KEY_UP:
-            /* Go to previous field */
-            form_driver(my_form, REQ_PREV_FIELD);
+$            form_driver(my_form, REQ_PREV_FIELD);
             form_driver(my_form, REQ_END_LINE);
             break;
         case KEY_LEFT:
@@ -284,17 +262,94 @@ void seedMenu(WINDOW *seed_window, int *seed)
             delwin(seed_form_window);
 
             unpost_form(my_form);
-            free_form(my_form);
+            // free_form(my_form);
             free_field(field[0]);
 
             refresh();
             return;
         default:
-            /* If this is a normal character, it gets */
-            /* Printed	*/
-            if (isdigit(ch))
-                form_driver(my_form, ch);
+            // if (isdigit(ch))
+            form_driver(my_form, ch);
             break;
         }
-    }
+    }*/
+
+    win_body = newwin(24, 80, 0, 0);
+    box(win_body, 0, 0);
+    win_form = derwin(win_body, 20, 78, 3, 1);
+    box(win_form, 0, 0);
+    mvwprintw(win_body, 1, 2, "Press F1 to quit and F2 to print fields content");
+
+    fields[0] = new_field(1, 10, 0, 0, 0, 0);
+    fields[1] = new_field(1, 40, 0, 15, 0, 0);
+    fields[2] = new_field(1, 10, 2, 0, 0, 0);
+    fields[3] = new_field(1, 40, 2, 15, 0, 0);
+    fields[4] = NULL;
+
+    set_field_buffer(fields[0], 0, "label1");
+    set_field_buffer(fields[1], 0, "val1");
+    set_field_buffer(fields[2], 0, "label2");
+    set_field_buffer(fields[3], 0, "val2");
+
+    set_field_opts(fields[0], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
+    set_field_opts(fields[1], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
+    set_field_opts(fields[2], O_VISIBLE | O_PUBLIC | O_AUTOSKIP);
+    set_field_opts(fields[3], O_VISIBLE | O_PUBLIC | O_EDIT | O_ACTIVE);
+
+    set_field_back(fields[1], A_UNDERLINE);
+    set_field_back(fields[3], A_UNDERLINE);
+
+    form = new_form(fields);
+    set_form_win(form, win_form);
+    set_form_sub(form, derwin(win_form, 18, 76, 1, 1));
+    post_form(form);
+
+    refresh();
+    wrefresh(win_body);
+    wrefresh(win_form);
+    int ch;
+    while ((ch = getch()) != KEY_F(1))
+        driver(ch);
+
+    unpost_form(form);
+    free_form(form);
+    free_field(fields[0]);
+    free_field(fields[1]);
+    free_field(fields[2]);
+    free_field(fields[3]);
+    delwin(win_form);
+    delwin(win_body);
+}
+
+void creditsMenu(WINDOW *p_credits_window)
+{
+
+    // clear and remove all draw from main window
+    wclear(stdscr);
+    // Refresh main screen
+    refresh();
+    // Create a window
+    WINDOW *credits_window = newwin(p_credits_window->_maxy, p_credits_window->_maxx, 0, 0);
+    // Draw a border around the window
+    box(credits_window, 0, 0);
+    // Print to the created window the credits
+    mvwprintw(credits_window, 1, 2, "CREDITS");
+    mvwprintw(credits_window, 2, 2, "----------------");
+    mvwprintw(credits_window, 3, 2, "Game made by :");
+    mvwprintw(credits_window, 4, 2, "   - CÃ©dric MARTY");
+    mvwprintw(credits_window, 5, 2, "   - Alexandre MONTHOUEL");
+    mvwprintw(credits_window, 6, 2, "   - Dimitri RUSSO");
+    mvwprintw(credits_window, 7, 2, "----------------");
+    mvwprintw(credits_window, 8, 2, "Press any key to return to the main menu");
+
+    // Refresh the window
+    wrefresh(credits_window);
+
+    // Wait for a key to be pressed
+    getch();
+
+    // Clear the window
+    wclear(stdscr);
+    wrefresh(stdscr);
+    delwin(credits_window);
 }

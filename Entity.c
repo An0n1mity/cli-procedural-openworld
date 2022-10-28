@@ -6,6 +6,7 @@ Entity_s *CreateEntity(enum EntityType_E type)
 {
     Entity_s* entity = (Entity_s*) malloc(sizeof(Entity_s));
     entity->m_type = type;
+    entity->m_last_move = 0;
     switch (type)
     {
         case PLAYER:
@@ -65,6 +66,7 @@ void moveEntityInDirection(Entity_s *entity)
     }
 }
 
+// Return pointer to array containing block
 Block_s **getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 {
     assert(entity && tilemap);
@@ -82,16 +84,16 @@ Block_s **getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
     switch (entity->m_direction)
     {
     case NORTH:
-        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y - 1) * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x];
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y - 1) * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x];
         break;
     case SOUTH:
-        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y + 1) * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x];
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y + 1) * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x];
         break;
     case WEST:
-        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x - 1];
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x - 1];
         break;
     case EAST:
-        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * 3 + entity_tilemap_coord.m_x + 1];
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x + 1];
         break;
     default:
         break;
