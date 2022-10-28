@@ -201,8 +201,15 @@ int main(int argc, char const *argv[])
             LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
         }
         displayTerm(term, NULL);
-        calculateFPS(term, actualTime_ms - previouTime_ms);
+        if (!(nb_ticks % 5000))
+        {
+            if (player->m_action == MOVE)
+                player->m_action = IDLE;
+            nb_ticks = 0;
+        }
 
+        calculateFPS(term, actualTime_ms - previouTime_ms);
+        nb_ticks++;
         // if ((double)(clock() - ticks) / CLOCKS_PER_SEC >= 1.0)
         // {
         //     ticks = clock();

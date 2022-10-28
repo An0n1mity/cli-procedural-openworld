@@ -141,7 +141,22 @@ void displayWorld(Term_s *term, View_s *view)
             else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
                      term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
             {
-                waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
+                switch (term->tilemap->m_player->m_action)
+                {
+                case MOVE:
+                    waddwstr(term->world, L"🏃");
+                    break;
+                case IDLE:
+                case BREAK:
+                case PICK:
+                    waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
+                    break;
+                case SURFING:
+                    waddwstr(term->world, L"🏄");
+                    break;
+                default:
+                    break;
+                }
             }
 
             else
@@ -219,6 +234,9 @@ void displayPlayerStats(Term_s *term)
     {
     case MOVE:
         wprintw(term->stats, "MOVING               ");
+        break;
+    case SURFING:
+        wprintw(term->stats, "SURFING               ");
         break;
     case BREAK:
         block_in_front = getFrontBlock(player->m_base, term->tilemap);

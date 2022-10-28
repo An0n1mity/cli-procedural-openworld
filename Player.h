@@ -17,7 +17,7 @@ typedef enum Action_E
 {
     IDLE,
     BREAK = 0b0001,
-    DISPLACE = 0b0010,
+    SURFING = 0b0010,
     PICK = 0b0100,
     MOVE = 0b1000
 } Action_e;
@@ -86,6 +86,9 @@ typedef struct Player_S
 
     // Player possible crafts
     CraftList_s *m_possible_crafts;
+
+    // Player used tool
+    Tool_s *m_tool;
 
     // If the player stats have changed
     bool update_stats;
