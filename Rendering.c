@@ -2,7 +2,6 @@
 
 Term_s *initDisplaying()
 {
-    initscr();
     raw();
     noecho();
     curs_set(0);

@@ -22,20 +22,55 @@ int main(int argc, char const *argv[])
         return EXIT_FAILURE;
 
     setlocale(LC_ALL, "");
+
+    initscr();
+    noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
+
+    // Main menu
+    int seed = 563;
+
+    // Based on choice new menu
+    Player_s *player = CreatePlayer();
+    FILE *f;
+    bool menu;
+menu:
+    menu = true;
+    while (menu)
+    {
+        enum MenuChoice_e choice = titleLoop(createWindow(10, 30, 0, 10));
+
+        switch (choice)
+        {
+        case NEW_GAME:
+            // Recreate new saved chunks
+            if (access("saved_chunks", F_OK) == 0)
+                remove("saved_chunks");
+            f = fopen("saved_chunks", "wb");
+            fclose(f);
+            MovePlayerTo(player, (Coordinate_s){40, 17});
+            menu = false;
+            break;
+
+        case LOAD_GAME:
+            if ((access("saved_player", F_OK) == 0) && ((access("saved_chunks", F_OK))))
+            {
+                readPlayerFromFile(player, "saved_player");
+
+                menu = false;
+            }
+
+            break;
+        }
+    }
     Term_s *term = initDisplaying();
 
-    remove("saved_chunks");
-    FILE *f = fopen("saved_chunks", "wb");
-    fclose(f);
-    int seed = 563;
     int quit = 0;
 
     Action_e player_action = BREAK;
     Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * MAX_CHUNK_DISTANCE, CHUNK_SIZE * MAX_CHUNK_DISTANCE, seed);
-    Player_s *player = CreatePlayer();
 
-    if (1)
-        readPlayerFromFile(player, "saved_player");
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
     LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);

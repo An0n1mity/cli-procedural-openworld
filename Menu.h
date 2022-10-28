@@ -9,19 +9,18 @@
 #include <stdlib.h>
 #include "Rendering.h"
 
-// enum MenuChoice_e
-// {
-//     NEW_GAME,
-//     LOAD_GAME,
-//     PLAYER_CONFIG,
-//     WORLD_CONFIG,
-//     STATS_HELP,
-//     CREDITS,
-//     QUIT
-// }; 
+enum MenuChoice_e
+{
+    NEW_GAME,
+    LOAD_GAME,
+    PLAYER_CONFIG,
+    WORLD_CONFIG,
+    STATS_HELP,
+    CREDITS,
+    QUIT
+};
 
-
-// enum MenuChoice_e titleLoop(WINDOW *title_window);
+enum MenuChoice_e titleLoop(WINDOW *title_window);
 void seedMenu(WINDOW *seed_window, int *seed);
 
 
