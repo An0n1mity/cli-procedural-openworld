@@ -84,12 +84,6 @@ void MakeAction(Player_s *player, Action_e action)
         MovePlayer(player);
 }
 
-void printPlayer(Player_s *player)
-{
-    printf("\033[%d;%dH", player->m_base->m_position.m_y + 1, player->m_base->m_position.m_x + 1);
-    printf("👨");
-}
-
 inline void addPlayerToTilemap(Player_s *player, Tilemap_s *tilemap)
 {
     addEntityToTilemap(tilemap, player->m_base);
