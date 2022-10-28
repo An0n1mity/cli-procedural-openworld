@@ -24,11 +24,11 @@ Réalisé par :
 - Dans le cas où je n'ai pas la librairie NCURSES ?
     Pour DEBIAN/UBUNTU c'est assez simple, il vous faudra taper les commandes suivantes :
     
-    Pour mettre à jour vos packages :
-    $ sudo apt-update
+    Pour mettre à jour vos packages : 
+    ```$ sudo apt-update```
 
     Pour installer NCURSES :
-    $ sudo apt-get install libncurses5-dev libncursesw5-dev
+    ```$ sudo apt-get install libncurses5-dev libncursesw5-dev```
 
     Et voilà, c'est terminé !
 - Le Makefile ?
