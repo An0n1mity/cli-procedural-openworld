@@ -10,10 +10,32 @@ Réalisé par :
 - Affichage en couleur + utilisation de caractères UNICODE
 - Affichage du monde progressif (système de chunk)
 - Génération du monde intelligent (génération procédurale)
+- Taille de la fenêtre modifiable en temps réel
+- Map infini
+- Affichage des stats du joueur en temps réel
 - Jeu en temps réel
 
+### CONTRÔLES
+- Parcourir l'inventaire : FLECHE DROITE/GAUCHE ou MOLETTE
+- Déplacement du joueur : Z-Q-S-D
+- Utiliser un objet de l'inventaire : CLIQUE DROIT
+- Casser un objet de la map : CLIQUE GAUCHE
+- Valider un Craft : ENTREE
+- Afficher le menu : CTRL+C ou F1
+
+### LISTE DES CRAFTS
+- 3 planches de bois = 1 planche de surf -> permet de naviguer sur l'eau (avec la planche de surf craftée)
+
+### LISTES DES STATS
+- Vie
+- Faim
+- Soif
+- Actions en cours
+- Directions
+- Possibilité de crafts en cours
+
 ### INSTRUCTIONS
-#### Instructions de compilations :
+#### Instructions de compilation :
 - Utilisation d'un OS LINUX (de préférence UBUNTU + avoir GNOME d'installé pour un rendu plus joli)
 - Avoir installé la librairie NCURSES
 - Utilisation cmake pour une bonne compilation du jeu
