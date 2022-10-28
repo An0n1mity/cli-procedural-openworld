@@ -8,8 +8,8 @@ Player_s *CreatePlayer()
     memset(player->m_inventory.m_objects, 0, sizeof(Object_s) * 9);
     player->m_inventory.m_idx = 0;
 
-    player->m_vitals[FOOD_LVL] = 100;
-    player->m_vitals[WATER_LVL] = 100;
+    player->m_vitals[FOOD_LVL] = PLAYER_DEFAULT_FOOD;
+    player->m_vitals[WATER_LVL] = PLAYER_DEFAULT_WATER;
 
     player->m_possible_crafts = NULL;
     player->m_craft_selected = 0;

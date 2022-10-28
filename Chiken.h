@@ -23,8 +23,8 @@ typedef struct Chicken_S
 
 } Chicken_s;
 
-Chicken_s* CreateChicken_s();
-void MoveChicken_sTo(Chicken_s* chicken, struct Coordinate_S coordinate);
+Chicken_s* CreateChicken();
+void MoveChickenTo(Chicken_s* chicken, struct Coordinate_S coordinate);
 void addChickenToTilemap(Chicken_s *chicken, struct Tilemap_S *tilemap);
 struct TilemapBlock_S *getFrontTilemapBlockP(Chicken_s *chicken, struct Tilemap_S *tilemap);
 void MoveChicken(Chicken_s *chicken);

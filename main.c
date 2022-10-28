@@ -6,6 +6,9 @@
 #include <locale.h>
 #include <ncurses.h>
 #include <time.h>
+
+#include "Constant.h"
+
 #include "Player.h"
 #include "Block.h"
 #include "Tilemap.h"

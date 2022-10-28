@@ -1,6 +1,7 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+#include "Constant.h"
 #include "Entity.h"
 #include "Block.h"
 #include "Tilemap.h"
@@ -17,7 +18,6 @@ typedef struct Chunk_S
 } Chunk_s;
 
 // width and height for each chunks
-#define CHUNK_SIZE 10
 
 /**
  * @brief Create a Chunk From Tilemap object

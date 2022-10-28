@@ -1,8 +1,7 @@
 #ifndef RENDERING_H
 #define RENDERING_H
 
-#define _XOPEN_SOURCE_EXTENDED 1
-#define NCURSES_WIDECHAR 1
+#include "Constant.h"
 
 #include <ncurses.h>
 #include <menu.h>
@@ -10,12 +9,6 @@
 #include "Tilemap.h"
 #include "Camera.h"
 #include "Player.h"
-
-#define COLOR_WATER 16
-#define COLOR_GRASS 17
-#define COLOR_SAND 18
-#define COLOR_STONE 19
-#define WHITE 20
 
 typedef enum DISPLAY_MODE_E
 {

@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Constant.h"
+
 #include <stdlib.h>
 #include "Entity.h"
 #include "Block.h"

@@ -1,10 +1,16 @@
 #include "Chicken.h"
 
-Chicken_s* CreateChicken_s()
+Chicken_s* CreateChicken()
 {
+    Chicken_s* chicken = (Chicken_s*)malloc(sizeof(Chicken_s));
+    chicken->m_base = CreateEntity(PLAYER);
 
+    int life = CHICKEN_LIFE;
+
+    chicken->update_stats = true;
+    return chicken;
 }
-void MoveChicken_sTo(Chicken_s* chicken, struct Coordinate_S coordinate)
+void MoveChickenTo(Chicken_s* chicken, struct Coordinate_S coordinate)
 {
 
 }
