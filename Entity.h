@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "Tilemap.h"
 #include "Coordinate.h"
+#include "Block.h"
 
 typedef enum Direction_E
 {
@@ -13,18 +14,21 @@ typedef enum Direction_E
     EAST
 } Direction_e;
 
-typedef enum EntityType_E{PLAYER, MOB} EntityType_e;
+typedef enum EntityType_E{PLAYER, CHICKEN} EntityType_e;
 
 typedef struct Entity_S
 {
 
+    double m_last_move
     EntityType_e m_type;
+    void* m_entity_struct;
 
     // Entity hp
     short int m_health;
 
     // Entity coordinates 
     Coordinate_s m_position;
+    Block_s m_block_on;
 
     // Entity direction
     Direction_e m_direction;
@@ -40,6 +44,7 @@ typedef struct Entitieslist_S
     struct Entitieslist_S *m_next;
 } Entitieslist_s;
 
+Block_s **getCurrentBlock(Entity_s *entity);
 Entity_s *CreateEntity(EntityType_e type);
 Block_s **getFrontBlock(Entity_s *entity, struct Tilemap_S *tilemap);
 struct TilemapBlock_S *getFrontTilemapBlock(Entity_s *entity, struct Tilemap_S *tilemap);
