@@ -26,16 +26,20 @@ Dualboot ou VM (VirtualBox ou VMWare) sera la solution, pour l'installation, Goo
 - Dans le cas où je n'ai pas la librairie NCURSES ?
 Pour DEBIAN/UBUNTU c'est assez simple, il vous faudra taper les commandes suivantes :
     
-Pour mettre à jour vos packages : 
+Pour mettre à jour vos packages :
 ```$ sudo apt-update```
 
 Pour installer NCURSES :
 ```$ sudo apt-get install libncurses5-dev libncursesw5-dev```
 
-Et voilà, c'est terminé !
-
 - Le Makefile ?
-Oui oui, le Makefile, c'est assez simple, il est fourni dans le code source plus qu'à taper les bonnes commandes pour la compilation, sinon une fois de plus, Google est ton ami :P
+Oui oui, le Makefile, c'est assez simple, il suffit de taper les commandes suivantes pour tout compiler proprement :
+```
+$ cd projet
+$ mkdir build
+$ cd buil
+$ cmake ..
+```
 
 
 
