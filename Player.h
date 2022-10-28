@@ -73,7 +73,7 @@ typedef struct Player_S
     Attribute_s m_attributes[4];
 
     // Player vitals stats
-    size_t m_vitals[2];
+    float m_vitals[2];
 
     // Player current action
     Action_e m_action;
@@ -108,8 +108,8 @@ void pickBlockInFront(Player_s *player);
 void placeBlockInFront(Player_s *player);
 void freePlayer(Player_s *player);
 void printPlayer(Player_s *player);
-void reducePlayerFoodLevel(Player_s *player);
-void reducePlayerWaterLevel(Player_s *player);
+void reducePlayerFoodLevel(Player_s *player, float amount);
+void reducePlayerWaterLevel(Player_s *player, float amount);
 void reducePlayerHealth(Player_s *player);
 #endif 
 

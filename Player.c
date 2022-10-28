@@ -8,8 +8,8 @@ Player_s *CreatePlayer()
     memset(player->m_inventory.m_objects, 0, sizeof(Object_s) * 9);
     player->m_inventory.m_idx = 0;
 
-    player->m_vitals[FOOD_LVL] = 100;
-    player->m_vitals[WATER_LVL] = 100;
+    player->m_vitals[FOOD_LVL] = 100.f;
+    player->m_vitals[WATER_LVL] = 100.f;
 
     player->m_possible_crafts = NULL;
     player->m_craft_selected = 0;
@@ -57,8 +57,8 @@ void MovePlayer(Player_s *player)
         }
 
         moveEntityInDirection(player->m_base);
-        reducePlayerFoodLevel(player);
-        reducePlayerWaterLevel(player);
+        reducePlayerFoodLevel(player, .1f);
+        reducePlayerWaterLevel(player, .2f);
     }
 }
 
@@ -92,19 +92,19 @@ inline void addPlayerToTilemap(Player_s *player, Tilemap_s *tilemap)
     tilemap->m_player = player;
 }
 
-inline void reducePlayerFoodLevel(Player_s *player)
+inline void reducePlayerFoodLevel(Player_s *player, float amount)
 {
     if (player->m_vitals[FOOD_LVL] <= 0)
         return;
-    player->m_vitals[FOOD_LVL]--;
+    player->m_vitals[FOOD_LVL] -= amount;
     player->update_stats = true;
 }
 
-inline void reducePlayerWaterLevel(Player_s *player)
+inline void reducePlayerWaterLevel(Player_s *player, float amount)
 {
     if (player->m_vitals[WATER_LVL] <= 0)
         return;
-    player->m_vitals[WATER_LVL]--;
+    player->m_vitals[WATER_LVL] -= amount;
     player->update_stats = true;
 }
 
@@ -238,8 +238,18 @@ void placeBlockInFront(Player_s *player)
     Object_s *holded_object = getCurrentInventoryObject(player);
     if (!block[1] && holded_object->m_type == BLOCK && (block[0]->m_flags & PLACABLE))
     {
-        block[1] = malloc(sizeof(Block_s));
-        memcpy(block[1], holded_object->m_data, sizeof(Block_s));
+        Block_s *holded_block = holded_object->m_data;
+
+        if (holded_block->m_type == APPLE)
+        {
+            player->m_vitals[FOOD_LVL] += 0.5f;
+            player->m_vitals[WATER_LVL] += 1.f;
+        }
+        else
+        {
+            block[1] = malloc(sizeof(Block_s));
+            memcpy(block[1], holded_object->m_data, sizeof(Block_s));
+        }
         free(holded_object->m_data);
         holded_object->m_type = NONE;
     }

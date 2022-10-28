@@ -309,6 +309,9 @@ void displayPlayerStats(Term_s *term)
             case PLANK:
                 wprintw(term->stats, "🟫");
                 break;
+            case APPLE:
+                wprintw(term->stats, "🍎");
+                break;
 
             default:
                 break;

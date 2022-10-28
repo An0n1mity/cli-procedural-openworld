@@ -74,7 +74,8 @@ int main(int argc, char const *argv[])
     size_t try = 0;
 
     clock_t ticks = clock();
-    size_t nb_ticks = 0;
+    size_t nb_ticks_sprite = 0;
+    size_t nb_ticks_vitals = 0;
 
     double actualTime_ms = 0;
     double previouTime_ms = 0;
@@ -201,31 +202,23 @@ int main(int argc, char const *argv[])
             LoadChunkAroundPlayer(player, seed, false, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
         }
         displayTerm(term, NULL);
-        if (!(nb_ticks % 5000))
+        if (nb_ticks_sprite && !(nb_ticks_sprite % 5000))
         {
             if (player->m_action == MOVE)
                 player->m_action = IDLE;
-            nb_ticks = 0;
+            nb_ticks_sprite = 0;
+        }
+
+        if (nb_ticks_vitals && !(nb_ticks_vitals % 10000))
+        {
+            reducePlayerFoodLevel(player, .1f);
+            reducePlayerWaterLevel(player, .2f);
+            nb_ticks_vitals = 0;
         }
 
         calculateFPS(term, actualTime_ms - previouTime_ms);
-        nb_ticks++;
-        // if ((double)(clock() - ticks) / CLOCKS_PER_SEC >= 1.0)
-        // {
-        //     ticks = clock();
-        //     if (nb_ticks >= 65535)
-        //         nb_ticks = 0;
-        //     nb_ticks++;
-
-        //     if (nb_ticks > 0 && !(nb_ticks % 120))
-        //         reducePlayerFoodLevel(player);
-
-        //     if (nb_ticks > 0 && !(nb_ticks % 60))
-        //         reducePlayerFoodLevel(player);
-
-        //     if (nb_ticks > 0 && !(nb_ticks % 60) && player->m_vitals[FOOD_LVL] <= 0 && player->m_vitals[WATER_LVL] <= 0)
-        //         reducePlayerHealth(player);
-        // }
+        nb_ticks_sprite++;
+        nb_ticks_vitals++;
     }
 
     freeEntitiesList(tilemap->m_entities);
