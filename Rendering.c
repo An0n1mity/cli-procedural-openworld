@@ -196,7 +196,7 @@ void displayPlayerStats(Term_s *term)
 
     for (size_t i = 0; i < food_lvl; i++)
     {
-        wprintw(term->stats, "🍗");
+        waddwstr(term->stats, L"🍗");
     }
 
     for (size_t i = 0; i < 10 - food_lvl; i++)
@@ -209,7 +209,7 @@ void displayPlayerStats(Term_s *term)
 
     for (size_t i = 0; i < water_lvl; i++)
     {
-        wprintw(term->stats, "💧");
+        waddwstr(term->stats, L"💧");
     }
 
     for (size_t i = 0; i < 10 - water_lvl; i++)
@@ -291,7 +291,7 @@ void displayPlayerStats(Term_s *term)
             switch (block->m_type)
             {
             case PLANK:
-                wprintw(term->stats, "🟫");
+                waddwstr(term->stats, L"🟫");
                 break;
 
             default:
@@ -314,7 +314,7 @@ void displayPlayerStats(Term_s *term)
             }
             break;
         default:
-            waddwstr(term->stats, L"▫️ "); //🔲▱▢▯▭□⨆⌊⌋[]🔳◽
+            wprintw(term->stats, "▫️ "); //🔲▱▢▯▭□⨆⌊⌋[]🔳◽
             break;
         }
     }
