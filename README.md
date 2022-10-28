@@ -35,8 +35,10 @@ Oui oui, le Makefile, c'est assez simple, il suffit de taper les commandes suiva
 ```
 $ cd projet
 $ mkdir build
-$ cd buil
+$ cd build
 $ cmake ..
+$ make
+$ ./CProject
 ```
 
 
