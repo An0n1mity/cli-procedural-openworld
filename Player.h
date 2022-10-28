@@ -17,7 +17,7 @@ typedef enum Action_E
 {
     IDLE,
     BREAK = 0b0001,
-    DISPLACE = 0b0010,
+    SURFING = 0b0010,
     PICK = 0b0100,
     MOVE = 0b1000
 } Action_e;
@@ -82,7 +82,13 @@ typedef struct Player_S
     Inventory_s m_inventory;
 
     // Player selected craft
-    size_t m_craft_selected;
+    CraftList_s *m_craft_selected;
+
+    // Player possible crafts
+    CraftList_s *m_possible_crafts;
+
+    // Player used tool
+    Tool_s *m_tool;
 
     // If the player stats have changed
     bool update_stats;
@@ -90,6 +96,7 @@ typedef struct Player_S
 } Player_s;
 
 Player_s* CreatePlayer();
+Tool_s *createTool(ToolType_e type);
 void MovePlayerTo(Player_s* player, struct Coordinate_S coordinate);
 void MakeAction(Player_s *player, Action_e action);
 void MakeActionOnBlock(Action_e action, Block_s *block);

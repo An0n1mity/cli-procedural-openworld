@@ -10,7 +10,8 @@ typedef enum BlockFlag_e
     MOVABLE = 0b00000010,
     DROPABLE = 0b00000100,
     WALKABLE = 0b00001000,
-    PICKABLE = 0b00010000
+    PICKABLE = 0b00010000,
+    PLACABLE = 0b00100000
 } BlockFlag_e;
 
 typedef enum BlockType_E
@@ -24,6 +25,7 @@ typedef enum BlockType_E
     SAND,
     STONE,
     PLANK,
+    SURFBOARD_B,
     VOID
 } BlockType_e;
 

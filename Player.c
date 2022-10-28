@@ -11,6 +11,9 @@ Player_s *CreatePlayer()
     player->m_vitals[FOOD_LVL] = 100;
     player->m_vitals[WATER_LVL] = 100;
 
+    player->m_possible_crafts = NULL;
+    player->m_craft_selected = 0;
+
     player->update_stats = true;
     return player;
 }
@@ -27,10 +30,31 @@ void MovePlayer(Player_s *player)
     Tilemap_s *tilemap = player->m_base->m_tilemap;
 
     Block_s **front_block = getFrontBlock(player->m_base, tilemap);
-    if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (front_block[0]->m_flags & WALKABLE))
+    if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (player->m_action & SURFING || (front_block[0]->m_flags & WALKABLE) || (front_block[1] && front_block[1]->m_type == SURFBOARD_B)))
     {
         // Update current player action
-        player->m_action = MOVE;
+        if ((front_block[1] && front_block[1]->m_type == SURFBOARD_B) || (player->m_action & SURFING && front_block[0]->m_type == WATER))
+        {
+            player->m_action = SURFING;
+            // Pop the board from beaneath
+            Coordinate_s player_tilemap_coord = getEntityTilemapCoordinate(player->m_base);
+            Block_s **block_beneath = tilemap->m_blocks[player_tilemap_coord.m_y * tilemap->m_width + player_tilemap_coord.m_x];
+            if (block_beneath[1] && block_beneath[1]->m_type == SURFBOARD_B)
+            {
+                free(block_beneath[1]);
+                block_beneath[1] = NULL;
+
+                // Make it the current used tool
+                player->m_tool = createTool(SURFBOARD);
+            }
+        }
+        else
+        {
+            // If previously surfing
+            if (player->m_action & SURFING)
+                addToolToInventory(player, player->m_tool);
+            player->m_action = MOVE;
+        }
 
         moveEntityInDirection(player->m_base);
         reducePlayerFoodLevel(player);
@@ -114,6 +138,57 @@ void breakBlockInFront(Player_s *player)
     tilemap->m_save_previous_chunk = true;
 }
 
+Tool_s *getFrontTool(Player_s *player)
+{
+    int entity_x = player->m_base->m_position.m_x,
+        entity_y = player->m_base->m_position.m_y;
+    Tilemap_s *tilemap = player->m_base->m_tilemap;
+
+    Block_s **blocks = tilemap->m_blocks[1];
+
+    // Get entity coordinate in tilemap space
+    Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(player->m_base);
+
+    Block_s **block_in_front;
+    Tool_s *tool;
+
+    switch (player->m_base->m_direction)
+    {
+    case NORTH:
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y - 1) * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x];
+        break;
+    case SOUTH:
+        block_in_front = tilemap->m_blocks[(entity_tilemap_coord.m_y + 1) * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x];
+        break;
+    case WEST:
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x - 1];
+        break;
+    case EAST:
+        block_in_front = tilemap->m_blocks[entity_tilemap_coord.m_y * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x + 1];
+        break;
+    default:
+        break;
+    }
+
+    switch (block_in_front[1]->m_type)
+    {
+    case SURFBOARD_B:
+        tool = createTool(SURFBOARD);
+        break;
+
+    default:
+        break;
+    }
+
+    return tool;
+}
+
+void addToolToInventory(Player_s *player, Tool_s *tool)
+{
+    Object_s object = {TOOL, tool};
+    addObjectToInventory(&player->m_inventory, object);
+}
+
 void pickBlockInFront(Player_s *player)
 {
     Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
@@ -121,13 +196,36 @@ void pickBlockInFront(Player_s *player)
     if (block[1] && block[1]->m_flags & PICKABLE)
     {
         player->m_action = PICK;
+
         Block_s *picked_block = malloc(sizeof(Block_s));
-        memcpy(picked_block, block[1], sizeof(Block_s));
-        free(block[1]);
-        block[1] = NULL;
-        // Add the block to the inventory
-        addBlockToInventory(player, picked_block);
+        if (block[1]->m_type == SURFBOARD_B)
+        {
+            Tool_s *picked_tool = getFrontTool(player);
+            free(block[1]);
+            block[1] = NULL;
+            addToolToInventory(player, picked_tool);
+        }
+        else
+        {
+            memcpy(picked_block, block[1], sizeof(Block_s));
+            free(block[1]);
+            block[1] = NULL;
+            // Add the block to the inventory
+            addBlockToInventory(player, picked_block);
+        }
     }
+
+    // Update possible crafts
+    if (player->m_possible_crafts)
+    {
+        freeCraftList(player->m_possible_crafts);
+        player->m_possible_crafts = NULL;
+    }
+
+    player->m_possible_crafts = getPossibleCrafts(player);
+
+    if (player->m_possible_crafts)
+        player->m_craft_selected = player->m_possible_crafts;
 
     Tilemap_s *tilemap = player->m_base->m_tilemap;
     tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
@@ -138,13 +236,41 @@ void placeBlockInFront(Player_s *player)
 {
     Block_s **block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
     Object_s *holded_object = getCurrentInventoryObject(player);
-    if (!block[1] && holded_object->m_type == BLOCK)
+    if (!block[1] && holded_object->m_type == BLOCK && (block[0]->m_flags & PLACABLE))
     {
         block[1] = malloc(sizeof(Block_s));
         memcpy(block[1], holded_object->m_data, sizeof(Block_s));
         free(holded_object->m_data);
         holded_object->m_type = NONE;
     }
+
+    else if (!block[1] && holded_object->m_type == TOOL)
+    {
+        Tool_s *tool = holded_object->m_data;
+        switch (tool->m_type)
+        {
+        case SURFBOARD:
+            block[1] = CreateBlock(SURFBOARD_B, PICKABLE | WALKABLE);
+            free(holded_object->m_data);
+            holded_object->m_type = NONE;
+            break;
+
+        default:
+            break;
+        }
+    }
+    // Update possible crafts
+    if (player->m_possible_crafts)
+    {
+        freeCraftList(player->m_possible_crafts);
+        player->m_possible_crafts = NULL;
+    }
+
+    player->m_possible_crafts = getPossibleCrafts(player);
+
+    if (player->m_possible_crafts)
+        player->m_craft_selected = player->m_possible_crafts;
+
     Tilemap_s *tilemap = player->m_base->m_tilemap;
     tilemap->m_previous_chunk = tilemap->m_chunks[MAX_CHUNK_DISTANCE / 2][MAX_CHUNK_DISTANCE / 2];
     tilemap->m_save_previous_chunk = true;
