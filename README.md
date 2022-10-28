@@ -13,26 +13,29 @@ Réalisé par :
 - Jeu en temps réel
 
 ### INSTRUCTIONS
-   #### Instructions de compilations :
-   - Utilisation d'un OS LINUX (de préférence UBUNTU + avoir GNOME d'installé pour un rendu plus joli)
-   - Avoir installé la librairie NCURSES
-   - Utilisation du fichier "Makefile.txt" fourni dans le code source pour une bonne compilation du jeu
+#### Instructions de compilations :
+- Utilisation d'un OS LINUX (de préférence UBUNTU + avoir GNOME d'installé pour un rendu plus joli)
+- Avoir installé la librairie NCURSES
+- Utilisation du fichier "Makefile.txt" fourni dans le code source pour une bonne compilation du jeu
 
-   #### Que faire si j'ai pas le nécessaire pour compiler le programme ?
-   - Dans le cas où je n'ai pas Linux ?
-     Dualboot ou VM (VirtualBox ou VMWare) sera la solution, pour l'installation, Google is your friend ;)
-   - Dans le cas où je n'ai pas la librairie NCURSES ?
-     Pour DEBIAN/UBUNTU c'est assez simple, il vous faudra taper les commandes suivantes :
+#### Que faire si j'ai pas le nécessaire pour compiler le programme ?
+
+- Dans le cas où je n'ai pas Linux ?
+Dualboot ou VM (VirtualBox ou VMWare) sera la solution, pour l'installation, Google is your friend ;)
+
+- Dans le cas où je n'ai pas la librairie NCURSES ?
+Pour DEBIAN/UBUNTU c'est assez simple, il vous faudra taper les commandes suivantes :
     
-     Pour mettre à jour vos packages : 
-     ```$ sudo apt-update```
+Pour mettre à jour vos packages : 
+```$ sudo apt-update```
 
-     Pour installer NCURSES :
-     ```$ sudo apt-get install libncurses5-dev libncursesw5-dev```
+Pour installer NCURSES :
+```$ sudo apt-get install libncurses5-dev libncursesw5-dev```
 
-     Et voilà, c'est terminé !
-   - Le Makefile ?
-     Oui oui, le Makefile, c'est assez simple, il est fourni dans le code source plus qu'à taper les bonnes commandes pour la compilation, sinon une fois de plus, Google est ton ami :P
+Et voilà, c'est terminé !
+
+- Le Makefile ?
+Oui oui, le Makefile, c'est assez simple, il est fourni dans le code source plus qu'à taper les bonnes commandes pour la compilation, sinon une fois de plus, Google est ton ami :P
 
 
 
