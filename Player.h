@@ -31,7 +31,8 @@ typedef enum VitalType_E
 typedef enum ToolType_E
 {
     PICKAXE,
-    SWORD
+    SWORD,
+    SURFBOARD
 } ToolType_e;
 
 typedef struct Tool_S
@@ -80,12 +81,19 @@ typedef struct Player_S
     // Player inventory of objects
     Inventory_s m_inventory;
 
+    // Player selected craft
+    CraftList_s *m_craft_selected;
+
+    // Player possible crafts
+    CraftList_s *m_possible_crafts;
+
     // If the player stats have changed
     bool update_stats;
 
 } Player_s;
 
 Player_s* CreatePlayer();
+Tool_s *createTool(ToolType_e type);
 void MovePlayerTo(Player_s* player, struct Coordinate_S coordinate);
 void MakeAction(Player_s *player, Action_e action);
 void MakeActionOnBlock(Action_e action, Block_s *block);

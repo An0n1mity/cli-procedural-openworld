@@ -23,6 +23,7 @@ Term_s *initDisplaying()
 
     term->world = createWindow(term->height - 5, term->width, 0, 0);
     term->stats = createWindow(5, term->width, term->height - 5, 0);
+    // term->crafts = createWindow(5, 20, term->height - 5, term->width - 29);
 
     init_color(COLOR_WATER, 500, 500, 1000);
     init_color(COLOR_GRASS, 10, 700, 450);
@@ -35,11 +36,12 @@ Term_s *initDisplaying()
     init_pair(COLOR_GRASS, COLOR_WHITE, COLOR_GRASS);
     init_pair(COLOR_SAND, COLOR_WHITE, COLOR_SAND);
     init_pair(COLOR_STONE, COLOR_WHITE, COLOR_STONE);
-
+    init_pair(WHITE, COLOR_WHITE, COLOR_WHITE);
     return term;
 }
 
 void displayPlayerStats(Term_s *term);
+void displayCrafts(Term_s *term);
 
 void displayTerm(Term_s *term, View_s *view)
 {
@@ -55,6 +57,7 @@ void displayTerm(Term_s *term, View_s *view)
 
         displayPlayerStats(term);
         displayWorld(term, view);
+        // displayCrafts(term);
     }
 }
 
@@ -73,11 +76,24 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 
 void displayWorld(Term_s *term, View_s *view)
 {
+    int minDisplay_x = MIN(term->world->_maxx/2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
+    int maxDisplay_x = minDisplay_x;
+    minDisplay_x = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_x / 2);
+    maxDisplay_x = maxDisplay_x + minDisplay_x;
+
+    int minDisplay_y = MIN(term->world->_maxy, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
+    int maxDisplay_y = minDisplay_y;
+    minDisplay_y = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_y / 2);
+    maxDisplay_y = maxDisplay_y + minDisplay_y;
+    Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(term->tilemap->m_entities->m_entity);
+    
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
+    screen_world_coord.m_x += minDisplay_x;
+    screen_world_coord.m_y += minDisplay_y;
     int initial_x = screen_world_coord.m_x;
-    for (int h = 0; h < term->tilemap->m_height && h < term->height; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
+    for (int h = minDisplay_y; h < maxDisplay_y; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = 0; w < term->tilemap->m_width && w < term->width / 2; ++w, screen_world_coord.m_x++)
+        for (int w = minDisplay_x; w < maxDisplay_x ; ++w, screen_world_coord.m_x++)
         {
 
             Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
@@ -111,10 +127,13 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🌲");
                     break;
                 case PLANK:
-                    waddwstr(term->world, L"🟫");
+                    waddwstr(term->world, L"🟫"); //🟫
                     break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
+                    break;
+                case SURFBOARD_B:
+                    waddwstr(term->world, L"🛹");
                     break;
                 }
             }
@@ -122,7 +141,7 @@ void displayWorld(Term_s *term, View_s *view)
             else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
                      term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
             {
-                waddwstr(term->world, L"🧍");
+                waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
             }
 
             else
@@ -139,7 +158,7 @@ void displayWorld(Term_s *term, View_s *view)
 
 void displayPlayerStats(Term_s *term)
 {
-    //wborder(term->stats, '|', '|', '-', '-', '+', '+', '+', '+');
+    // wborder(term->stats, '|', '|', '-', '-', '+', '+', '+', '+');
     box(term->stats, 0, 0);
     Player_s *player = term->tilemap->m_player;
     // if (player->update_stats)
@@ -250,43 +269,76 @@ void displayPlayerStats(Term_s *term)
     mvwprintw(term->stats, 3, 35, "TOOL : ");
     Block_s *block;
     Tool_s *tool;
-    switch (player->m_inventory.m_objects[player->m_inventory.m_idx].m_type)
+
+    // Print all inventory
+    for (size_t i = 0; i < 9; i++)
     {
-    case BLOCK:
-        block = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
-        switch (block->m_type)
+        if (i == player->m_inventory.m_idx)
+            wattron(term->stats, COLOR_PAIR(COLOR_WHITE));
+
+        else
+            wattroff(term->stats, COLOR_PAIR(COLOR_WHITE));
+
+        switch (player->m_inventory.m_objects[i].m_type)
         {
-        case PLANK:
-            wprintw(term->stats, "🟫");
+        case BLOCK:
+            block = player->m_inventory.m_objects[i].m_data;
+            switch (block->m_type)
+            {
+            case PLANK:
+                wprintw(term->stats, "🟫");
+                break;
+
+            default:
+                break;
+            }
             break;
 
+        case TOOL:
+            tool = player->m_inventory.m_objects[i].m_data;
+            switch (tool->m_type)
+            {
+            case SURFBOARD:
+                wprintw(term->stats, "🛹");
+                break;
+
+            case PICKAXE:
+                break;
+
+            case SWORD:
+                break;
+
+            default:
+                break;
+            }
+            break;
         default:
+            wprintw(term->stats, "☐");
             break;
         }
-        break;
-    case TOOL:
-        tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
-        switch (tool->m_type)
-        {
-        case PICKAXE:
-            break;
-
-        case SWORD:
-            break;
-
-        default:
-            break;
-        }
-        break;
-    default:
-        wprintw(term->stats, "🤜");
-        break;
     }
+
+    wattroff(term->stats, COLOR_PAIR(COLOR_WHITE));
+
+    mvwprintw(term->stats, 2, term->width / 2 + 10, "POSSIBLE CRAFTS :          ");
+
+    if (player->m_craft_selected)
+    {
+        switch (player->m_craft_selected->m_craft)
+        {
+        case SURF_CRAFT:
+            mvwprintw(term->stats, 2, term->width / 2 + 30, "SURF");
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    player->update_stats = false;
 
     wmove(term->stats, 0, 0);
 
-    player->update_stats = false;
-    // }
     wrefresh(term->stats);
 }
 
@@ -341,6 +393,27 @@ void RenderCameraView(Term_s *term, struct Camera_s *camera)
     wrefresh(term->world);
     wmove(term->world, 0, 0);
 }
+
+void displayCrafts(Term_s *term)
+{
+    Player_s *player = term->tilemap->m_player;
+    // Get list of possible crafts
+    static CraftType_e previous_crafts; // = NONE_CRAFT;
+    CraftType_e possible_crafts;        // = getPossibleCrafts(player);
+
+    if (previous_crafts == possible_crafts)
+        return;
+    wmove(term->crafts, 1, 0);
+    if (possible_crafts & SURF_CRAFT)
+    {
+        wprintw(term->crafts, "SURF");
+    }
+
+    wrefresh(term->crafts);
+    wmove(term->crafts, 0, 0);
+    previous_crafts = possible_crafts;
+}
+
 void cookedOnExit()
 {
 

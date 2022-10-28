@@ -5,6 +5,7 @@
 #define NCURSES_WIDECHAR 1
 
 #include <ncurses.h>
+#include <menu.h>
 #include "Block.h"
 #include "Tilemap.h"
 #include "Camera.h"
@@ -14,21 +15,13 @@
 #define COLOR_GRASS 17
 #define COLOR_SAND 18
 #define COLOR_STONE 19
+#define WHITE 20
 
 typedef enum DISPLAY_MODE_E
 {
     MAIN_MENU,
     WORLD
 } DISPLAY_MODE_e;
-
-// typedef struct Panel_s
-// {
-//     WINDOW* win;
-    
-//     int height;
-//     int width;
-
-// } Panel_s;
 
 typedef struct View_S
 {
@@ -48,6 +41,7 @@ typedef struct Term_S
     WINDOW* mainMenu;
     WINDOW* world;
     WINDOW* stats;
+    WINDOW *crafts;
 
     double framerate;
 

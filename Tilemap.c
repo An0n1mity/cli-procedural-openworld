@@ -94,66 +94,66 @@ Block_s *CharToBlock(char c)
     return block;
 }
 
-void PrintTilemap(Tilemap_s *tilemap)
-{
-    for (size_t i = 0; i < tilemap->m_height; i++)
-    {
-        for (size_t j = 0; j < tilemap->m_width; j++)
-        {
+// void PrintTilemap(Tilemap_s *tilemap)
+// {
+//     for (size_t i = 0; i < tilemap->m_height; i++)
+//     {
+//         for (size_t j = 0; j < tilemap->m_width; j++)
+//         {
 
-            if (tilemap->m_blocks[i * tilemap->m_width + j][0])
-            {
-                switch (tilemap->m_blocks[i * tilemap->m_width + j][0]->m_type)
-                {
-                case WATER:
-                    printf("\e[44m~");
+//             if (tilemap->m_blocks[i * tilemap->m_width + j][0])
+//             {
+//                 switch (tilemap->m_blocks[i * tilemap->m_width + j][0]->m_type)
+//                 {
+//                 case WATER:
+//                     printf("\e[44m~");
 
-                    break;
-                case GRASS:
-                    printf("\e[42m");
-                    break;
-                case SAND:
-                    printf("\033[48;2;255;165;0m");
-                    break;
-                case STONE:
-                    printf("\e[0;37m");
-                    break;
-                }
-            }
+//                     break;
+//                 case GRASS:
+//                     printf("\e[42m");
+//                     break;
+//                 case SAND:
+//                     printf("\033[48;2;255;165;0m");
+//                     break;
+//                 case STONE:
+//                     printf("\e[0;37m");
+//                     break;
+//                 }
+//             }
 
-            if (tilemap->m_blocks[i * tilemap->m_width + j][1])
-            {
-                switch (tilemap->m_blocks[i * tilemap->m_width + j][1]->m_type)
-                {
-                case EVERGREEN_TREE:
-                    printf("🌲");
-                    break;
-                case DECIDIOUS_TREE:
-                    printf("🌳");
-                    break;
-                case ROCK:
-                    printf("🪨");
-                    break;
-                case GRASS:
-                    printf("🌿");
-                    break;
-                default:
-                    break;
-                }
-            }
+//             if (tilemap->m_blocks[i * tilemap->m_width + j][1])
+//             {
+//                 switch (tilemap->m_blocks[i * tilemap->m_width + j][1]->m_type)
+//                 {
+//                 case EVERGREEN_TREE:
+//                     printf("🌲");
+//                     break;
+//                 case DECIDIOUS_TREE:
+//                     printf("🌳");
+//                     break;
+//                 case ROCK:
+//                     printf("🪨");
+//                     break;
+//                 case GRASS:
+//                     printf("🌿");
+//                     break;
+//                 default:
+//                     break;
+//                 }
+//             }
 
-            else if (i == tilemap->m_entities->m_entity->m_position.m_y && j == tilemap->m_entities->m_entity->m_position.m_x)
-                printf("👨");
-            else
-                printf("  ");
-        }
-        printf("\e[0m");
-        printf("\033[0;37m");
-        printf("\n\r");
-    }
-    printf("\e[0m");
-    printf("\033[0;37m");
-}
+//             else if (i == tilemap->m_entities->m_entity->m_position.m_y && j == tilemap->m_entities->m_entity->m_position.m_x)
+//                 printf("👨");
+//             else
+//                 printf("  ");
+//         }
+//         printf("\e[0m");
+//         printf("\033[0;37m");
+//         printf("\n\r");
+//     }
+//     printf("\e[0m");
+//     printf("\033[0;37m");
+// }
 
 inline void addEntityToTilemap(Tilemap_s *tilemap, Entity_s *entity)
 {
@@ -180,9 +180,9 @@ void freeTilemap(Tilemap_s *tilemap)
         freeBlock(tilemap->m_blocks[i]);
     }
 
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < MAX_CHUNK_DISTANCE; i++)
     {
-        for (size_t j = 0; j < 3; j++)
+        for (size_t j = 0; j < MAX_CHUNK_DISTANCE; j++)
         {
             freeChunk(tilemap->m_chunks[i][j]);
         }
@@ -197,7 +197,7 @@ void freeTilemap(Tilemap_s *tilemap)
 Coordinate_s getEntityTilemapCoordinate(Entity_s *entity)
 {
     // Get tilemap top left corner world coordinate
-    Coordinate_s tilemap_top_coord = getTopCoordinateFromChunk(entity->m_tilemap, (Coordinate_s){entity->m_chunk_position.m_x - 1, entity->m_chunk_position.m_y - 1});
+    Coordinate_s tilemap_top_coord = getTopCoordinateFromChunk(entity->m_tilemap, (Coordinate_s){entity->m_chunk_position.m_x - MAX_CHUNK_DISTANCE/2, entity->m_chunk_position.m_y - MAX_CHUNK_DISTANCE/2});
 
     return (Coordinate_s){entity->m_position.m_x - tilemap_top_coord.m_x, entity->m_position.m_y - tilemap_top_coord.m_y};
 }
