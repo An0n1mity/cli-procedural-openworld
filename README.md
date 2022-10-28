@@ -1,10 +1,10 @@
 # **DWARF FORTRESS**
-    <sub>
+<sub>
     Réalisé par :
         - Cédric MARTY
         - Alexandre MONTHOUEL
         - Dimitri RUSSO
-    </sub>
+</sub>
 
 ### FONCTIONNALITES
     <sub>
