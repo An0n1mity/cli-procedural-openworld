@@ -16,12 +16,12 @@ Réalisé par :
 - Jeu en temps réel
 
 ### CONTRÔLES
-- Parcourir l'inventaire : FLECHE DROITE/GAUCHE ou MOLETTE
-- Déplacement du joueur : Z-Q-S-D
-- Utiliser un objet de l'inventaire : CLIQUE DROIT
-- Casser un objet de la map : CLIQUE GAUCHE
-- Valider un Craft : ENTREE
-- Afficher le menu : CTRL+C ou F1
+- Parcourir l'inventaire : ```FLECHE DROITE/GAUCHE``` ou ```MOLETTE```
+- Déplacement du joueur : ```Z-Q-S-D```
+- Utiliser un objet de l'inventaire : ```CLIQUE DROIT```
+- Casser un objet de la map : ```CLIQUE GAUCHE```
+- Valider un Craft : ```ENTREE```
+- Afficher le menu : ```CTRL+C``` ou ```F1```
 
 ### LISTE DES CRAFTS
 - 3 planches de bois = 1 planche de surf -> permet de naviguer sur l'eau (avec la planche de surf craftée)
