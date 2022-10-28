@@ -47,6 +47,9 @@ inline void reduceBlockHealth(Block_s *block, float damage)
         switch (block->m_type)
         {
         case EVERGREEN_TREE:
+            // srand(time(NULL));
+            // if (!(rand() % 3))
+            // block->m_type = APPLE;
             block->m_type = PLANK;
             block->m_flags &= ~BREAKABLE;
             block->m_flags |= PICKABLE;

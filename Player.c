@@ -124,7 +124,7 @@ void breakBlockInFront(Player_s *player)
     {
         player->m_action = BREAK;
         // If the player is holding a tool
-        if (player->m_inventory.m_objects[player->m_inventory.m_idx].m_type == TOOL)
+        if (player->m_inventory.m_objects[player->m_inventory.m_idx].m_data && player->m_inventory.m_objects[player->m_inventory.m_idx].m_type == TOOL)
         {
             Tool_s *current_tool = player->m_inventory.m_objects[player->m_inventory.m_idx].m_data;
             reduceBlockHealth(block[1], current_tool->m_block_damage);
@@ -244,19 +244,24 @@ void placeBlockInFront(Player_s *player)
         holded_object->m_type = NONE;
     }
 
-    else if (!block[1] && holded_object->m_type == TOOL)
+    else if (!block[1] && (holded_object->m_type == TOOL))
     {
         Tool_s *tool = holded_object->m_data;
-        switch (tool->m_type)
+        if (tool)
         {
-        case SURFBOARD:
-            block[1] = CreateBlock(SURFBOARD_B, PICKABLE | WALKABLE);
-            free(holded_object->m_data);
-            holded_object->m_type = NONE;
-            break;
+            switch (tool->m_type)
+            {
+            case SURFBOARD:
+                block[1] = CreateBlock(SURFBOARD_B, PICKABLE | WALKABLE);
+                // free(holded_object->m_data);
+                // holded_object->m_type = NONE;
+                player->m_inventory.m_objects[player->m_inventory.m_idx].m_data = NULL;
+                player->m_inventory.m_objects[player->m_inventory.m_idx].m_type = NONE;
+                break;
 
-        default:
-            break;
+            default:
+                break;
+            }
         }
     }
     // Update possible crafts

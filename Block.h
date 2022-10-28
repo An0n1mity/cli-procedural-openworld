@@ -25,6 +25,7 @@ typedef enum BlockType_E
     SAND,
     STONE,
     PLANK,
+    APPLE,
     SURFBOARD_B,
     VOID
 } BlockType_e;

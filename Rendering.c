@@ -135,6 +135,9 @@ void displayWorld(Term_s *term, View_s *view)
                 case SURFBOARD_B:
                     waddwstr(term->world, L"🛹");
                     break;
+                case APPLE:
+                    waddwstr(term->world, L"🍎");
+                    break;
                 }
             }
 
@@ -314,6 +317,9 @@ void displayPlayerStats(Term_s *term)
 
         case TOOL:
             tool = player->m_inventory.m_objects[i].m_data;
+                if (!tool)
+                    break;
+
             switch (tool->m_type)
             {
             case SURFBOARD:
