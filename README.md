@@ -16,7 +16,7 @@ Réalisé par :
 #### Instructions de compilations :
 - Utilisation d'un OS LINUX (de préférence UBUNTU + avoir GNOME d'installé pour un rendu plus joli)
 - Avoir installé la librairie NCURSES
-- Utilisation du fichier "Makefile.txt" fourni dans le code source pour une bonne compilation du jeu
+- Utilisation cmake pour une bonne compilation du jeu
 
 #### Que faire si j'ai pas le nécessaire pour compiler le programme ?
 
