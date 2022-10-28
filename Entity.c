@@ -1,18 +1,20 @@
 #include "Entity.h"
 #include <assert.h>
+#include "Tilemap.h"
 static inline void SetEntityHealth(Entity_s* entity, short int health);
 
 Entity_s *CreateEntity(enum EntityType_E type)
 {
     Entity_s* entity = (Entity_s*) malloc(sizeof(Entity_s));
     entity->m_type = type;
+    entity->m_last_move = 0;
     switch (type)
     {
         case PLAYER:
-            SetEntityHealth(entity, 3);
+            SetEntityHealth(entity, PLAYER_DEFAULT_HEALT);
             break;
-        case MOB:
-            SetEntityHealth(entity, 5);
+        case CHICKEN:
+            SetEntityHealth(entity, CHICKEN_DEFAULT_HEALT);
             break;        
         default:
             break;
@@ -39,7 +41,6 @@ inline void setDirection(Entity_s *entity, Direction_e direction)
 
 void moveEntityInDirection(Entity_s *entity)
 {
-
     switch (entity->m_direction)
     {
     case NORTH:
@@ -63,6 +64,21 @@ void moveEntityInDirection(Entity_s *entity)
     default:
         break;
     }
+}
+Block_s **getCurrentBlock(Entity_s *entity)
+{
+    assert(entity);
+
+    int entity_x = entity->m_position.m_x,
+        entity_y = entity->m_position.m_y;
+    Tilemap_s *tilemap = entity->m_tilemap;
+
+    Block_s **blocks = tilemap->m_blocks[1];
+
+    // Get entity coordinate in tilemap space
+    Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(entity);
+
+    return tilemap->m_blocks[(entity_tilemap_coord.m_y) * CHUNK_SIZE * MAX_CHUNK_DISTANCE + entity_tilemap_coord.m_x];
 }
 
 // Return pointer to array containing block
@@ -100,6 +116,7 @@ Block_s **getFrontBlock(Entity_s *entity, Tilemap_s *tilemap)
 
     return block_in_front;
 }
+
 
 Entitieslist_s *createEntitieslist(Entity_s *entity)
 {

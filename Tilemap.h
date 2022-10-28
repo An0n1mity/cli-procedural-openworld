@@ -47,7 +47,7 @@ Tilemap_s* CreateTilemap(const int m_wdith, const int m_height);
 // Tilemap_s* CreateTilemapFromFile(const char* mapfile);
 Tilemap_s *CreateTilemapProcedurally(int width, int height, int seed);
 void PrintTilemap(Tilemap_s* tilemap);
-void addEntityToTilemap(Tilemap_s *tilemap, struct Entity_S *entity);
+void addEntityToTilemap(Tilemap_s *tilemap, struct Entity_S *entity, void* entity_struct);
 void freeTilemap(Tilemap_s *tilemap);
 void freeEntitiesList(struct Entitieslist_S *list);
 

@@ -84,7 +84,7 @@ WINDOW *createWindow(int height, int width, int starty, int startx)
 
 void displayWorld(Term_s *term, View_s *view)
 {
-    int minDisplay_x = MIN(term->world->_maxx/2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
+    int minDisplay_x = MIN(term->world->_maxx / 2, (CHUNK_SIZE * MAX_CHUNK_DISTANCE));
     int maxDisplay_x = minDisplay_x;
     minDisplay_x = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_x / 2);
     maxDisplay_x = maxDisplay_x + minDisplay_x;
@@ -94,18 +94,23 @@ void displayWorld(Term_s *term, View_s *view)
     minDisplay_y = (CHUNK_SIZE * MAX_CHUNK_DISTANCE) / 2 - (minDisplay_y / 2);
     maxDisplay_y = maxDisplay_y + minDisplay_y;
     Coordinate_s entity_tilemap_coord = getEntityTilemapCoordinate(term->tilemap->m_entities->m_entity);
-    
+
     Coordinate_s screen_world_coord = term->tilemap->m_chunks[0][0]->world_position;
     screen_world_coord.m_x += minDisplay_x;
     screen_world_coord.m_y += minDisplay_y;
     int initial_x = screen_world_coord.m_x;
+
+    Entitieslist_s *entity_list;
+    bool continue_loop;
+
     for (int h = minDisplay_y; h < maxDisplay_y; ++h, screen_world_coord.m_y++, screen_world_coord.m_x = initial_x)
     {
-        for (int w = minDisplay_x; w < maxDisplay_x ; ++w, screen_world_coord.m_x++)
+        for (int w = minDisplay_x; w < maxDisplay_x; ++w, screen_world_coord.m_x++)
         {
-
+            entity_list = term->tilemap->m_entities;
             Block_s **actualBlock = term->tilemap->m_blocks[h * CHUNK_SIZE * MAX_CHUNK_DISTANCE + w];
             short color = 0;
+            continue_loop = FALSE;
             if (actualBlock[0])
             {
                 switch (actualBlock[0]->m_type)
@@ -135,7 +140,7 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🌲");
                     break;
                 case PLANK:
-                    waddwstr(term->world, L"🟫"); //🟫
+                    waddwstr(term->world, L"🟫"); //🟫🪵
                     break;
                 case ROCK:
                     waddwstr(term->world, L"🗿");
@@ -144,31 +149,50 @@ void displayWorld(Term_s *term, View_s *view)
                     waddwstr(term->world, L"🛹");
                     break;
                 }
+                continue;
             }
-
-            else if (term->tilemap->m_entities->m_entity->m_position.m_x == screen_world_coord.m_x &&
-                     term->tilemap->m_entities->m_entity->m_position.m_y == screen_world_coord.m_y)
+            while (entity_list != NULL) //&& entity_list->m_entity != NULL)
             {
-                switch (term->tilemap->m_player->m_action)
+                if (entity_list->m_entity->m_position.m_x == screen_world_coord.m_x &&
+                    entity_list->m_entity->m_position.m_y == screen_world_coord.m_y)
                 {
-                case MOVE:
-                    waddwstr(term->world, L"🏃");
-                    break;
-                case IDLE:
-                case BREAK:
-                case PICK:
-                    waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
-                    break;
-                case SURFING:
-                    waddwstr(term->world, L"🏄");
-                    break;
-                default:
+                    switch (entity_list->m_entity->m_type)
+                    {
+                    case PLAYER:
+                        switch (term->tilemap->m_player->m_action)
+                        {
+                        case MOVE:
+                            waddwstr(term->world, L"🏃");
+                            break;
+                        case IDLE:
+                        case BREAK:
+                        case PICK:
+                            waddwstr(term->world, L"🧍"); //🧍 🏊 🏄🪵
+                            break;
+                        case SURFING:
+                            waddwstr(term->world, L"🏄");
+                            break;
+                        default:
+                            break;
+                        }
+                        break;
+                    case CHICKEN:
+                        waddwstr(term->world, L"🐓");
+                        break;
+                    default:
+                        waddwstr(term->world, L"💩");
+                        break;
+                    }
+                    continue_loop = TRUE;
                     break;
                 }
-            }
 
-            else
-                wprintw(term->world, "  ");
+                entity_list = entity_list->m_next;
+            }
+            if(continue_loop)
+                continue;
+
+            wprintw(term->world, "  ");
         }
         wprintw(term->world, "\n");
     }

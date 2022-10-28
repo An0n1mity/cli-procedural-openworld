@@ -97,14 +97,14 @@ typedef struct Player_S
 
 } Player_s;
 
+void PlayerAttack(Player_s *player);
 Player_s* CreatePlayer();
 Tool_s *createTool(ToolType_e type);
 void MovePlayerTo(Player_s* player, struct Coordinate_S coordinate);
 void MakeAction(Player_s *player, Action_e action);
 void MakeActionOnBlock(Action_e action, Block_s *block);
 void addPlayerToTilemap(Player_s *player, struct Tilemap_S *tilemap);
-struct TilemapBlock_S *getFrontTilemapBlockP(Player_s *player, struct Tilemap_S *tilemap);
-void MovePlayer(Player_s *player);
+void MovePlayer(Player_s *player, double actualTime);
 void breakBlockInFront(Player_s *player);
 void pickBlockInFront(Player_s *player);
 void placeBlockInFront(Player_s *player);

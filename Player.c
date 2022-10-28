@@ -2,7 +2,7 @@
 
 Player_s *CreatePlayer()
 {
-    Player_s* player = (Player_s*)malloc(sizeof(Player_s));
+    Player_s *player = (Player_s *)malloc(sizeof(Player_s));
     player->m_base = CreateEntity(PLAYER);
 
     memset(player->m_inventory.m_objects, 0, sizeof(Object_s) * 9);
@@ -22,24 +22,50 @@ void MovePlayerTo(Player_s *player, Coordinate_s coordinate)
 {
     player->m_base->m_position = coordinate;
 }
-
-void MovePlayer(Player_s *player)
+void PlayerAttack(Player_s *player)
 {
-    Coordinate_s *player_position = &player->m_base->m_position;
-    Direction_e player_direction = player->m_base->m_direction;
+    Tilemap_s *tilemap =  player->m_base->m_tilemap;
+    Entitieslist_s *entity_list = tilemap->m_entities;
+    while (entity_list != NULL) //&& entity_list->m_entity != NULL)
+    {
+        if (entity_list->m_entity->m_position.m_x == player->m_base->m_position.m_x &&
+            entity_list->m_entity->m_position.m_y == player->m_base->m_position.m_y)
+        {
+            switch (entity_list->m_entity->m_type)
+            {
+
+            case CHICKEN:
+                entity_list->m_entity->m_health--;
+                break;
+            case PLAYER:
+            default:
+                break;
+            }
+            break;
+        }
+
+        entity_list = entity_list->m_next;
+    }
+}
+void MovePlayer(Player_s *player, double actualTime)
+{
+    if (player->m_base->m_last_move + PLAYER_MV_SPEED > actualTime)
+        return;
+    // Coordinate_s *player_position = &player->m_base->m_position;
+    // Direction_e player_direction = player->m_base->m_direction;
     Tilemap_s *tilemap = player->m_base->m_tilemap;
 
     Block_s **front_block = getFrontBlock(player->m_base, tilemap);
     if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (player->m_action & SURFING || (front_block[0]->m_flags & WALKABLE) || (front_block[1] && front_block[1]->m_type == SURFBOARD_B)))
     {
         // Update current player action
-        if  (front_block[1] && front_block[1]->m_type == SURFBOARD_B)
+        if (front_block[1] && front_block[1]->m_type == SURFBOARD_B)
         {
             player->m_action = SURFING;
         }
         if ((player->m_action & SURFING && front_block[0]->m_type == WATER))
         {
-            
+
             // Pop the board from beaneath
             Coordinate_s player_tilemap_coord = getEntityTilemapCoordinate(player->m_base);
             Block_s **block_beneath = tilemap->m_blocks[player_tilemap_coord.m_y * tilemap->m_width + player_tilemap_coord.m_x];
@@ -63,6 +89,8 @@ void MovePlayer(Player_s *player)
         moveEntityInDirection(player->m_base);
         reducePlayerFoodLevel(player);
         reducePlayerWaterLevel(player);
+        PlayerAttack(player);
+        player->m_base->m_last_move = actualTime;
     }
 }
 
@@ -72,21 +100,21 @@ void MakeActionOnBlock(Action_e action, Block_s *block)
         block->m_health--;
 }
 
-void MakeAction(Player_s *player, Action_e action)
-{
-    Block_s *front_block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
-    if (!front_block)
-        return;
+// void MakeAction(Player_s *player, Action_e action)
+// {
+//     Block_s *front_block = getFrontBlock(player->m_base, player->m_base->m_tilemap);
+//     if (!front_block)
+//         return;
 
-    if ((action == BREAK) && (action & front_block->m_flags))
-        front_block->m_health--;
-    if ((action == MOVE) && (action & front_block->m_flags))
-        MovePlayer(player);
-}
+//     if ((action == BREAK) && (action & front_block->m_flags))
+//         front_block->m_health--;
+//     if ((action == MOVE) && (action & front_block->m_flags))
+//         MovePlayer(player);
+// }
 
 inline void addPlayerToTilemap(Player_s *player, Tilemap_s *tilemap)
 {
-    addEntityToTilemap(tilemap, player->m_base);
+    addEntityToTilemap(tilemap, player->m_base, player);
     tilemap->m_player = player;
 }
 

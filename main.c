@@ -17,6 +17,7 @@
 #include "Rendering.h"
 #include "Camera.h"
 #include "Chunk.h"
+#include "Chicken.h"
 
 #define ctrl(x) ((x)&0x1f)
 int main(int argc, char const *argv[])
@@ -39,33 +40,18 @@ int main(int argc, char const *argv[])
     // endwin();
 
     Player_s *player = CreatePlayer();
+    Chicken_s *chicken = CreateChicken();
     Action_e player_action = BREAK;
     Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * MAX_CHUNK_DISTANCE, CHUNK_SIZE * MAX_CHUNK_DISTANCE, seed);
     // CreateTilemapFromFile("../map.txt");
-
-    player->m_base->m_direction = SOUTH;
-
-    // PrintTilemap(tilemap);
-
-    // printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
-    // MakeAction(player, MOVE);
-    //  printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
     player->m_base->m_direction = EAST;
 
-    // Block_s *front_block = getFrontBlockP(player, tilemap);
-    //  if (player_action & front_block->m_flags)
-    //      printf("Player can break the block\n\r");
-    //  else
-    //      // printf("Player can't break the block\n\r");
-    //  printf("Block health %d\n\r", (front_block)->m_health);
-    // MakeActionOnBlock(BREAK, front_block);
-    // printf("Block health %d\n\r", (front_block)->m_health);
-
-    // PrintTilemap(tilemap);
-
     // Chunk testing
-    MovePlayerTo(player, (Coordinate_s){10, 25});
+    MovePlayerTo(player, (Coordinate_s){11, 25});
     addPlayerToTilemap(player, tilemap);
+    MoveChickenTo(chicken, (Coordinate_s){11, 26});
+    addChickenToTilemap(chicken, tilemap);
+
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
     LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
     nodelay(stdscr, TRUE);
@@ -103,23 +89,23 @@ int main(int argc, char const *argv[])
             case 'D':
             case 'd':
                 player->m_base->m_direction = EAST;
-                MovePlayer(player);
+                MovePlayer(player, actualTime_ms);
                 break;
             // case KEY_LEFT:
             case 'Q':
             case 'q':
                 player->m_base->m_direction = WEST;
-                MovePlayer(player);
+                MovePlayer(player, actualTime_ms);
                 break;
             case 'Z':
             case 'z':
                 player->m_base->m_direction = NORTH;
-                MovePlayer(player);
+                MovePlayer(player, actualTime_ms);
                 break;
             case 'S':
             case 's':
                 player->m_base->m_direction = SOUTH;
-                MovePlayer(player);
+                MovePlayer(player, actualTime_ms);
                 break;
             // case 'e':
             //   possible_crafts = getPossibleCrafts(player);
@@ -147,11 +133,11 @@ int main(int argc, char const *argv[])
                         else
                             placeBlockInFront(player);
                     }
-                    else if (event.bstate & BUTTON4_PRESSED) //scroll up
+                    else if (event.bstate & BUTTON4_PRESSED) // scroll up
                     {
                         moveInventoryCursorLeft(player);
                     }
-                    else if (event.bstate & BUTTON5_PRESSED)//scroll down
+                    else if (event.bstate & BUTTON5_PRESSED) // scroll down
                     {
                         moveInventoryCursorRight(player);
                     }
@@ -212,6 +198,25 @@ int main(int argc, char const *argv[])
             if (player->m_action == MOVE)
                 player->m_action = IDLE;
             nb_ticks = 0;
+        }
+        Entitieslist_s *entity_list = term->tilemap->m_entities;
+        while (entity_list != NULL) //&& entity_list->m_entity != NULL)
+        {
+
+            switch (entity_list->m_entity->m_type)
+            {
+
+            case CHICKEN:
+                if(entity_list->m_entity->m_health == 0)
+                    
+                    
+                break;
+            case PLAYER:
+            default:
+                break;
+            }
+
+            entity_list = entity_list->m_next;
         }
 
         calculateFPS(term, actualTime_ms - previouTime_ms);

@@ -23,8 +23,15 @@
 #define MIN(a, b) ((a) < (b)) ? (a) : (b)
 
 //default settings for the player
+#define PLAYER_DEFAULT_HEALT 3
 #define PLAYER_DEFAULT_WATER 100
 #define PLAYER_DEFAULT_FOOD 100
+
+//default settings for the chicken
+#define CHICKEN_DEFAULT_HEALT 2
+
+#define PLAYER_MV_SPEED 100
+#define CHICKEN_MV_SPEED 150
 
 
 

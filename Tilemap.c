@@ -94,69 +94,9 @@ Block_s *CharToBlock(char c)
     return block;
 }
 
-// void PrintTilemap(Tilemap_s *tilemap)
-// {
-//     for (size_t i = 0; i < tilemap->m_height; i++)
-//     {
-//         for (size_t j = 0; j < tilemap->m_width; j++)
-//         {
-
-//             if (tilemap->m_blocks[i * tilemap->m_width + j][0])
-//             {
-//                 switch (tilemap->m_blocks[i * tilemap->m_width + j][0]->m_type)
-//                 {
-//                 case WATER:
-//                     printf("\e[44m~");
-
-//                     break;
-//                 case GRASS:
-//                     printf("\e[42m");
-//                     break;
-//                 case SAND:
-//                     printf("\033[48;2;255;165;0m");
-//                     break;
-//                 case STONE:
-//                     printf("\e[0;37m");
-//                     break;
-//                 }
-//             }
-
-//             if (tilemap->m_blocks[i * tilemap->m_width + j][1])
-//             {
-//                 switch (tilemap->m_blocks[i * tilemap->m_width + j][1]->m_type)
-//                 {
-//                 case EVERGREEN_TREE:
-//                     printf("🌲");
-//                     break;
-//                 case DECIDIOUS_TREE:
-//                     printf("🌳");
-//                     break;
-//                 case ROCK:
-//                     printf("🪨");
-//                     break;
-//                 case GRASS:
-//                     printf("🌿");
-//                     break;
-//                 default:
-//                     break;
-//                 }
-//             }
-
-//             else if (i == tilemap->m_entities->m_entity->m_position.m_y && j == tilemap->m_entities->m_entity->m_position.m_x)
-//                 printf("👨");
-//             else
-//                 printf("  ");
-//         }
-//         printf("\e[0m");
-//         printf("\033[0;37m");
-//         printf("\n\r");
-//     }
-//     printf("\e[0m");
-//     printf("\033[0;37m");
-// }
-
-inline void addEntityToTilemap(Tilemap_s *tilemap, Entity_s *entity)
+inline void addEntityToTilemap(Tilemap_s *tilemap, Entity_s *entity, void* entity_struct)
 {
+    entity->m_entity_struct = entity_struct;
     entity->m_tilemap = tilemap;
     entity->m_chunk_position = getEntityChunkCoordinate(entity);
     addEntityToList(&tilemap->m_entities, entity);
