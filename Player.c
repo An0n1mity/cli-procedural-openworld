@@ -14,6 +14,8 @@ Player_s *CreatePlayer()
     player->m_possible_crafts = NULL;
     player->m_craft_selected = 0;
 
+    player->m_base->m_direction = EAST;
+
     player->update_stats = true;
     return player;
 }
@@ -295,4 +297,23 @@ inline void freePlayer(Player_s *player)
 {
     free(player->m_base);
     free(player);
+}
+
+void writePlayerToFile(Player_s *player, const char *filename)
+{
+    FILE *player_file = fopen(filename, "w");
+
+    // Store player position
+    fwrite(&player->m_base->m_position, sizeof(Coordinate_s), 1, player_file);
+    // Store player stats
+    fwrite(&player->m_vitals[FOOD_LVL], sizeof(float), 2, player_file);
+    fwrite(&player->m_base->m_health, sizeof(size_t), 1, player_file);
+}
+
+void readPlayerFromFile(Player_s *player, const char *filename)
+{
+    FILE *player_file = fopen(filename, "r");
+    fread(&player->m_base->m_position, sizeof(Coordinate_s), 1, player_file);
+    fread(&player->m_vitals[FOOD_LVL], sizeof(float), 2, player_file);
+    fread(&player->m_base->m_health, sizeof(size_t), 1, player_file);
 }

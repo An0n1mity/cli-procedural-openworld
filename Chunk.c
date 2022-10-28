@@ -41,11 +41,11 @@ Chunk_s *CreateChunkProcedurally(Coordinate_s top_coord, float seed)
     chunk->world_position = top_coord;
 
     // Check if the chunk was already stored on save file
-    long cursor = whereisChunkInFile(top_coord, "../saved_chunks");
+    long cursor = whereisChunkInFile(top_coord, "saved_chunks");
 
     // if it's the case load it
     if (cursor >= 0)
-        writeFileToChunk(chunk, "../saved_chunks", cursor);
+        writeFileToChunk(chunk, "saved_chunks", cursor);
     else
     {
         srand(seed);

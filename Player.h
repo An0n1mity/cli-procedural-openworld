@@ -111,6 +111,7 @@ void printPlayer(Player_s *player);
 void reducePlayerFoodLevel(Player_s *player, float amount);
 void reducePlayerWaterLevel(Player_s *player, float amount);
 void reducePlayerHealth(Player_s *player);
-#endif 
 
- 
+void writePlayerToFile(Player_s *player, const char *filename);
+void readPlayerFromFile(Player_s *player, const char *filename);
+#endif

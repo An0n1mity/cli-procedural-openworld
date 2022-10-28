@@ -24,44 +24,18 @@ int main(int argc, char const *argv[])
     setlocale(LC_ALL, "");
     Term_s *term = initDisplaying();
 
-    remove("../saved_chunks");
-    FILE *f = fopen("../saved_chunks", "wb");
+    remove("saved_chunks");
+    FILE *f = fopen("saved_chunks", "wb");
     fclose(f);
     int seed = 563;
     int quit = 0;
 
-    // titleLoop(createWindow(20, 40, 0, 0));
-    // seedMenu(createWindow(20, 40, 0, 0), &seed);
-
-    // endwin();
-
-    Player_s *player = CreatePlayer();
     Action_e player_action = BREAK;
     Tilemap_s *tilemap = CreateTilemapProcedurally(CHUNK_SIZE * MAX_CHUNK_DISTANCE, CHUNK_SIZE * MAX_CHUNK_DISTANCE, seed);
-    // CreateTilemapFromFile("../map.txt");
+    Player_s *player = CreatePlayer();
 
-    player->m_base->m_direction = SOUTH;
-
-    // PrintTilemap(tilemap);
-
-    // printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
-    // MakeAction(player, MOVE);
-    //  printf("Player's position : %d %d\n\r", player->m_base->m_position.m_x, player->m_base->m_position.m_y);
-    player->m_base->m_direction = EAST;
-
-    // Block_s *front_block = getFrontBlockP(player, tilemap);
-    //  if (player_action & front_block->m_flags)
-    //      printf("Player can break the block\n\r");
-    //  else
-    //      // printf("Player can't break the block\n\r");
-    //  printf("Block health %d\n\r", (front_block)->m_health);
-    // MakeActionOnBlock(BREAK, front_block);
-    // printf("Block health %d\n\r", (front_block)->m_health);
-
-    // PrintTilemap(tilemap);
-
-    // Chunk testing
-    MovePlayerTo(player, (Coordinate_s){10, 25});
+    if (1)
+        readPlayerFromFile(player, "saved_player");
     addPlayerToTilemap(player, tilemap);
     Coordinate_s previous_chunk_coord = getEntityChunkCoordinate(player->m_base);
     LoadChunkAroundPlayer(player, seed, true, MAX_CHUNK_DISTANCE / 2, MAX_CHUNK_DISTANCE / 2);
@@ -121,6 +95,8 @@ int main(int argc, char const *argv[])
                 break;
             case ctrl('c'):
             case KEY_F(1):
+                // Store in a file the player position
+                writePlayerToFile(player, "saved_player");
                 quit = 1;
                 break;
 
@@ -142,11 +118,11 @@ int main(int argc, char const *argv[])
                         else
                             placeBlockInFront(player);
                     }
-                    else if (event.bstate & BUTTON4_PRESSED) //scroll up
+                    else if (event.bstate & BUTTON4_PRESSED) // scroll up
                     {
                         moveInventoryCursorLeft(player);
                     }
-                    else if (event.bstate & BUTTON5_PRESSED)//scroll down
+                    else if (event.bstate & BUTTON5_PRESSED) // scroll down
                     {
                         moveInventoryCursorRight(player);
                     }
@@ -187,13 +163,13 @@ int main(int argc, char const *argv[])
             if (tilemap->m_save_previous_chunk)
             {
                 // Check if the changed chunk was already in the save file
-                long cursor = whereisChunkInFile(previous_chunk_coord, "../saved_chunks");
+                long cursor = whereisChunkInFile(previous_chunk_coord, "saved_chunks");
                 if (cursor >= 0)
                 {
-                    writeChunkToFileAt(tilemap->m_previous_chunk, "../saved_chunks", cursor);
+                    writeChunkToFileAt(tilemap->m_previous_chunk, "saved_chunks", cursor);
                 }
                 else
-                    writeChunkToFile(tilemap->m_previous_chunk, "../saved_chunks");
+                    writeChunkToFile(tilemap->m_previous_chunk, "saved_chunks");
 
                 tilemap->m_save_previous_chunk = false;
             }
@@ -209,7 +185,7 @@ int main(int argc, char const *argv[])
             nb_ticks_sprite = 0;
         }
 
-        if (nb_ticks_vitals && !(nb_ticks_vitals % 10000))
+        if (nb_ticks_sprite && !(nb_ticks_vitals % 10000))
         {
             reducePlayerFoodLevel(player, .1f);
             reducePlayerWaterLevel(player, .2f);
