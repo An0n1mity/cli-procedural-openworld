@@ -20,7 +20,7 @@ Réalisé par :
 - Déplacement du joueur : ```Z-Q-S-D```
 - Utiliser un objet de l'inventaire : ```CLIQUE DROIT```
 - Casser un objet de la map : ```CLIQUE GAUCHE```
-- Valider un Craft : ```ENTREE```
+- Valider un craft : ```ENTREE```
 - Afficher le menu : ```CTRL+C``` ou ```F1```
 
 ### LISTE DES CRAFTS
