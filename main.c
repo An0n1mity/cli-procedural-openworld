@@ -118,9 +118,9 @@ int main(int argc, char const *argv[])
                 player->m_base->m_direction = SOUTH;
                 MovePlayer(player);
                 break;
-            case 'e':
-              possible_crafts = getPossibleCrafts(player);
-              break;
+            // case 'e':
+            //   possible_crafts = getPossibleCrafts(player);
+            //   break;
             case ctrl('c'):
             case KEY_F(1):
                 quit = 1;

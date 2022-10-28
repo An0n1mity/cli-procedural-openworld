@@ -33,9 +33,13 @@ void MovePlayer(Player_s *player)
     if (((front_block[1] && front_block[1]->m_flags & WALKABLE) || !front_block[1]) && (player->m_action & SURFING || (front_block[0]->m_flags & WALKABLE) || (front_block[1] && front_block[1]->m_type == SURFBOARD_B)))
     {
         // Update current player action
-        if ((front_block[1] && front_block[1]->m_type == SURFBOARD_B) || (player->m_action & SURFING && front_block[0]->m_type == WATER))
+        if  (front_block[1] && front_block[1]->m_type == SURFBOARD_B)
         {
             player->m_action = SURFING;
+        }
+        if ((player->m_action & SURFING && front_block[0]->m_type == WATER))
+        {
+            
             // Pop the board from beaneath
             Coordinate_s player_tilemap_coord = getEntityTilemapCoordinate(player->m_base);
             Block_s **block_beneath = tilemap->m_blocks[player_tilemap_coord.m_y * tilemap->m_width + player_tilemap_coord.m_x];
