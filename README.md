@@ -1,4 +1,4 @@
-# **DWARF FORTRESS**
+# **cli-procedural-openworld**
 Réalisé par :
 - Cédric MARTY
 - Alexandre MONTHOUEL
